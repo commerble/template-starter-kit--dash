@@ -1,0 +1,22 @@
+.skuTable {
+    width: 100%;
+    th {
+        text-align: center;
+        padding: $GUTTER;
+    }
+    th:first-of-type {
+        border-right: 1px $secondaryColor solid;
+    }
+    thead {
+        tr {
+            border-bottom: 1px $secondaryColor solid;
+        }
+    }
+    td {
+        text-align: center;
+        padding: $GUTTER 0;
+    }
+    label>.text {
+        padding-left: 24px;
+    }
+}

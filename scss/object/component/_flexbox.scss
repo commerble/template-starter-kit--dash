@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * フレックスボックス
+ *
+ **************************************************/
+.flexBox {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  word-break: break-all;
+  &WithoutJustification {
+    justify-content:flex-start;
+  }
+  &WithSpaceEvery {
+    justify-content: space-evenly;
+  }
+  &AlignTop {
+    align-items:flex-start;
+  }
+  &AlignBottom {
+    align-items:flex-end;
+  }
+  &>.grow {
+    flex:1 0 0%;
+  }
+  &>.withRightGutter {
+    margin-right:$GUTTER;
+  }
+  &>.withLeftGutter {
+    margin-left:$GUTTER;
+  }
+  &Center {
+    justify-content: center;
+  }
+}
+
+.flexBoxResponsive {
+  @extend .flexBox;
+  @include mq($BP_TB) {
+    display:block;
+    .withRightGutter {
+      margin-right:0 !important;
+    }
+    .withLeftGutter {
+      margin-left:0 !important;
+    }
+  }
+}

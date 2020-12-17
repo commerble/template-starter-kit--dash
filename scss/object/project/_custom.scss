@@ -1,0 +1,527 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * その他（サイトページ含む）
+ *
+ **************************************************/
+.announce {
+  background-color: $accentColor;
+  font-family:$fontFamily;
+  .inner {
+    text-align: center;
+    p {
+      display:inline-block;
+      text-align:left;
+      color:#fff;
+      padding:0 $GUTTER;
+      @include fz(12);
+      line-height: 1.4;
+    }
+    a {
+      position: relative;
+      display: block;
+      padding:$GUTTER 20px $GUTTER 0;
+      color:#fff;
+      text-decoration: none;
+      &::after {
+        position: absolute;
+        content:"";
+        display: block;
+        width:6px;
+        height:6px;
+        top:calc(50% + 1px);
+        right:0;
+        border-top:2px solid #fff;
+        border-right:2px solid #fff;
+        transform: translateY(-50%) rotate(45deg);
+      }
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  @include mq($BP_SP) {
+    .inner {
+      p {
+        @include fz(11);
+      }
+      a {
+        position: relative;
+        display: block;
+        padding:($GUTTER / 2) 20px ($GUTTER / 2) 0;
+      }
+    }
+  }
+}
+
+.empty {
+  padding:($GUTTER * 10) $GUTTER;
+  text-align: center;
+  @include fz(14);
+  font-weight: 700;
+  @include mq($BP_TB) {
+    padding:($GUTTER * 5) $GUTTER;
+  }
+}
+
+.linkAnnex {
+  margin-top:$GUTTER * 2;
+  padding-right:3px;
+  text-align: right;
+  @include fz(12);
+  a {
+    position: relative;
+    display: inline-block;
+    padding-right:10px;
+    color:$linkColor;
+    text-decoration: none;
+    &::after {
+      position: absolute;
+      display: block;
+      content:"";
+      top:50%;
+      right:0;
+      width:3px;
+      height:3px;
+      border-top:1px solid $linkColor;
+      border-right:1px solid $linkColor;
+      transform: translateY(-50%) rotate(45deg);
+    }
+  }
+  @include mq($BP_SP) {
+    margin-top:$GUTTER;
+  }
+}
+
+.sitePageContent {
+  margin-top:$GUTTER * 3;
+  @include mq($contentWidth) {
+    padding:0 ($GUTTER * 2);
+  }
+  @include mq($BP_TB) {
+    margin-top:$GUTTER * 2;
+    padding:0 $GUTTER;
+  }
+}
+
+.linkListSection {
+  margin-top:$GUTTER * 5;
+  padding:0 ($GUTTER * 2);
+  &Title {
+    position: relative;
+    text-align: center;
+    @include fz(16);
+    font-weight: 700;
+    &::after {
+      position: absolute;
+      display: block;
+      content:"";
+      width:60px;
+      height:2px;
+      background-color: $accentColor;
+      bottom:-7px;
+      left:50%;
+      transform: translateX(-50%);
+    }
+  }
+  .blogLink {
+    &List {
+      display:grid;
+      gap:$GUTTER * 2;
+      grid-template-columns:repeat(5, 1fr);
+      margin-top:$GUTTER * 2;
+    }
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding:($GUTTER * 2) $GUTTER;
+      border:1px solid #dedede;
+      background-color: #fff;
+      text-decoration: none;
+      &:hover {
+        background-color: #dedede;
+      }
+    }
+  }
+  @include mq($BP_TB) {
+    .blogLink {
+      &List {
+        grid-template-columns:repeat(3, 1fr);
+      }
+    }
+  }
+  @include mq($BP_SP) {
+    margin-top:$GUTTER * 3;
+    &Title {
+      @include fz(14);
+    }
+    .blogLink {
+      &List {
+        grid-template-columns:repeat(2, 1fr);
+        gap:$GUTTER;
+      }
+      a {
+        padding:$GUTTER 0;
+        @include fz(13);
+      }
+    }
+  }
+}
+
+.highlightTile {
+  &List {
+    margin-top:$GUTTER;
+    &.grid {
+      gap:$GUTTER * 2.5;
+    }
+  }
+  overflow: hidden;
+  position: relative;
+  display: block;
+  width:100%;
+  height:0;
+  padding-top:100%;
+  img {
+    position: absolute;
+    top:50%;
+    left:50%;
+    width:auto;
+    height:auto;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    transition: transform .5s;
+  }
+  .textBlock {
+    position: absolute;
+    bottom:7%;
+    left:7%;
+    width:60%;
+    .superTitle {
+      display: block;
+      @include fz(18);
+      font-family: $fontFamilyEn;
+    }
+    .title {
+      display: block;
+      margin-top:$GUTTER * 2;
+      text-transform: uppercase;
+      @include fz(37);
+      font-weight: 700;
+      font-family: $fontFamilyEn;
+      line-height: 85%;
+      word-break: normal;
+    }
+    .buttonContainer {
+      margin-top:$GUTTER * 2.5;
+      padding:0;
+      text-align: left;
+      .button {
+        display: inline-block;
+        margin: 0 $GUTTER $GUTTER 0;
+        padding:($GUTTER / 1.2) ($GUTTER * 2);
+        background-color: #fff;
+        color:$baseStringColor;
+        @include fz(16);
+        font-family: $fontFamilyEn;
+        text-decoration: none;
+        line-height: 1;
+        &:hover {
+          opacity: 1;
+          background-color: rgba(255,255,255,.8);
+        }
+      }
+    }
+    &.textWhite {
+      .superTitle,
+      .title {
+        color:#fff;
+      }
+      .button {
+        background-color: #fff;
+        color:$baseStringColor;
+        &:hover {
+          background-color: rgba(255,255,255,.8);
+        }
+      }
+    }
+    &.textBlack {
+      .superTitle,
+      .title {
+        color:$baseStringColor
+      }
+      .button {
+        background-color: $baseStringColor;
+        color:#fff;
+        &:hover {
+          background-color: rgba(0,0,0,.8);
+        }
+      }
+    }
+  }
+  @include mq($BP_TB) {
+    .textBlock {
+      width:80%;
+      .superTitle {
+        display: none;
+      }
+    }
+  }
+}
+
+.shadowHighlightTile {
+  &List {
+    margin-top:$GUTTER;
+    &.grid {
+      gap:$GUTTER * 2.5;
+    }
+  }
+  .image {
+    overflow: hidden;
+    position: relative;
+    display: block;
+    width:100%;
+    height:0;
+    padding-top:100%;
+    box-shadow: 1px 1px 10px 1px #aaa;
+    img {
+      position: absolute;
+      top:50%;
+      left:50%;
+      width:auto;
+      height:auto;
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      transition: transform .5s;
+    }
+    &:hover {
+      img {
+        transform: translate(-50%, -50%) scale(1.2);
+      }
+    }
+  }
+  .title {
+    display: block;
+    margin-top:$GUTTER * 1.5;
+    padding-top:$GUTTER;
+    border-top:1px solid #e0dcdc;
+    text-align: center;
+    text-transform: uppercase;
+    @include fz(24);
+    font-weight: 500;
+    font-family: $fontFamilyEn;
+    text-decoration: none;
+  }
+  @include mq($BP_TB) {
+    padding:0 ($GUTTER * 2);
+    .title {
+      @include fz(18);
+    }
+  }
+}
+
+.joinTheCommunity {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left:auto;
+  margin-right:auto;
+  padding:$GUTTER * 3;
+  .title {
+    width:25%;
+    border-right: 1px solid #999;
+    padding:$GUTTER ($GUTTER * 2);
+    @include fz(32);
+    font-weight: 500;
+    line-height: 1;
+    font-family: $fontFamilyEn;
+    text-align: right;
+  }
+  .lead {
+    padding:$GUTTER ($GUTTER * 2);
+    font-weight: 500;
+    @include fz(14);
+    line-height: 1.6;
+  }
+  .buttonContainer {
+    margin-left:auto;
+    [class^=bt] {
+      min-width: 200px
+    }
+  }
+  @include mq($BP_TB) {
+    display: block;
+    background-color: #eee;
+    padding:($GUTTER * 3) ($GUTTER);
+    .title {
+      position: relative;
+      width:auto;
+      border-right: 0;
+      padding:$GUTTER ($GUTTER * 2);
+      @include fz(28);
+      line-height: 1.2;
+      text-align: center;
+      &::after {
+        position: absolute;
+        display: block;
+        content:"";
+        width:150px;
+        height:1px;
+        left:50%;
+        bottom:0;
+        background-color: #999;
+        transform: translateX(-50%);
+      }
+    }
+    .lead {
+      margin-top:$GUTTER;
+      padding:$GUTTER ($GUTTER * 2);
+    }
+    .buttonContainer {
+      margin-left:auto;
+      [class^=bt] {
+        min-width: 200px
+      }
+    }
+  }
+}
+
+.squareTile {
+  &List {
+    display: flex;
+  }
+  position: relative;
+  display: block;
+  width:calc(100vw / 3);
+  height:calc(100vw / 3);
+  overflow: hidden;
+  background-color: $primaryColor;
+  .content {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    color:#fff;
+    z-index:2;
+    .title {
+      width:calc(100% - (#{$GUTTER} * 6));
+      font-family: $fontFamilyEn;
+      @include fz(40);
+      font-weight: 300;
+      text-align: center;
+      line-height: 1.1;
+    }
+    .lead {
+      width:calc(100% - (#{$GUTTER} * 6));
+      margin-top:$GUTTER * 1.5;
+      @include fz(14);
+      text-align: center;
+      line-height: 1.6;
+      min-height: 4.8em;
+    }
+  }
+  img {
+    position: absolute;
+    opacity: .7;
+    top:50%;
+    left:50%;
+    width:auto;
+    height:auto;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    transition: transform .5s;
+    z-index:1;
+  }
+  &:hover {
+    img {
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+  }
+  @include mq($BP_TB) {
+    &List {
+      display: block;
+    }
+    width:100%;
+    height:350px;
+    .content {
+      .title {
+        width:calc(100% - (#{$GUTTER} * 2));
+        @include fz(30);
+      }
+      .lead {
+        width:calc(100% - (#{$GUTTER} * 2));
+        @include fz(12);
+      }
+    }
+    img {
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+  }
+}
+
+.deliveryCharge {
+  &List {
+    margin: $GUTTER 0;
+  }
+  &:not(:first-of-type) {
+    margin-top: $GUTTER / 2;
+  }
+  .title {
+    display:inline-block;
+    width:6em;
+    text-align: right;
+  }
+  .value {
+    position: relative;
+    display: inline-block;
+    width:6em;
+    text-align: right;
+    &::before {
+      position: absolute;
+      display: inline-block;
+      content:"：";
+      left:0;
+      width:2em;
+      text-align: center;
+    }
+  }
+}
+
+/* Hubspotメールマガジンフォーム */
+input[type=radio].input-mailmagazine_daineseagv,
+input[type=checkbox].input-mailmagazine_daineseagv {
+  opacity: 1;
+  z-index: 1;
+  pointer-events: all;
+  top: 1px !important;
+}
+
+.leadin-button-wrapper {
+  .leadin-button-primary.leadin-primary {
+    background-color: $accentColor !important;
+    color: #fff !important;
+    &:hover {
+      background-color: $accentColor !important;
+      color: #fff !important;
+      opacity: .75 !important;
+    }
+  }
+}

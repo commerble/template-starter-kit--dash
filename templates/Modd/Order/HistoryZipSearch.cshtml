@@ -1,0 +1,20 @@
+﻿@{
+  var orderId = Page.ViewData["orderId"];
+  var zipList = Page.ViewData.Model as List<ZipCodeAddress>;
+}
+
+@if(!zipList.Any()){
+    <p>郵便番号に該当する住所が見つかりませんでした。</p>
+} else {
+    foreach(var zip in zipList ) {
+        <form id="history" action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="ZipSelect", id=orderId})" method="post">
+            <input type="submit" name="shipping" value="選択" />
+            〒 @zip.ZipCode @zip.Prefecture @zip.City @zip.Street
+            @(Page.Html.Hidden("ZipCode", zip.ZipCode))
+            @(Page.Html.Hidden("Pref", zip.Prefecture))
+            @(Page.Html.Hidden("City", zip.City))
+            @(Page.Html.Hidden("Street", zip.Street))
+            @(Page.Html.Hidden("target"))
+        </form>
+    }
+}

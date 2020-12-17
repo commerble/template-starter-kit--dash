@@ -1,0 +1,46 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * デバイス別 表示/非表示 制御
+ *
+ **************************************************/
+.showOnPC {
+  display:block !important;
+  @include mq($BP_TB) {
+    display:none !important;
+  }
+  &-TB {
+    display:block !important;
+    @include mq($BP_SP) {
+      display:none !important;
+    }
+  }
+}
+
+.showOnPCInline {
+  display:inline-block !important;
+  @include mq($BP_TB) {
+    display:none !important;
+  }
+  &-TB {
+    display:block !important;
+    @include mq($BP_SP) {
+      display:none !important;
+    }
+  }
+}
+
+.showOnTB {
+  display:none !important;
+  @include mq($BP_TB) {
+    display:block !important;
+  }
+}
+
+.showOnSP {
+  display:none !important;
+  @include mq($BP_SP) {
+    display:block !important;
+  }
+}

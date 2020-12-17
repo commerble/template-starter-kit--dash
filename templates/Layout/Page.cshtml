@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1; IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>@(ViewBag.PageTitle) | @GetConfigValue("BRAND_NAME")</title>
+    <link rel="stylesheet" href="@Href("~/style.css" + ViewBag.ResourceSuffix)">
+    @RenderParts("Head")
+    @RenderJsonLD()
+    @RenderDataLayer()
+</head>
+
+<body>
+    @RenderParts("BodyTop")
+    <div class="wrapper">
+        @RenderHeader()
+        <main>
+            @RenderHeaderBanner()
+            @RenderGlobalNav()
+            @if (!string.IsNullOrEmpty(ViewBag.Hero as string)) {
+                <div class="hero image spLarge">
+                    <img class="heroImage center" src="@ImageUrl(ViewBag.Hero)" loading="lazy">
+                </div>
+            }
+            <article class="topic">
+                @if((ViewBag.PublishDate as DateTime?) != null) {
+                    var publishDate = (DateTime)ViewBag.PublishDate;
+                    <time class="topicDate" datetime="@publishDate.ToString("o")">@publishDate.ToString("yyyy-MM-dd")</time>
+                }
+                <h1 class="topicTitle">@(ViewBag.Title)</h1>
+                <div class="topicContent">
+                    @RenderBody()
+                </div>
+            </article>
+        </main>
+        @RenderFooter()
+    </div>
+    @RenderPreviewFooter()
+    @Page.Template.MiniProfilerRenderIncludes()
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js" integrity="sha512-UdIMMlVx0HEynClOIFSyOrPggomfhBKJE28LKl8yR3ghkgugPnG6iLfRfHwushZl1MOPSY6TsuBDGPK2X4zYKg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js" integrity="sha512-EanukVTZc4W9tUCLnDl069Izidg49PcNRKO1upLzKt9ajq66i+bXOtlzXcIbRhb6vVEGF6BCc8wQi5T1ztCpTQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intercooler-js/1.2.3/intercooler.min.js" integrity="sha512-cGFWDjclOPdq15RV16krqIZNRnaXehJpgwtcX+VrIO+UgOsdg3mURsdN27Z9PWnov+f8mZSPZfx14R7w+rSYOw==" crossorigin="anonymous"></script>
+    <script src="@Href("~/script.js" + ViewBag.ResourceSuffix)"></script>
+    @RenderSection("ScriptBlock", false)
+    @RenderParts("BodyBottom")
+</body>
+</html>

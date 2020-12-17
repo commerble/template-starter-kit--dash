@@ -1,0 +1,31 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ *　アニメーション
+ *
+ **************************************************/
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+$prefixes: ("-webkit-", null);
+@mixin animation($name, $duration:1s, $timing:linear, $delay:0s, $count:1, $direction:normal, $mode:none) {
+  @each $prefix in $prefixes {
+    #{$prefix}animation-name:$name;
+    #{$prefix}animation-duration:$duration;
+    #{$prefix}animation-timing-function:$timing;
+    #{$prefix}animation-delay:$delay;
+    #{$prefix}animation-iteration-count:$count;
+    #{$prefix}animation-direction:$direction;
+    #{$prefix}animation-fill-mode:$mode;
+  }
+}

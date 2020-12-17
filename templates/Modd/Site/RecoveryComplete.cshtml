@@ -1,0 +1,20 @@
+@{
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+}
+@DisplayViewMessages(viewData)
+
+<div class="section">
+    <div class="inner">
+        <div class="section formWrapper">
+            <section class="formSection">
+            <h1 class="formSectionTitle center">パスワードを再設定しました。</h1>
+            <div class="completeMessage center">
+                <p class="completeMessageText">マイページをご用意しましたので、ログインしてご利用ください。</p>
+            </div>
+            <div class="buttonContainer">
+                <a href="@LoginUrl()" class="btPrimary btNormalSize btNext">ログインページへ</a>
+            </div>
+            </section>
+        </div>
+    </div>
+</div>

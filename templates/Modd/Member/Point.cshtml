@@ -1,0 +1,32 @@
+﻿@{
+  	var account = Page.ViewData.Model as PointBank.Account;
+	if(account == null){
+		account = new PointBank.Account();
+	}
+	var lapsedDate = account.ActivePoint > 0 ? Commerble.TypeResolver.Resolve<IOrderService>().FindPurchaseOrderByUser(account.UserNo).FirstOrDefault()?.OrderDate.AddDays(-180) : (DateTime?)null;
+
+	ViewBag.PageTitle = "マイページ - ポイント情報";
+}
+<div class="section">
+    <div class="inner">
+        <div class="mypageContent">
+            <div class="main">
+                <section class="formSection">
+                    <h2 class="formSectionTitle">ポイント情報</h2>
+                    <div class="formBlock">
+                        <p class="availablePointInfo"><strong class="point">@account.ActivePoint</strong>pt<span class="date">（@DateTime.Now.ToString("yyyy年M月d日")現在）</span><span class="note">※ポイントは商品出荷後に加算されます。</span></p>
+                    </div>
+					@if (lapsedDate.HasValue) {
+						<dl class="formBlock">
+							<dt class="formBlockTitle">ポイントの有効期限</dt>
+							<dd class="formBlockBody">
+								<p class="inputContent">@lapsedDate.Value.Date.ToString("yyyy年M月d日")</p>
+							</dd>
+						</dl>
+					}
+                </section>
+            </div>
+			@Page.Html.PartialEx("ModdSharedMemberNav", null, new { })
+        </div>
+    </div>
+</div>

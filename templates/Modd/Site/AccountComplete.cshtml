@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.PageTitle = "新規会員登録 - 完了";
+}
+<ol class="stepNavigation">
+    <li class="stepNavigationItem"><span>入力</span></li>
+    <li class="stepNavigationItem"><span>確認</span></li>
+    <li class="stepNavigationItem active"><span>完了</span></li>
+</ol>
+<div class="section">
+    <div class="inner">
+        <div class="section formWrapper">
+            <section class="formSection">
+            <h1 class="formSectionTitle center">ご登録ありがとうございました</h1>
+            <div class="completeMessage center">
+                <p class="completeMessageText">マイページをご用意しましたので、ログインしてご利用ください。</p>
+            </div>
+            <div class="buttonContainer">
+                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index" })" class="btPrimary btNormalSize btNext">マイページへ</a>
+            </div>
+            </section>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * CSS Grid
+ *
+ **************************************************/
+@mixin createGrid($name, $colNumFrom, $colNumTo, $GUTTER) {
+  &#{$name}-pc {
+    @for $i from $colNumFrom through $colNumTo {
+      &-x#{$i} {
+        display:grid;
+        gap:$GUTTER;
+        grid-template-columns:repeat(#{$i}, 1fr);
+      }
+    }
+  }
+  &#{$name}-tb {
+    @for $i from $colNumFrom through $colNumTo {
+      &-x#{$i} {
+        @include mq($BP_TB) {
+          display:grid;
+          gap:$GUTTER;
+          grid-template-columns:repeat(#{$i}, 1fr);
+        }
+      }
+    }
+  }
+  &#{$name}-sp {
+    @for $i from $colNumFrom through $colNumTo {
+      &-x#{$i} {
+        @include mq($BP_SP) {
+          display:grid;
+          gap:$GUTTER;
+          grid-template-columns:repeat(#{$i}, 1fr);
+        }
+      }
+    }
+  }
+}
+
+.grid {
+  $self:&;
+  $colNumFrom:1;
+  $colNumTo:10;
+  @include createGrid($self, $colNumFrom, $colNumTo, $GUTTER);
+  word-break: break-all;
+}

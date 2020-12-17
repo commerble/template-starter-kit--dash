@@ -1,0 +1,814 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * カート
+ *
+ **************************************************/ 
+.cartTopCaution {
+  display: table;
+  margin:($GUTTER * 3) auto 0;
+  padding:$GUTTER ($GUTTER * 3);
+  border:1px solid $primaryColor;
+  text-align: center;
+  @include fz(14);
+  br {
+    display: none;
+  }
+  strong {
+    position: relative;
+    display: inline-block;
+    font-weight: 700;
+    color:$accentColor;
+  }
+  & + .section {
+    margin-top:$GUTTER * 3;
+  }
+  @include mq($BP_TB) {
+    max-width:calc(100vw - (#{$GUTTER} * 2));
+    margin-top:$GUTTER * 2;
+    padding:$GUTTER $GUTTER;
+    @include fz(12);
+    text-align: left;
+    & + .section {
+      margin-top:$GUTTER * 2;
+    }
+  }
+  @include mq($BP_SP) {
+    br {
+      display: inline-block;
+    }
+  }
+}
+
+.cartDetailBlock {
+  flex:1 0 0%;
+  margin-right:$GUTTER * 6;
+  @include mq($BP_TB) {
+    width:100%;
+    padding:0 $GUTTER;
+  }
+}
+
+.cartDetailTable {
+  width:100%;
+  table-layout:auto;
+  tr {
+    &:first-of-type {
+      .dataCell {
+        padding-top: 0;
+      }
+    }
+  }
+  .dataCell {
+    display: flex;
+    padding:($GUTTER * 1.5) 0;
+    background-color:#fff;
+    border-bottom:1px solid #eee;
+  }
+  .cartDetailProduct {
+    &Info {
+      flex:1 0 0%;
+      .productName {
+        margin-top:-3px;
+        line-height:1.6;
+        @include fz(18);
+        font-weight: 500;
+        font-family: $fontFamilyEn;
+        a {
+          text-decoration:none;
+          &:hover {
+            text-decoration:underline;
+          }
+        }
+      }
+      .productRemarks {
+        margin-top:$GUTTER / 3;
+        @include fz(14);
+        font-family: $fontFamilyEn;
+        span {
+          display: block;
+        }
+        i {
+          @include fz(12);
+        }
+      }
+    }
+    &Image {
+      width:200px;
+      margin-right:$GUTTER * 2;
+      a {
+        &:hover {
+          opacity: .7;
+        }
+      }
+    }
+  }
+  .salePrice {
+    margin-top:$GUTTER / 2;
+    color:$baseStringColor;
+    white-space:nowrap;
+    @include fz(16);
+    .tax {
+      @include fz(12);
+    }
+  }
+  .qty {
+    margin-top:$GUTTER;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &Select {
+      display: flex;
+      align-items: center;
+      span {
+        @include fz(12);
+        line-height:1;
+      }
+      select {
+        width:100px;
+        padding:$GUTTER;
+        @include fz(14);
+        margin-left:$GUTTER / 3;
+      }
+    }
+  }
+  .delete {
+    @include fz(12);
+    a {
+      text-decoration:none;
+      &:hover {
+        text-decoration:underline;
+      }
+    }
+    .fa {
+      position: relative;
+      top:-1px;
+      width:15px;
+      height:15px;
+      margin-right:5px;
+      text-align: center;
+      line-height: 15px;
+      color:#fff;
+      background-color: $primaryColor;
+      @include fz(11);
+    }
+  }
+  .btRecalc {
+    pointer-events: none;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:-1;
+    opacity:0;
+    width:0;
+    height:0;
+  }
+  @include mq($BP_TB) {
+    tr {
+      .dataCell {
+        align-items: flex-start;
+      }
+      &:last-of-type {
+        .dataCell {
+          border-bottom:0;
+        }
+      }
+    }
+    .cartDetailProduct {
+      &Info {
+        .productName {
+          @include fz(15);
+        }
+        .productRemarks {
+          @include fz(13);
+          line-height: 1.2;
+          i {
+            @include fz(13);
+          }
+        }
+      }
+      &Image {
+        max-width:80px;
+        margin-right:$GUTTER;
+      }
+    }
+    .salePrice {
+      @include fz(13);
+      .tax {
+          @include fz(11);
+      }
+    }
+    .qty {
+      @include fz(13);
+      &Select {
+        span {
+            @include fz(13);
+        }
+        select {
+          width:76px;
+          padding:$GUTTER;
+          @include fz(13);
+        }
+      }
+    }
+    .delete {
+      @include fz(12);
+    }
+  }
+  @include mq(350) {
+    .qty {
+      &Select {
+        select {
+          width:60px;
+        }
+      }
+    }
+  }
+}
+
+.cartOrderBlock {
+  position:relative;
+  width:380px;
+  &Box {
+    box-shadow: 0 2px 28px 0  rgba(0,0,0,.08);
+    padding:$GUTTER ($GUTTER * 3);
+  }
+  &Price {
+    padding:$GUTTER 0 ($GUTTER * 2);
+    border-bottom:1px solid #eee;
+    text-align:center;
+    .salePrice {
+        //color:$accentColor;
+        @include fz(16);
+        font-weight: 700;
+        .num {
+          position:relative;
+          display:inline-block;
+          top:2px;
+          margin-left:5px;
+          margin-right:0;
+          @include fz(28);
+          line-height:1;
+        }
+        .tax {
+          @include fz(11);
+        }
+    }
+    .getPoint {
+      margin-top:$GUTTER;
+      @include fz(13);
+      font-weight: 400;
+      .num {
+        // NOP
+      }
+    }
+    .note {
+      margin-top:0;
+      @include fz(11);
+      a {
+        display: inline-block;
+        margin-left:5px;
+        margin-right:3px;
+      }
+    }
+  }
+  &Action {
+    padding:($GUTTER * 2) 0 $GUTTER;
+    .buttonContainer {
+      margin-top:0;
+      padding-left:0;
+      padding-right:0;
+      [class^="bt"] {
+          margin:0;
+      }
+      .btNext.btLargeSize {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width:100%;
+        min-width:0;
+        box-sizing: border-box;
+        margin:0 auto;
+        padding:20px;
+        border-radius: 3px;
+        &::after {
+          width:9px;
+          height:9px;
+          right:15px;
+          border-width: 2.5px;
+          top:calc(50% - 3px);
+        }
+        &:hover {
+          text-decoration:none;
+        }
+        .fa {
+          @include fz(20);
+        }
+      }
+      &.amazonPay {
+        margin-top:$GUTTER * 2;
+        .amazonPayNote {
+          text-align: center;
+          @include fz(12);
+          font-weight: 400;
+          line-height: 1.4;
+        }
+        img {
+          margin-top:$GUTTER / 3;
+          transition: opacity .3s;
+        }
+        &:hover {
+          img {
+            opacity: .5;
+          }
+        }
+      }
+    }
+  }
+  @include mq($BP_TB) {
+    width:100%;
+    margin-top:$GUTTER * 3;
+    padding:0 $GUTTER;
+    &Box {
+      padding:$GUTTER;
+    }
+    &Action {
+      .buttonContainer {
+        .btNext.btLargeSize {
+          max-width:592px;
+          height:100%;
+        }
+        &.onsite {
+          height:calc((100vw - (#{$GUTTER} * 4)) * .2);
+          max-height:120px;
+        }
+        &.amazonPay {
+          .amazonPayNote {
+            @include fz(11);
+          }
+        }
+      }
+    }
+  }
+}
+
+#modal_cartLogin {
+  .annex {
+    margin-top:$GUTTER / 2;
+    @include fz(12);
+    a {
+      transition: none;
+      &:hover {
+        text-decoration: underline;
+        opacity: .7;
+      }
+    }
+  }
+}
+
+.addressSelect {
+  &List {}
+  position: relative;
+  &:not(:first-of-type) {
+    margin-top:$GUTTER;
+  }
+}
+
+.availablePointInfo {
+  margin-bottom:-$GUTTER;
+  em {
+    font-weight: 700;
+    color:$accentColor;
+  }
+  br {
+    display: none;
+  }
+  @include mq($BP_SP) {
+    margin-bottom:0;
+    br {
+      display: inline-block;
+    }
+  }
+}
+
+.usePointNumBlock {
+  .formBlock {
+    &Title {
+      padding-top:22px;
+    }
+  }
+  .formItem {
+    @include fz(11);
+    font-weight: 400;
+    input[type=text],
+    input[type=number] {
+      width:5em;
+      min-width:0;
+      margin-right:5px;
+      text-align: right;
+      font-weight: 700;
+      @include fz(18);
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+    }
+    strong {
+      display: inline-block;
+      @include fz(16);
+      font-weight: 700;
+      margin-right:3px;
+    }
+  }
+  @include mq($BP_TB) {
+    .formBlock {
+      &Title {
+        padding-top:0;
+      }
+    }
+  }
+  @include mq($BP_SP) {
+    &.formBlock {
+      display: flex;
+      align-items: center;
+      .formBlockTitle {
+        flex:1 0 0%;
+      }
+      .formBlockBody {
+        flex: 1 0 0%;
+      }
+    }
+  }
+}
+
+.couponCodeBlock {
+  .formBlockTitle {
+    width:auto;
+  }
+  .formBlockBody {
+    input[type=text],
+    input[type=email] {
+      width:auto;
+      min-width: 0;
+    }
+  }
+  @include mq($BP_SP) {
+    .formBlockBody {
+      input[type=text],
+      input[type=email] {
+        width:100%;
+      }
+    }
+  }
+}
+
+.cartMessage {
+  margin-top:$GUTTER * 1.5;
+  margin-bottom:$GUTTER * 3;
+  padding:($GUTTER * 3) ($GUTTER * 3);
+  border:1px solid #eee;
+  border-radius:4px;
+  @include fz(14);
+  &Item {
+    text-align:center;
+    &:not(:last-child) {
+      margin-bottom:$GUTTER * 3;
+    }
+    &Text {
+      display:inline-block;
+      text-align:left;
+    }
+  }
+  .orderNum {
+    display:table;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom:$GUTTER * 3;
+    padding:$GUTTER;
+    border:1px solid $successColor;
+    font-family:"Cabin", $fontFamily;
+    color:$successColor;
+    @include fz(12);
+    &Text {
+      @include fz(20);
+    }
+  }
+  @include mq($BP_SP) {
+    padding:($GUTTER * 3) $GUTTER;
+    border:0;
+    &Item {
+      &:not(:last-child) {
+        margin-bottom:$GUTTER;
+      }
+    }
+  }
+}
+
+.cartConfirm {
+  .buttonContainer {
+    margin-top:$GUTTER * 3;
+    & + .buttonContainer {
+      margin-top:0;
+    }
+  }
+  .cartDetailBlock {
+    &Title {
+      position: relative;
+      text-align: center;
+      &Text {
+        display: inline-block;
+        padding:0 ($GUTTER * 3);
+        background-color: #fff;
+        @include fz(20);
+        font-weight: bold;
+      }
+      &::before {
+        position: absolute;
+        display: block;
+        content:"";
+        width:100%;
+        height:1px;
+        top:50%;
+        left:0;
+        background-color: $baseStringColor;
+        z-index: -1;
+      }
+    }
+  }
+  .cartDetailTable {
+    margin-top:$GUTTER * 3;
+    tr {
+      &:last-of-type {
+        .dataCell {
+          border-bottom:0;
+          padding-bottom:0;
+        }
+      }
+    }
+    .cartDetailProductImage {
+      width:160px;
+    }
+    .qty {
+      margin-top:$GUTTER / 3;
+    }
+  }
+  .cartOrderBlock {
+    display: grid;
+    display: -ms-grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    width:calc(45% - (#{$GUTTER} * 5));
+    .orderSumTable {
+      grid-column:1;
+      grid-row:2;
+      margin-top:$GUTTER;
+    }
+    .getPoint {
+      grid-column:1;
+      grid-row:3;
+    }
+    .buttonContainer {
+      grid-column:1;
+      grid-row:1;
+      margin-top:0;
+      padding:$GUTTER * 3;
+      background-color:#f8f8f8;
+      [class^=bt] {
+        margin:0;
+        width:100%;
+      }
+    }
+  }
+  @include mq($BP_TB) {
+    .buttonContainer {
+      margin-top:$GUTTER * 3;
+    }
+    .cartDetailBlock {
+      &Title {
+        &Text {
+          padding:0 $GUTTER;
+          @include fz(14);
+        }
+      }
+    }
+    .cartDetailTable {
+      margin-top:$GUTTER;
+      .cartDetailProductImage {
+        width:130px;
+      }
+    }
+    .cartOrderBlock {
+      display: block;
+      width:100%;
+      .orderSumTable {
+        margin-top:$GUTTER * 1.5;
+      }
+      .buttonContainer {
+        margin-top:$GUTTER * 1.5;
+        padding:$GUTTER;
+        [class^=bt] {
+          max-width: 500px;
+        }
+      }
+    }
+  }
+}
+
+.orderSumTable {
+  width:100%;
+  table-layout: fixed;
+  tr {
+    &.sum {
+      th,
+      td {
+        border-top:3px double #ddd;
+      }
+    }
+  }
+  th,
+  td {
+    padding:$GUTTER;
+    border:1px solid #ddd;
+    @include fz(16);
+    font-weight: 700;
+    line-height: 1;
+  }
+  th {
+    background-color: #f3f3f3;
+    text-align: left;
+    .tax {
+      @include fz(12);
+    }
+  }
+  td {
+    text-align: right;
+    &.minus {
+      color:$cautionColor;
+    }
+    &.total {
+      @include fz(24);
+    }
+  }
+  & + .getPoint {
+    margin-top:$GUTTER;
+    padding-right:$GUTTER;
+    @include fz(14);
+    font-weight: 700;
+    text-align: right;
+  }
+  @include mq($BP_TB) {
+    th,
+    td {
+      @include fz(14);
+    }
+    th {
+      .tax {
+        @include fz(11);
+      }
+    }
+    td {
+      &.total {
+        @include fz(20);
+      }
+    }
+    & + .getPoint {
+      @include fz(12);
+    }
+  }
+}
+
+.orderInfo {
+  &List {
+    &Title {
+      position: relative;
+      text-align: center;
+      &Text {
+        display: inline-block;
+        padding:0 ($GUTTER * 3);
+        background-color: #fff;
+        @include fz(20);
+        font-weight: bold;
+      }
+      &::before {
+        position: absolute;
+        display: block;
+        content:"";
+        width:100%;
+        height:1px;
+        top:50%;
+        left:0;
+        background-color: $baseStringColor;
+        z-index: -1;
+      }
+    }
+  }
+  margin-top:$GUTTER * 3;
+  &:not(:only-of-type) {
+    padding-bottom:$GUTTER * 3;
+    border-bottom:1px solid $secondaryColor;
+  }
+  dt {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    .title {
+      @include fz(14);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .inTitleLink {
+      a,[type="submit"] {
+        position: relative;
+        display: inline-block;
+        margin-left:$GUTTER * 3;
+        padding:0 10px 0 0;
+        @include fz(12);
+        text-decoration: none;
+        line-height: 1;
+        &::after {
+          position: absolute;
+          display: block;
+          content:"";
+          width:3px;
+          height:3px;
+          top:50%;
+          right:0;
+          border-top:1px solid $linkColor;
+          border-right:1px solid $linkColor;
+          transform: translateY(-50%) rotate(45deg);
+        }
+      }
+      button[type="submit"] {
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+    }
+  }
+  dd {
+    margin-top:$GUTTER;
+    @include fz(14);
+    line-height: 1.6;
+  }
+  @include mq($BP_TB) {
+    &List {
+      padding:0 $GUTTER;
+      & + .section {
+        margin-top:$GUTTER * 3;
+      }
+      &Title {
+        &Text {
+          padding:0 $GUTTER;
+          @include fz(14);
+        }
+      }
+    }
+    margin-top:$GUTTER * 1.5;
+    padding-bottom:0;
+    &:not(:only-of-type) {
+      margin-top:$GUTTER * 1.5;
+      padding-bottom:$GUTTER * 1.5;
+    }
+    dt {
+      justify-content: space-between;
+      .title {
+        @include fz(13);
+      }
+      .inTitleLink {
+        a {
+          top:-1px;
+        }
+      }
+    }
+    dd {
+      margin-top:$GUTTER / 3;
+      @include fz(12);
+    }
+  }
+}
+
+.orderSummary {
+  .title {
+    display: inline-block;
+    width:9em;
+    @include fz(14);
+    font-weight: 700;
+  }
+  &:not(:first-of-type) {
+    margin-top:$GUTTER;
+  }
+  @include mq($BP_TB) {
+    &:not(:first-of-type) {
+      margin-top:$GUTTER / 3;
+    }
+  }
+}
+
+.errorMessage {
+  .errorOnSubmit {
+    width:100%;
+    margin-top:0;
+    text-align: left;
+  }
+}

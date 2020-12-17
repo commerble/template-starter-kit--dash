@@ -1,0 +1,16 @@
+@{
+    var active = Page.ViewData["active"] as string;
+}
+<nav class="aside">
+    <section class="mypageLinkSection">
+        <h3 class="title">会員メニュー</h3>
+        <ul>
+            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index"})" class="@when(active=="account", "active")">会員情報</a></li>
+            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Point"})" class="@when(active=="point", "active")">ポイント</a></li>
+            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History"})" class="@when(active=="history", "active")">購入履歴</a></li>
+            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices"})" class="@when(active=="notice", "active")">仮予約</a></li>
+            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites"})" class="@when(active=="favorite", "active")">お気に入り</a></li>
+            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses"})" class="@when(active=="address", "active")">お届け先</a></li>
+        </ul>
+    </section>
+</nav>

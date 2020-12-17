@@ -1,0 +1,42 @@
+﻿@{
+  	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
+	var hasBacklog = Page.Template.UserHasBacklog();
+	ViewBag.PageTitle = "退会";
+}
+@DisplayViewMessages(viewData)
+      
+<div class="section">
+	<div class="inner">
+		<div class="formWrapper">
+			<form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Quit" })" method="post">
+				@Page.Html.SessionAntiForgeryToken()
+				<section class="formSection">
+					<h1 class="formSectionTitle">退会</h1>
+					@if(!hasBacklog) {
+						<p class="formSectionLead">退会されるとマイページにログインできなくなります。また、これまでに貯めたポイントがご利用頂けなります。</p>
+						<dl class="formBlock">
+							<dt class="formBlockTitle"></dt>
+							<dd class="formBlockBody">
+								<div class="formItem">
+									<label><input type="checkbox" name="Accept"><span class="text">了承します。</span></label>	
+								</div>
+								@ValidationMessageFor("Accept")
+							</dd>
+						</dl>
+					}
+					else {
+						<p class="formSectionLead">未配送の注文が残っているため、現時点では退会できません。<br>注文をキャンセル、もしくは、お荷物をお受け取り後、時間をおいて再度お試しください。</p>
+					}
+				</section>
+				@if(!hasBacklog) {
+					<div class="buttonContainer">
+						<button type="submit" name="update" value="post" class="btCallToAction btLargeSize btNext">退会する</button>
+					</div>
+				}
+				<div class="buttonContainer">
+                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index"})" class="btPrimary btNormalSize btPrev">マイページへ戻る</a>
+                </div>
+			</form>
+		</div>
+	</div>
+</div>

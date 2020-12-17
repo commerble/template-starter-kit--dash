@@ -1,0 +1,3 @@
+node_modules/*
+templates/BundleScript.txt
+templates/BundleStyle.txt

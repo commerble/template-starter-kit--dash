@@ -1,0 +1,175 @@
+﻿@{
+	var address = (Page.ViewData.Model as Address) ?? new Address();
+	var target = string.Format("{0}.", Page.ViewData["target"]);
+	var prefix = string.Format("{0}_", Page.ViewData["target"]);
+	var command = string.Format("{0}", Page.ViewData["command"]);
+	var commandUrl = Page.ViewData["commandUrl"];
+	var commandMethod = "ic-" + (Page.ViewData["commandMethod"] as string ?? "post") + "-to";
+}
+<dl class="formBlock required">
+	<dt class="formBlockTitle">氏名</dt>
+	<dd class="formBlockBody">
+		<div class="formItem name">
+			@Page.Html.TextBox(target + "Recipientlastname", address.Recipientlastname, new {
+				placeholder = "例）山田",
+				ic_action = "removeSpace;toZenkaku;validateForce",
+				ic_trigger_on = "focusout",
+				data_val = "true",
+				data_val_required = "氏名（姓）は必須項目です。",
+				data_val_length = "氏名（姓）は64文字以内でご入力ください。",
+				data_val_length_maxlength = "64",
+				data_val_regex = "氏名（姓）はひらがな、カタカタ、漢字、全角英数字、－―ー‐ヽヾゝゞ〃仝々〆〇 のみ使用可能です。",
+				data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]+$"
+			})
+			@Page.Html.TextBox(target + "Recipientfirstname", address.Recipientfirstname, new {
+				placeholder = "例）太郎",
+				ic_action = "removeSpace;toZenkaku;validateForce",
+				ic_trigger_on = "focusout",
+				data_val = "true",
+				data_val_required = "氏名（名）は必須項目です。",
+				data_val_length = "氏名（名）は64文字以内でご入力ください。",
+				data_val_length_maxlength = "64",
+				data_val_regex = "氏名（名）はひらがな、カタカタ、漢字、全角英数字、－―ー‐ヽヾゝゞ〃仝々〆〇 のみ使用可能です。",
+				data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]+$"
+			})
+		</div>
+		@ValidationMessageFor(target + "Recipientlastname")
+		@ValidationMessageFor(target + "Recipientfirstname")
+	</dd>
+</dl>
+<dl class="formBlock required">
+	<dt class="formBlockTitle">フリガナ</dt>
+	<dd class="formBlockBody">
+		<div class="formItem name">
+			@Page.Html.TextBox(target + "Recipientlastnamekana", address.Recipientlastnamekana, new {
+				placeholder = "例）ヤマダ",
+				ic_action = "removeSpace;toZenkaku;validateForce",
+				ic_trigger_on = "focusout",
+				data_val = "true",
+				data_val_required = "フリガナ（セイ）は必須項目です。",
+				data_val_length = "フリガナ（セイ）は64文字以内でご入力ください。",
+				data_val_length_maxlength = "64",
+				data_val_regex = "フリガナ（セイ）はカタカタ、゠・ーヽヾヿ のみ使用可能です。",
+				data_val_regex_pattern = "^[\u30A0-\u30FF]+$"
+			})
+			@Page.Html.TextBox(target + "Recipientfirstnamekana", address.Recipientfirstnamekana, new {
+				placeholder = "例）タロウ",
+				ic_action = "removeSpace;toZenkaku;validateForce",
+				ic_trigger_on = "focusout",
+				data_val = "true",
+				data_val_required = "フリガナ（メイ）は必須項目です。",
+				data_val_length = "フリガナ（メイ）は64文字以内でご入力ください。",
+				data_val_length_maxlength = "64",
+				data_val_regex = "フリガナ（メイ）はカタカタ、゠・ーヽヾヿ のみ使用可能です。",
+				data_val_regex_pattern = "^[\u30A0-\u30FF]+$"
+			})
+		</div>
+		@ValidationMessageFor(target + "Recipientlastnamekana")
+		@ValidationMessageFor(target + "Recipientfirstnamekana")
+	</dd>
+</dl>
+<dl class="formBlock required">
+	<dt class="formBlockTitle">郵便番号</dt>
+	<dd class="formBlockBody">
+		<div class="flexBox">
+			<span class="postalMark">〒</span>
+			<div class="formItem inputRowSet">
+				@Page.Html.TextBox(target + "ZipCode", address.ZipCode, new {
+					type = "tel",
+					placeholder = "例）1234567",
+					@maxlength = "7",
+					size = "7",
+					data_val = "true",
+					data_val_required = "郵便番号は必須項目です。",
+				})
+			</div>
+			<span class="grow">
+				<button class="btn btn-default" @(commandMethod)="@commandUrl" ic-target="#@(prefix)zipsearch" ic-include='{"@command":"@command"}'>
+					検索 <span class="ic-indicator" style="display:none">中</span>
+				</button>
+			</span>
+		</div>
+		<div id="@(prefix)zipsearch"></div>
+		@ValidationMessageFor(target + "ZipCode")
+	</dd>
+</dl>
+<dl class="formBlock required">
+	<dt class="formBlockTitle">都道府県</dt>
+	<dd class="formBlockBody">
+		<div class="formItem">
+			@Page.Html.TextBox(target + "Pref", address.Pref, new {
+				placeholder = "郵便番号検索で自動的に挿入されます。",
+				@readonly = "readonly",
+				data_val = "true",
+				data_val_required = "都道府県は必須項目です。",
+			})
+		</div>
+		@ValidationMessageFor(target + "Pref")
+	</dd>
+</dl>
+<dl class="formBlock required">
+	<dt class="formBlockTitle">市区町村</dt>
+	<dd class="formBlockBody">
+		<div class="formItem">
+			@Page.Html.TextBox(target + "City", address.City, new {
+				placeholder = "郵便番号検索で自動的に挿入されます。",
+				@readonly = "readonly",
+				data_val = "true",
+				data_val_required = "市区町村は必須項目です。",
+			})
+		</div>
+		@ValidationMessageFor(target + "City")
+	</dd>
+</dl>
+<dl class="formBlock required">
+	<dt class="formBlockTitle">通り・丁番地</dt>
+	<dd class="formBlockBody">
+		<div class="formItem">
+			@Page.Html.TextBox(target + "Street", address.Street, new {
+				placeholder = "例）○○町１－２－３",
+				ic_action = "toZenkaku;validateForce",
+				ic_trigger_on = "focusout",
+				data_val = "true",
+				data_val_required = "通り・丁番地は必須項目です。番地がない場合は「無番地」とご記入ください。",
+				data_val_length = "通り・丁番地は128文字以内でご入力ください。",
+				data_val_length_maxlength = "128",
+				data_val_regex = "通り・丁番地はひらがな、カタカタ、漢字、全角英数字、全角スペース、－―ー‐ヽヾゝゞ〃仝々〆〇＆（） のみ使用可能です。",
+				data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇|　|＆|（|）]+$"
+			})
+		</div>
+		@ValidationMessageFor(target + "Street")
+	</dd>
+</dl>
+<dl class="formBlock optional">
+	<dt class="formBlockTitle">建物名・部屋番号</dt>
+	<dd class="formBlockBody">
+		<div class="formItem">
+			@Page.Html.TextBox(target + "Building", address.Building, new {
+				placeholder = "例）〇〇マンション　１０１",
+				ic_action = "toZenkaku;validateForce",
+				ic_trigger_on = "focusout",
+				data_val = "true",
+				data_val_length = "建物名・部屋番号は128文字以内でご入力ください。",
+				data_val_length_maxlength = "128",
+				data_val_regex = "建物名・部屋番号はひらがな、カタカタ、漢字、全角英数字、全角スペース、－―ー‐ヽヾゝゞ〃仝々〆〇＆（） のみ使用可能です。",
+				data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇|　|＆|（|）]+$"
+			})
+		</div>
+		@ValidationMessageFor(target + "Building")
+	</dd>
+</dl>
+<dl class="formBlock required">
+	<dt class="formBlockTitle">電話番号</dt>
+	<dd class="formBlockBody">
+		<div class="formItem">
+			@Page.Html.TextBox(target + "Tel", address.Tel, new {
+				placeholder = "例）09012345678",
+				@maxlength = "11",
+				size = "11",
+				data_val = "true",
+				data_val_required = "電話番号は必須項目です。",
+			})
+		</div>
+		@ValidationMessageFor(target + "Tel")
+	</dd>
+</dl>

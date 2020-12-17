@@ -1,0 +1,55 @@
+@functions {
+    public class ViewModel {
+        public string Layout { get; set; }
+        public string Name { get; set; }
+        public string Hero { get; set; }
+        public string Title { get; set; }
+        public string Body { get; set;}
+        public string MetaTitle { get ;set; }
+        public string MetaDescription { get ;set; }
+        public string MetaImage { get ;set; }
+        public DateTime? PublishDate { get ;set; }
+    }
+
+    ViewModel LoadViewModel() {
+        var code = ((string)(ViewBag.Code ?? ViewBag.RouteName))?.ToLower();
+        return Database.Single(new { Now, Next, IsPreview, code }, (db, args) => (
+                from p in db.SitePages
+                join k in db.SitePageKinds on p.Kind equals k.Code
+                where p.Code == args.code
+                &&  p.DisplayStart <= args.Now
+                && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                && (p.IsPublished || args.IsPreview)
+                select new ViewModel {
+                    Layout = k.Layout,
+                    Name = p.Name,
+                    Hero = p.Hero,
+                    Title = p.Title,
+                    Body = p.Body,
+                    MetaTitle = p.MetaTitle,
+                    MetaDescription = p.MetaDescription,
+                    MetaImage = p.MetaImage,
+                    PublishDate = p.PublishDate
+                }
+            ).FirstOrDefault());
+    }
+}
+
+@{
+    var vm = LoadViewModel();
+
+    if (vm == null) {
+        throw new System.Web.HttpException(404, "Not Found");
+    }
+
+    Layout = vm.Layout;
+
+    ViewBag.Hero = vm.Hero;
+    ViewBag.PublishDate = vm.PublishDate;
+    ViewBag.Title = vm.Title ?? vm.Name;
+
+    ViewBag.PageTitle = vm.MetaTitle ?? vm.Name;
+    ViewBag.PageDescription = vm.MetaDescription;
+    ViewBag.OgImage = vm.MetaImage;
+}
+@Raw(vm.Body ?? string.Empty)

@@ -1,0 +1,10 @@
+﻿@{
+    Page.NoCache = true;
+    Layout = null;
+}
+@if(Page.Context.User.Identity.IsAuthenticated){
+  <text>@Page.Context.User.Identity.Name &nbsp;|&nbsp;</text>
+}
+<a href="@Href("~/Order/Cart")">CART</a>
+&nbsp;|&nbsp;
+<a href="@Href("~/Member/Index")">MYPAGE</a>

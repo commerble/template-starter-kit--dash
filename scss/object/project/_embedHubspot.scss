@@ -1,0 +1,102 @@
+@charset "utf-8";
+/**************************************************
+ *
+ * Hubspot埋め込みサイトページ
+ *
+ **************************************************/
+.embedHubspot {
+  padding:$GUTTER * 2;
+  header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width:$contentWidthPx;
+    margin-top:$GUTTER * 2;
+    margin-left:auto;
+    margin-right:auto;
+    background-color: transparent;
+    &::before {
+      display: block;
+      content:"";
+    }
+    &::before {
+      position: relative;
+      left:-50px;
+      width:254px;
+      height:26px;
+      background: url(../images/dainese-black-logo.png) center center no-repeat;
+      background-size: contain;
+    }
+    .logo {
+      position: relative;
+      right:-50px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      &::before,
+      &::after {
+        display: block;
+        content:"";
+        width:50px;
+        height:42px;
+        background-size: contain;
+      }
+      &::before {
+        background: url(../images/logo.svg) center center no-repeat;
+        background-size: contain;
+      }
+      &::after {
+        margin-left:$GUTTER;
+        background: url(../images/logo-agv.svg) center center no-repeat;
+        background-size: contain;
+      }
+    }
+  }
+  main {
+    width:$contentWidthPx;
+    margin:0 auto;
+    padding:($GUTTER * 3) 0;
+  }
+  h1 {
+    margin-bottom:$GUTTER * 3;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    @include fz(28);
+    text-align: center;
+    font-family:$fontFamilyEn;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  @include mq($contentWidth + 100) {
+    header {
+      width:100%;
+      &::before {
+        left:0;
+      }
+      .logo {
+        right:0;
+      }
+    }
+  }
+  @include mq($contentWidth) {
+    main {
+      width:100%;
+    }
+  }
+  @include mq($BP_TB) {
+    header {
+      &::before {
+        width:120px;
+        height:12px;
+      }
+      .logo {
+        &::before,
+        &::after {
+          width:31px;
+          height:27px;
+        }
+      }
+    }
+  }
+}

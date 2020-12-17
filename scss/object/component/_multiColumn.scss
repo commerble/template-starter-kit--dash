@@ -1,0 +1,110 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * マルチカラム
+ *
+ **************************************************/
+@mixin createMultiColumn($name, $colNumFrom, $colNumTo, $GUTTER) {
+  &#{$name}-pc {
+    @for $i from $colNumFrom through $colNumTo {
+      &-x#{$i} {
+        &>* {
+          @if $GUTTER == 0 {
+            width:calc(100% / #{$i});
+          } @else {
+            width:calc((100% - #{$GUTTER} * #{$i - 1}) / #{$i});
+            // Only for IE10+ (including Edge)
+            _:-ms-lang(x), & {
+              $calcPercentage:floor(100% / $i);
+              $calcPx:floor(($GUTTER * ($i - 1)) / $i);
+              width:calc(#{$calcPercentage} - #{$calcPx});
+            }
+          }
+          margin-right:$GUTTER;
+          margin-bottom:$GUTTER;
+          &:nth-of-type(#{$i}n) {
+            margin-right:0;
+            @include mq($BP_TB) {
+              margin-right:$GUTTER;
+            }
+          }
+        }
+      }
+    }
+  }
+  &#{$name}-tb {
+    @for $i from $colNumFrom through $colNumTo {
+      &-x#{$i} {
+        &>* {
+          @include mq($BP_TB) {
+            @if $GUTTER == 0 {
+              width:calc(100% / #{$i});
+            } @else {
+              width:calc((100% - #{$GUTTER} * #{$i - 1}) / #{$i});
+              // Only for IE10+ (including Edge)
+              _:-ms-lang(x), & {
+                $calcPercentage:floor(100% / $i);
+                $calcPx:floor(($GUTTER * ($i - 1)) / $i);
+                width:calc(#{$calcPercentage} - #{$calcPx} -1px);
+              }
+            }
+            margin-right:$GUTTER;
+            margin-bottom:$GUTTER;
+            &:nth-of-type(#{$i}n) {
+              margin-right:0;
+              @include mq($BP_SP) {
+                margin-right:$GUTTER;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  &#{$name}-sp {
+    @for $i from $colNumFrom through $colNumTo {
+      &-x#{$i} {
+        &>* {
+          @include mq($BP_SP) {
+            @if $GUTTER == 0 {
+              width:calc(100% / #{$i});
+            } @else {
+              width:calc((100% - #{$GUTTER} * #{$i - 1}) / #{$i});
+              // Only for IE10+ (including Edge)
+              _:-ms-lang(x), & {
+                $calcPercentage:floor(100% / $i);
+                $calcPx:floor(($GUTTER * ($i - 1)) / $i);
+                width:calc(#{$calcPercentage} - #{$calcPx} -1px);
+              }
+            }
+            margin-right:$GUTTER;
+            margin-bottom:$GUTTER;
+            &:nth-of-type(#{$i}n) {
+              margin-right:0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.multiColumn {
+  display:flex;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  $self:&;
+  $colNumFrom:1;
+  $colNumTo:10;
+  @include createMultiColumn($self, $colNumFrom, $colNumTo, $GUTTER);
+  word-break: break-all;
+  &.wideMargin {
+    @include createMultiColumn($self, $colNumFrom, $colNumTo, $GUTTER * 2);
+  }
+  &.narrowMargin {
+    @include createMultiColumn($self, $colNumFrom, $colNumTo, $GUTTER / 2);
+  }
+  &.withoutMargin {
+    @include createMultiColumn($self, $colNumFrom, $colNumTo, 0);
+  }
+}

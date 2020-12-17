@@ -1,0 +1,248 @@
+@model IDictionary<string, object>
+@functions {
+    public class ViewModel {
+        public string ListName { get; set; }
+        public bool HasNextPage { get; set; }
+        public bool IsEmpty { get; set; }
+        public int Page { get; set; }
+        public List<ProductPageViewModel> ProductPages { get; set; }
+        public List<CategoryViewModel> CheckedKinds { get; set; }
+        public List<CategoryViewModel> CheckedTags { get; set; }
+        public string Sort { get; set; }
+        public string SearchCondition(string path, string removeKind = null, string removeTag = null) {
+            return path + "?" + string.Join("&", CheckedKinds.Where(k => k.Code!=removeKind).Select(k => "k="+k.Code).Concat(CheckedTags.Where(t => t.Code!=removeTag).Select(t => "t="+t.Code)).Concat(new []{$"sort={Sort}"}));
+        }
+    }
+    public class ProductPageViewModel {
+        public string Code { get; set; }
+        public string Kind { get; set; }
+        public string KindName { get; set; }
+        public string KindIcon { get; set; }
+        public string Name { get; set; }
+        public string Thumbnail { get; set; }
+        public int? PriceProductId { get; set; }
+        public bool? HasMultiplePrice { get; set; }
+        public decimal? UnitPriceWithTax { get; set; }
+        public string PriceProductExternalId1 {get; set;}
+        public string PriceProductName {get; set;}
+    }
+    public class CategoryViewModel {
+        public string GroupCode { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Icon { get; set; }
+    }
+    ViewModel LoadViewModel() {
+        var checkedKinds = (Model.ContainsKey("kinds") ? Model["kinds"] as string[] : null) ?? new string[0];
+        var checkedTags  = (Model.ContainsKey("tags")  ? Model["tags"]  as string[] : null) ?? new string[0];
+        var sort = Page.Request.QueryString["sort"] ?? "new";
+        int page = int.TryParse(Page.Request.QueryString["page"], out page) ? page : 0;
+        int eachPage = 12;
+        var kinds = Kinds.Select(k => new CategoryViewModel {
+            GroupCode = k.GroupCode,
+            Code = k.Code,
+            Name = k.Name,
+            Icon = k.Icon,
+        }).ToList();
+        var tags = Tags.Select(t => new CategoryViewModel {
+            GroupCode = t.GroupCode,
+            Code = t.Code,
+            Name = t.Name,
+            Icon = t.Icon,
+        }).ToList();
+        var builder = 
+            Database.Builder(db => 
+                from p in db.ProductPages
+                join rt in db.ProductTagRelations on p.Code equals rt.ProductPageCode into tagRelations
+                from r in tagRelations.DefaultIfEmpty()
+                where p.DisplayStart <= Now 
+                   && (p.DisplayEnd == null || p.DisplayEnd > Now)
+                   && (p.IsPublished || IsPreview)
+                select new {
+                    ProductPageCode = p.Code,
+                    ProductTagCode = r == null ? null : r.ProductTagCode,
+                    p.Kind,
+                    p.ReleaseDate,
+                    p.RankingIndex,
+                    p.RecommendIndex,
+                    p.PriceIndex
+                }
+            );
+
+        if (checkedKinds.Length > 0) {
+            builder.Append(query => query.Where(p => checkedKinds.Contains(p.Kind)));
+        }
+
+        foreach (var checkedGroupedTag in tags.Where(t => checkedTags.Contains(t.Code)).GroupBy(t => t.GroupCode??Guid.NewGuid().ToString())){
+            var checkedGroupedTagCodes = checkedGroupedTag.Select(t => t.Code).ToArray();
+            builder.Append(query => query.Where(p => checkedGroupedTagCodes.Contains(p.ProductTagCode)));
+        }
+
+        builder.Append(query => query.Select(p => new {
+            p.ProductPageCode,
+            ProductTagCode = (string)null,
+            Kind = (string)null,
+            p.ReleaseDate,
+            p.RankingIndex,
+            p.RecommendIndex,
+            p.PriceIndex,
+        }).Distinct());
+        
+        switch (sort) {
+            case "prc_asc":
+                builder.Append(query=> query.OrderBy(p => p.PriceIndex));
+                break;
+            case "prc_desc":
+                builder.Append(query=> query.OrderByDescending(p => p.PriceIndex));
+                break;
+            case "rkg_asc":
+                builder.Append(query=> query.OrderBy(p => p.RankingIndex));
+                break;
+            case "rkg_desc":
+                builder.Append(query=> query.OrderByDescending(p => p.RankingIndex));
+                break;
+            case "rcm_asc":
+                builder.Append(query=> query.OrderBy(p => p.RecommendIndex));
+                break;
+            case "rcm_desc":
+                builder.Append(query=> query.OrderByDescending(p => p.RecommendIndex));
+                break;
+            case "old":
+                builder.Append(query=> query.OrderBy(p => p.ReleaseDate));
+                break;
+            case "new":
+            default:
+                builder.Append(query=> query.OrderByDescending(p => p.ReleaseDate));
+                break;
+        }
+
+        builder.Append(p => p.Take(1000));
+        var search = builder.Execute(new { Now, Next, IsPreview });
+        var codes = search.Skip(page * eachPage).Take(eachPage).Select(p => p.ProductPageCode).ToList();
+
+        var items = 
+            Database.Query(new { Now, Next, IsPreview }, db =>
+                from p in db.ProductPages
+                join k in db.ProductKinds on p.Kind equals k.Code
+                join rs in db.Products on p.PriceProductId equals rs.Id into skus
+                from s in skus.DefaultIfEmpty()
+                where codes.Contains(p.Code)
+                select new ProductPageViewModel {
+                    Code = p.Code,
+                    Kind = p.Kind,
+                    KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                    KindIcon = k.Icon,
+                    Name = p.Name,
+                    Thumbnail = p.Thumbnail,
+                    PriceProductId = p.PriceProductId,
+                    HasMultiplePrice = p.HasMultiplePrice,
+                    PriceProductExternalId1 = s != null ? s.ExternalId1 : null,
+                    PriceProductName = s != null ? s.Name : null
+                }
+            ).ToList();
+
+        items = items.OrderBy(item => codes.IndexOf(item.Code)).ToList();
+        
+        foreach (var item in items) {
+            if (item.PriceProductId.HasValue) {
+                item.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(item.PriceProductId.Value);
+            }
+        }
+
+        var listName = new string[]{ "Item" }.Concat(checkedKinds).Concat(checkedTags).ToList();
+        listName.Add(eachPage.ToString());
+        listName.Add(page.ToString());
+
+        var itemCount = search.Count();
+        var pageCount = itemCount / eachPage + ((itemCount % eachPage == 0) ? 0 : 1);
+	    var pageLast = pageCount == 0 ? true : ( ((page+1) == pageCount) ? true : false);
+
+        return new ViewModel {
+            ListName = string.Join(":", listName),
+            HasNextPage = itemCount > 0 && !pageLast,
+            IsEmpty = itemCount == 0,
+            Page = page,
+            ProductPages = items,
+            CheckedKinds = checkedKinds.Join(kinds, c => c, k => k.Code, (c,k) => k).ToList(),
+            CheckedTags = checkedTags.Join(tags, c => c, t => t.Code, (c,t) => t).ToList(),
+            Sort = sort,
+        };
+    }
+}
+@{
+    var vm = LoadViewModel();
+    ViewBag.DataLayer = new object[] { new {
+        @event = "view_item_list",
+        ecommerce = new {
+            impressions = vm.ProductPages.Select((p, index) => new {
+                item_name = p.PriceProductName,
+                item_id = p.PriceProductExternalId1,
+                price = p.UnitPriceWithTax?.ToString(),
+                item_category = p.Kind,
+                item_list_name = vm.ListName,
+                item_list_id = vm.ListName,
+                index = index + 1,
+            })
+        }
+    }};
+}
+<div class="searchResultContent">
+    <div class="result">
+        <ul class="tagList">
+            @foreach(var kind in vm.CheckedKinds) {
+                <li>
+                    <a class="tag tagRemoval" href="@vm.SearchCondition(Href("~/search"), removeKind:kind.Code)">
+                        @if (!string.IsNullOrEmpty(kind.Icon)) {
+                            <i class="@kind.Icon"></i>
+                        }
+                        @kind.Name
+                    </a>
+                </li>
+            }
+            @foreach(var tag in vm.CheckedTags) {
+                <li>
+                    <a class="tag tagRemoval" href="@vm.SearchCondition(Href("~/search"), removeTag:tag.Code)">
+                        #@tag.Name
+                    </a>
+                </li>
+            }
+        </ul>
+        @ProductTileList(vm.ProductPages, id:"result", slot:(item, index) =>
+            ProductTile(
+                item.Code,
+                item.Name,
+                item.KindName,
+                item.KindIcon,
+                item.Thumbnail,
+                item.UnitPriceWithTax,
+                item.HasMultiplePrice,
+                gtm: new {
+                    @event = "select_item",
+                    ecommerce = new {
+                        items = new [] {
+                            new { 
+                                item_name = item.PriceProductName,
+                                item_id = item.PriceProductExternalId1,
+                                item_category = item.Kind,
+                                item_list_name = vm.ListName,
+                                item_list_id = vm.ListName,
+                                price = item.UnitPriceWithTax?.ToString("F0"),
+                                index = index + 1,
+                            } 
+                        }
+                    }
+                } 
+            )
+        )
+        @if (vm.IsEmpty) {
+            <p class="empty">ご希望の条件に合致する商品が見つかりませんでした。条件を変更し再度お試しください。</p>
+        }
+        @if (vm.HasNextPage) {
+            @ButtonBlock("次のページ", href:vm.SearchCondition(Page.Request.Url.AbsolutePath) + $"&page={(vm.Page+1)}", btPrimary:true,  btLargeSize: true, btNext: true)
+        }
+        @ButtonBlock("検索条件を変更する", href:vm.SearchCondition(Href("~/search/condition")), icon:"fa fa-search", btAccent:true, btLargeSize: vm.IsEmpty, showOnTB:true)
+    </div>
+    <div id="facet" class="facet">
+        @Include("SearchFilter", Model)
+    </div>
+</div>

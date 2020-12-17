@@ -1,0 +1,92 @@
+﻿@{
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
+    var user = Membership.GetUser(Page.User.Identity.Name) as Crosswarp.Modd.Account.Web.ModdMembershipUser;
+    var address = Commerble.TypeResolver.Resolve<IAccountService>().GetAccountAddress(user.Account.UserNo);
+
+    ViewBag.PageTitle = "マイページ"; 
+}
+@DisplayViewMessages(viewData)
+
+<div class="section">
+    <div class="inner">
+        <div class="mypageContent">
+            <div class="main">
+                <section class="formSection">
+                    <h2 class="formSectionTitle"><span class="formSectionTitleText">会員情報</span></h2>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">氏名</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@user.Account.ExtendProperties.LastName @user.Account.ExtendProperties.FirstName</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">フリガナ</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@user.Account.ExtendProperties.LastNameKana @user.Account.ExtendProperties.FirstNameKana</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">誕生日</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@(user.Account.ExtendProperties.Birthday?.ToString("yyyy年M月d日"))</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">性別</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@HumanSexesText[user.Account.ExtendProperties.Sex]</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">メルマガ配信</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@SubscribeText[user.Account.ExtendProperties.Subscribe]</p>
+                        </dd>
+                    </dl>
+                    <p class="linkAnnex"><a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="Account"})#customer">会員情報を変更する</a></p>
+                </section>
+                <section class="formSection">
+                    <h2 class="formSectionTitle"><span class="formSectionTitleText">会員住所</span></h2>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">住所</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@address.ToString()</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">電話番号</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@address.Tel</p>
+                        </dd>
+                    </dl>
+                    <p class="linkAnnex"><a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="Account"})#address">会員住所を変更する</a></p>
+                </section>
+                <section class="formSection">
+                    <h2 class="formSectionTitle"><span class="formSectionTitleText">ログイン情報</span></h2>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">メールアドレス</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@user.UserName</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">パスワード</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">セキュリティのため表示しておりません</p>
+                        </dd>
+                    </dl>
+                    <p class="linkAnnex"><a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="Account"})#email">メールアドレスを変更する</a></p>
+                    <p class="linkAnnex"><a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="Password"})">パスワードを変更する</a></p>
+                    <div class="buttonContainer">
+                        <a href="@LogoutUrl()" class="btPrimary btNormalSize btNext">ログアウト</a>
+                    </div>
+                </section>
+                <section class="formSection">
+                    <h2 class="formSectionTitle"><span class="formSectionTitleText"></span></h2>
+                    <p class="linkAnnex"><a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="Quit"})">退会する</a></p>
+                </section>
+            </div>
+            @Page.Html.PartialEx("ModdSharedMemberNav", null, new { })
+        </div>
+    </div>
+</div>

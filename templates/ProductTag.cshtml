@@ -1,0 +1,81 @@
+@functions {
+    public class ViewModel {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Hero { get; set; }
+        public string Title { get; set; }
+        public string Body { get; set;}
+        public string MetaTitle { get ;set; }
+        public string MetaDescription { get ;set; }
+        public string MetaImage { get ;set; }
+    }
+
+    ViewModel LoadViewModel() {
+        var code = ((string)ViewBag.Code)?.ToLower();
+        return Database.Single(new { Now, Next, IsPreview, code }, (db, args) => (
+                from t in db.ProductTags
+                where t.Code.ToLower() == args.code
+                  && (t.IsPublished || args.IsPreview)
+                select new ViewModel {
+                    Code = t.Code,
+                    Name = string.IsNullOrEmpty(t.DisplayName) ? t.Name : t.DisplayName,
+                    Hero = t.Hero,
+                    Title = t.Title,
+                    Body = t.Body,
+                    MetaTitle = t.MetaTitle,
+                    MetaDescription = t.MetaDescription,
+                    MetaImage = t.MetaImage
+                }
+            ).FirstOrDefault());
+    }
+}
+
+@{
+    var vm = LoadViewModel();
+
+    if (vm == null) {
+        throw new System.Web.HttpException(404, "Not Found");
+    }
+
+    ViewBag.PageTitle = vm.MetaTitle ?? vm.Name ?? "タグ";
+    ViewBag.PageDescription = vm.MetaDescription;
+    ViewBag.OgImage = vm.MetaImage;
+    ViewBag.JsonLd = new[] {
+        new Dictionary<string, object> {
+            ["@context"] = "https://schema.org/",
+            ["@type"] = "BreadcrumbList",
+            ["itemListElement"] = new [] {
+                new Dictionary<string, object> {
+                    ["@type"] = "ListItem",
+                    ["position"] = 1,
+                    ["name"] = "Top",
+                    ["item"] = Page.Template.SecuredHost(true) + Href("~/")
+                },
+                new Dictionary<string, object> {
+                    ["@type"] = "ListItem",
+                    ["position"] = 2,
+                    ["name"] = vm.Name,
+                    ["item"] = Page.Template.SecuredHost(true) + Page.Request.Url.AbsolutePath
+                },
+            }
+        }
+    };
+}
+@if (Page.Request.QueryString["page"] == null) {
+    if (!string.IsNullOrEmpty(vm.Hero)) {
+        <div class="hero image spLarge">
+            <img class="heroImage center" src="@ImageUrl(vm.Hero)" loading="lazy">
+        </div>
+    }
+    <div class="section">
+        <div class="inner">
+            <h2 class="topicTitle textCenter">@(vm.Title ?? vm.Name)</h2>
+            <div class="topicContent">
+                @Raw(vm.Body ?? string.Empty)
+            </div>
+        </div>
+    </div>
+}
+@Include("ProductList", new Dictionary<string, object> {
+    ["tags"] = new []{ vm.Code }
+})

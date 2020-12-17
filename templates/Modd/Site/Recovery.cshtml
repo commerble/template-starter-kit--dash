@@ -1,0 +1,34 @@
+@{
+	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+
+	ViewBag.PageTitle = "パスワード再設定";
+}
+@DisplayViewMessages(viewData)
+
+<div class="section">
+    <div class="inner">
+        <div class="loginForm">
+            <section class="formSection">
+                <h2 class="formSectionTitle center">パスワード再設定</h2>
+                <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Recovery"})" method="post">
+                    @Page.Html.SessionAntiForgeryToken()
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle short">メールアドレス</dt>
+                        <dd class="formBlockBody">
+                            <div class="formItem">
+                                <input type="text" class="fullWidth" name="UserName" 
+                                    data-val="true"
+                                    data-val-required="メールアドレスは必須項目です。" 
+                                    data-val-email="メールアドレスをご入力ください。">
+                            </div>
+                            @ValidationMessageFor("UserName")
+                        </dd>
+                    </dl>
+                    <div class="buttonContainer">
+                        <button type="submit" name="request" value="post" class="btCallToAction btLargeSize btNext">パスワード再設定メールを送信する</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>

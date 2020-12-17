@@ -1,0 +1,13 @@
+﻿@using VM = Crosswarp.Modd.Controllers.ViewModels;
+@using PointBank = Crosswarp.Modd.PointBank;
+@{
+    Layout = "LayoutDefault";
+    ViewBag.PageTitle = (string)null;
+    ViewBag.PageDescription = "default meta description";
+    ViewBag.OgImage = "https://via.placeholder.com/320x320?text=Sample Shop";
+    ViewBag.IsLocal =  Page.Request.Url.Host.StartsWith("localhost") || Page.Request.Url.Host.StartsWith("172.") || Page.Request.Url.Host.StartsWith("192.168.");
+    ViewBag.IsDev   =  Page.Request.Url.Host == "dev.cbpaas.com" || Page.Request.Url.Host == "demo.cbpaas.com";
+    ViewBag.IsStage =  Page.Request.Url.Host == "stage.cbpaas.com";
+    ViewBag.IsNotProduction = ViewBag.IsLocal == true || ViewBag.IsDev == true || ViewBag.IsStage == true;
+    ViewBag.ResourceSuffix  =  $"?_rc={Page.Template.RestartCounter}" + (ViewBag.IsNotProduction == true ? $"&_rq={Guid.NewGuid()}" : string.Empty);
+}

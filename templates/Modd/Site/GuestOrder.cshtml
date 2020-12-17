@@ -1,0 +1,14 @@
+﻿@{
+  var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+}
+@DisplayViewMessages(viewData)
+
+<h2>ゲスト注文詳細 閲覧</h2>
+
+<div>注文時のお客様情報電話番号下4桁を入力してください。<br>
+<div>
+  <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="GuestOrder", id=Page.ViewData["id"]} )" method="post">
+      <input type="text" name="authCode" maxlength="4" />
+      <input type="submit" value="表示" class="btn btn-primary"/>
+  </form>
+</div>

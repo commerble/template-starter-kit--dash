@@ -1,0 +1,529 @@
+@charset "utf-8";
+/**************************************************
+ *
+ * 検索結果
+ *
+ **************************************************/
+.searchCondition {
+  &Wrapper {
+    margin-top:$GUTTER;
+    padding:$GUTTER 0 ($GUTTER / 2);
+    text-align: left;
+  }
+  &List {
+    display: inline-block;
+    text-align: left;
+  }
+  display: inline-block;
+  margin-bottom:$GUTTER / 2;
+  &:not(:last-of-type) {
+    margin-right:$GUTTER;
+  }
+  a {
+    position: relative;
+    display: inline-block;
+    padding:6px 12px 6px 22px;
+    border:1px solid $secondaryColor;
+    text-decoration: none;
+    color:$baseStringColor;
+    line-height: 1;
+    border-radius: 6px;
+    @include fz(12);
+    &::before {
+      position: absolute;
+      left:8px;
+      top:7px;
+      margin-right:$GUTTER / 2;
+      content:"&times;";
+      color:#777;
+      @include fz(11);
+    }
+    &:hover {
+      opacity: .5;
+    }
+  }
+  @include mq($BP_TB) {
+    &Wrapper {
+      margin-top: 0;
+      padding:$GUTTER;
+      background-color: #fff;
+      & + .facetItem {
+        border-top:1px solid $primaryColor;
+      }
+    }
+    &List {
+      max-width: none;
+    }
+    a {
+      @include fz(11);
+    }
+  }
+}
+
+.searchResultContent {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-template-rows: 1fr;
+  grid-column-gap: $GUTTER * 3;
+  width:$contentWidthPx;
+  margin:$GUTTER auto 0;
+  @include mq($contentWidth) {
+    width:100%;
+    padding:0 $GUTTER;
+  }
+  @include mq($BP_TB) {
+    display: block;
+    margin-top:$GUTTER * 2;
+  }
+}
+
+.message {
+  display: table;
+  width:500px;
+  margin:0 auto;
+  padding:($GUTTER * 5) ($GUTTER * 2);
+  box-sizing: border-box;
+  text-align: center;
+  &Item {
+    margin-top:$GUTTER;
+  }
+  .searchBox {
+    &Wrapper {
+      margin-top:$GUTTER;
+      padding:$GUTTER;
+      background-color: $primaryColor;
+    }
+    input[type=text],
+    input[type=search] {
+      background-color: #fff;
+    }
+  }
+  @include mq($BP_TB) {
+    width:calc(100% - #{$GUTTER});
+    padding:($GUTTER * 3) $GUTTER;
+  }
+}
+
+.result {
+  grid-column: 2;
+  grid-row: 1;
+  margin-top:$GUTTER * 2;
+  padding-right: $GUTTER;
+  .productTileList.grid {
+    margin-top:0;
+  }
+  @include mq($BP_TB) {
+    padding-right: 0;
+    .buttonContainer {
+      & + .productTileList.grid {
+        margin-top:$GUTTER * 2;
+      }
+    }
+  }
+}
+
+.facet {
+  grid-column: 1;
+  grid-row: 1;
+  background-color: #fff;
+  input[type=radio],
+  input[type=checkbox] {
+    &:checked {
+      & + .text {
+        &::before {
+          background-color: $accentColor;
+          border-color: $accentColor;
+        }
+      }
+    }
+  }
+  &Title {
+    display: block;
+    padding-left:$GUTTER;
+    &Text {
+      position: relative;
+      display: block;
+      color:$baseStringColor;
+      @include fz(18);
+      font-family: $fontFamilyEn;
+      text-transform: uppercase;
+      &::before {
+        position: absolute;
+        display: block;
+        content: "";
+        left:0;
+        bottom:-5px;
+        background-color: $accentColor;
+        width:20px;
+        height:3px;
+      }
+      .small {
+        @include fz(11);
+      }
+    }
+    .facetCondition {
+      display: none;
+      margin-top:$GUTTER / 2;
+      @include fz(14);
+      color:$baseStringColor;
+    }
+  }
+  &Body {
+    display: block;
+    margin-top:$GUTTER * 1.5;
+  }
+  &Item {
+    margin-top:$GUTTER * 2;
+    & + .facetItem {
+      padding-top:$GUTTER * 2;
+      border-top:1px solid $secondaryColor;
+    }
+    input[type=text],
+    input[type=number] {
+      -moz-appearance: textfield;
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin:0;
+      }
+    }
+  }
+  &List {
+    $self:&;
+    &.focus,
+    &.status,
+    &.category,
+    &.priceSet,
+    &.specification {
+      #{$self}Item {
+        position: relative;
+        label {
+          cursor: pointer;
+          display: block;
+          margin:0;
+          padding-top:$GUTTER;
+          padding-bottom:$GUTTER;
+          padding-left: $GUTTER;
+          padding-right:30px;
+          .text {
+            @include fz(12);
+            user-select: none;
+            display: flex;
+            align-items: center;
+          }
+          &:not([data-role=clickAccordionSwitch]) {
+            padding-right:$GUTTER;
+          }
+          &:hover {
+            background-color: #fafafa;
+          }
+          i {
+            font-weight: 700;
+            padding: $GUTTER / 1.5;
+            background-color: $secondaryColor;
+            border-radius: 50%;
+            @include fz(14);
+            margin-right: $GUTTER / 2;
+          }
+        }
+        &>ul {
+          margin-left:$GUTTER * -1;
+          &>li {
+            padding-left:$GUTTER * 3;
+            &:last-of-type {
+              border:0;
+            }
+          }
+        }
+      }
+    }
+    &.category {
+      #{$self}Item {
+        .hasChild {
+          position: relative;
+          &::after {
+            position: absolute;
+            display: block;
+            content:"";
+            width:5px;
+            height:5px;
+            top:calc(50% - 3px);
+            right:12px;
+            border-right:2px solid $primaryColor;
+            border-bottom:2px solid $primaryColor;
+            transform: translateY(-50%) rotate(45deg);
+            transition: all .3s;
+          }
+          & + ul {
+            max-height:0;
+            overflow: hidden;
+            border:0;
+            //transition: max-height .5s;
+            &.active {
+              max-height:1000px;
+            }
+          }
+          &.active {
+            &::after {
+              right:9px;
+              transform: translate(-50%) rotate(-135deg);
+            }
+            & + ul {
+              max-height:3000px;
+            }
+          }
+        }
+      }
+    }
+    &.specification {
+      text-align: center;
+      #{$self}Item {
+        label {
+          &:hover {
+            //background-color: transparent;
+          }
+        }
+      }
+      input[type=radio]:checked,
+      input[type=checkbox]:checked {
+        & ~ svg {
+          rect,
+          path,
+          polygon {
+            fill:$accentColor !important;
+          }
+          line {
+            stroke:$accentColor !important;
+          }
+        }
+      }
+      svg {
+        width:85%;
+        height:auto;
+      }
+      .text {
+        display: block;
+        margin-top:$GUTTER / 2;
+        text-align: center;
+        &::before,
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+  .facet_keyword {
+    position: relative;
+    padding:$GUTTER 0 0 $GUTTER;
+    input[type=text] {
+      width:100%;
+      height:48px;
+      padding-right:48px;
+    }
+    button {
+      cursor: pointer;
+      position: absolute;
+      top:$GUTTER;
+      right:0;
+      appearance: none;
+      width:48px;
+      height:48px;
+      background-color: transparent;
+      border:0;
+      box-shadow: none;
+    }
+  }
+  .facet_price {
+    display: flex;
+    justify-content: flex-start;
+    padding:$GUTTER;
+    .input {
+      flex:1 0 0%;
+      @include fz(12);
+      input {
+        width:calc(100% - 1.5em);
+        @include fz(16);
+        height:38px;
+      }
+    }
+    .to {
+      display: inline-block;
+      margin:0 $GUTTER 0 0;
+      line-height: 38px;
+    }
+  }
+  @include mq($BP_TB) {
+    position: fixed;
+    display: block;
+    top:0;
+    left:0;
+    width:100%;
+    height: 100%;
+    background-color: transparent;
+    transform: translateX(120%);
+    z-index:10000;
+    transition: transform .3s;
+    &.active {
+      transform: translateX(0);
+    }
+    &Title {
+      display: block;
+      padding:($GUTTER * 1.7) $GUTTER;
+      &Text {
+        position: relative;
+        color:$primaryColor;
+        @include fz(12);
+        font-weight: 700;
+        &::before {
+          display: none;
+        }
+      }
+      .facetCondition {
+        display: block;
+      }
+      &.active {
+        border:0;
+        padding:($GUTTER * 1.7) $GUTTER 0;
+        .facetCondition {
+          display: none;
+        }
+      }
+    }
+    &Body {
+      display: block;
+      max-height:0;
+      overflow: hidden;
+      transition: none;
+      margin-top:0;
+      &.active {
+        max-height: 2000px;
+        padding-bottom:$GUTTER * 2;
+      }
+    }
+    &Item {
+      margin-top:0;
+      border-bottom:1px solid $primaryColor;
+      & + .facetItem {
+        padding-top:0;
+        border-top:0;
+      }
+    }
+    &List {
+      $self:&;
+      &.focus,
+      &.category,
+      &.specification {
+        margin-bottom: $GUTTER * -1;
+      }
+    }
+    .facet_keyword {
+      padding:$GUTTER;
+    }
+    .drawer {
+      &Bg {
+        position: absolute;
+        top:0;
+        left:0;
+        width:calc(100% - 330px);
+        height:100%;
+        background-color: #000;
+        opacity: .75;
+      }
+      &Body {
+        position: absolute;
+        display: block;
+        top:0;
+        right:0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        width:330px;
+        height:100%;
+        background-color: #fff;
+      }
+    }
+    .btCloseDrawer {
+      position: absolute;
+      display: block;
+      top:50%;
+      right:330px;
+      width:44px;
+      height:44px;
+      transform: translateY(-50%);
+      &::before,
+      &::after {
+        position: absolute;
+        display: block;
+        content:"";
+        width:15px;
+        height:3px;
+        background-color: #fff;
+        top:50%;
+        left:calc(50% - 7px);
+      }
+      &::before {
+        transform:skewY(-45deg);
+      }
+      &::after {
+        transform:skewY(45deg);
+      }
+    }
+  }
+  @include mq(375) {
+    &Result {
+      width:calc(100% - 44px);
+    }
+    .drawer {
+      &Bg {
+        width:44px;
+      }
+      &Body {
+        width:calc(100% - 44px);
+      }
+    }
+    .btCloseDrawer {
+      left:0;
+      right:auto;
+    }
+  }
+  @include mq(350) {
+    &Result {
+      width:100vw;
+    }
+  }
+}
+
+.fab {
+  $self:&;
+  position: fixed;
+  display: none;
+  right:$GUTTER;
+  bottom:$GUTTER;
+  z-index:90;
+  a {
+    display: block;
+    width:60px;
+    height:60px;
+    padding: 10px;
+    background-color: rgba(#fff, .75);
+    border-radius:3px;
+    color:$linkColor;
+    text-align: center;
+    text-decoration: none;
+    .fa {
+      display: block;
+      margin-top:5px;
+      @include fz(26);
+    }
+    #{$self}Text {
+      display: block;
+      margin-top:8px;
+      text-align: center;
+      @include fz(12);
+      font-weight: 700;
+    }
+  }
+  @include mq($BP_TB) {
+    display: block;
+  }
+}
+

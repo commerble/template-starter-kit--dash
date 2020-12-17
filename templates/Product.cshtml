@@ -1,0 +1,507 @@
+@functions {
+    public class ViewModel {
+        public string Code { get; set; }
+        public string Kind { get; set; }
+        public string KindName { get; set; }
+        public string KindIcon { get; set; }
+        public string Name { get; set; }
+        public string Title { get; set; }
+        public string Body { get; set;}
+        public string MetaTitle { get ;set; }
+        public string MetaDescription { get ;set; }
+        public string MetaImage { get ;set; }
+        public int? PriceProductId { get ;set; }
+        public bool? HasMultiplePrice { get ;set; }
+        public List<ImageViewModel> Images { get; set; }
+        public List<ProductViewModel> Products { get; set; }
+        public List<TagViewModel> Tags { get; set; }
+        public List<RelateProductViewModel> RelateProducts { get; set; }
+        public List<RelatePageViewModel> RelatePages { get; set; }
+        public ProductViewModel PriceProduct { get; set; }
+        public ImageViewModel MainImage { get; set; }
+        public string[] Campaigns { get; set; }
+    }
+
+    public class ImageViewModel {
+        public string Alt { get; set; }
+        public string LargeUrl { get; set; }
+        public string SmallUrl { get; set; }
+    }
+
+    public class ProductViewModel {
+        public int Id { get; set; }
+        public string ExternalId1 { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public string Size { get; set; }
+        public string Color { get; set; }
+        public string Icon { get; set; }
+        public bool Stockout { get; set; }
+        public decimal UnitPriceWithTax { get; set; }
+        public string Valiation() {
+			return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+		}
+    }
+
+    public class TagViewModel{
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class RelateProductViewModel {
+        public string Code { get; set; }
+        public string Kind { get; set; }
+        public string KindName { get; set; }
+        public string KindIcon { get; set; }
+        public string Name { get; set; }
+        public string Thumbnail { get; set; }
+        public int? PriceProductId { get; set; }
+        public bool? HasMultiplePrice { get; set; }
+
+        public decimal? UnitPriceWithTax { get; set; }
+        public string PriceProductExternalId1 { get; set; }
+        public string PriceProductName { get; set; }
+    }
+
+    public class RelatePageViewModel {
+        public string Code { get; set; }
+        public string Kind { get; set; }
+        public string Name { get; set; }
+        public string Thumbnail { get; set; }
+        public DateTime? PublishDate { get; set; }
+    }
+
+    ViewModel LoadViewModel() {
+        var code = ((string)ViewBag.Code)?.ToLower();
+        var vm = 
+            Database.Single(new { Now, Next, IsPreview, code }, (db, args) => (
+                from p in db.ProductPages
+                join k in db.ProductKinds on p.Kind equals k.Code
+                where p.Code.ToLower() == args.code
+                  &&  p.DisplayStart <= args.Now
+                  && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                  && (p.IsPublished || args.IsPreview)
+                select new ViewModel {
+                    Code = args.code,
+                    Kind = p.Kind,
+                    KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                    KindIcon = k.Icon,
+                    Name = p.Name,
+                    Title = p.Title,
+                    Body = p.Body,
+                    MetaTitle = p.MetaTitle,
+                    MetaDescription = p.MetaDescription,
+                    MetaImage = p.MetaImage,
+                    PriceProductId = p.PriceProductId,
+                    HasMultiplePrice = p.HasMultiplePrice
+                }
+            ).FirstOrDefault());
+
+        if (vm == null) {
+            return null;
+        }
+        
+        vm.Images =
+            Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
+                from i in db.ProductImages
+                where i.ProductPageCode == args.code
+                orderby i.DisplayOrder
+                select new ImageViewModel {
+                    Alt = i.Alt,
+                    LargeUrl = i.LargeUrl,
+                    SmallUrl = i.SmallUrl
+                }
+            )).ToList();
+        
+        vm.Products =
+            Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
+                from r in db.ProductRelations
+                join p in db.Products on r.ProductExternalId1 equals p.ExternalId1
+                where r.ProductPageCode == args.code
+                orderby r.DisplayOrder
+                select new ProductViewModel {
+                    Id = p.Id,
+                    ExternalId1 = p.ExternalId1,
+                    Name = string.IsNullOrEmpty(p.DisplayName) ? p.Name : p.DisplayName,
+                    Size = p.Size,
+                    Color = p.Color,
+                    Icon = p.Icon,
+                    Stockout = p.Stockout,
+                }
+            )).ToList();
+        
+        vm.Tags =
+            Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
+                from r in db.ProductTagRelations
+                join t in db.ProductTags on r.ProductTagCode equals t.Code
+                where r.ProductPageCode == args.code
+                  && (t.IsPublished || args.IsPreview)
+                orderby r.DisplayOrder
+                select new TagViewModel {
+                    Code = t.Code,
+                    Name = string.IsNullOrEmpty(t.DisplayName) ? t.Name : t.DisplayName,
+                    Icon = t.Icon
+                }
+            )).ToList();
+        
+        vm.RelateProducts =
+            Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
+                from r in db.ProductPageRelations
+                join p in db.ProductPages on r.RelateCode equals p.Code
+                join k in db.ProductKinds on p.Kind equals k.Code
+                join rs in db.Products on p.PriceProductId equals rs.Id into representatives
+                from s in representatives.DefaultIfEmpty()
+                where r.Code.ToLower() == args.code
+                  &&  p.DisplayStart <= args.Now
+                  && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                  && (p.IsPublished || args.IsPreview)
+                orderby p.RecommendIndex descending, p.RankingIndex
+                select new RelateProductViewModel {
+                    Code = p.Code,
+                    Kind = p.Kind,
+                    KindName = k.Name,
+                    KindIcon = k.Icon,
+                    Name = p.Name,
+                    Thumbnail = p.Thumbnail,
+                    HasMultiplePrice = p.HasMultiplePrice,
+                    PriceProductId = p.PriceProductId,
+                    PriceProductExternalId1 =  s != null ? s.ExternalId1 : null,
+                    PriceProductName = s != null ? s.Name : null,
+                }
+            )).ToList();
+
+        vm.RelatePages =
+            Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
+                from r in db.SitePageRelations
+                join p in db.SitePages on r.SitePageCode equals p.Code
+                where r.ProductPageCode.ToLower() == args.code
+                  &&  p.DisplayStart <= args.Now
+                  && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                  && (p.IsPublished || args.IsPreview)
+                orderby p.Priority descending
+                select new RelatePageViewModel {
+                    Code = p.Code,
+                    Kind = p.Kind,
+                    Name = p.Name,
+                    Thumbnail = p.Thumbnail,
+                    PublishDate = p.PublishDate
+                }
+            )).ToList();
+        
+        foreach (var p in vm.Products) {
+            p.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(p.Id);
+        }
+        foreach (var p in vm.RelateProducts) {
+            if (p.PriceProductId.HasValue) {
+                p.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(p.PriceProductId.Value);
+            }
+        }
+
+        if (vm.PriceProductId.HasValue) {
+            vm.PriceProduct = vm.Products.Where(p => p.Id == vm.PriceProductId).FirstOrDefault();
+        }
+
+        vm.MainImage = vm.Images.FirstOrDefault();
+
+        vm.Campaigns = vm.Products.SelectMany(p => Page.Template.GetProductCampaigns(p.Id).Select(c => c.CampaignName)).Distinct().ToArray();
+
+        return vm;
+    }
+}
+
+@{
+    var vm = LoadViewModel();
+
+    if (vm == null) {
+        throw new System.Web.HttpException(404, "Not Found");
+    }
+
+    ViewBag.PageTitle = vm.MetaTitle ?? vm.Name;
+    ViewBag.PageDescription = vm.MetaDescription;
+    ViewBag.OgImage = vm.MetaImage;
+    ViewBag.JsonLd = new[] {
+        new Dictionary<string, object> {
+            ["@context"] = "https://schema.org/",
+            ["@type"] = "BreadcrumbList",
+            ["itemListElement"] = new [] {
+                new Dictionary<string, object> {
+                    ["@type"] = "ListItem",
+                    ["position"] = 1,
+                    ["name"] = "Top",
+                    ["item"] = Page.Template.SecuredHost(true) + Href("~/")
+                },
+                new Dictionary<string, object> {
+                    ["@type"] = "ListItem",
+                    ["position"] = 2,
+                    ["name"] = vm.KindName,
+                    ["item"] = Page.Template.SecuredHost(true) + Href("~/category/") + vm.Kind
+                },
+                new Dictionary<string, object> {
+                    ["@type"] = "ListItem",
+                    ["position"] = 3,
+                    ["name"] = vm.Name,
+                    ["item"] = Page.Template.SecuredHost(true) + Page.Request.Url.AbsolutePath
+                },
+            }
+        },
+        new Dictionary<string, object> {
+            ["@context"] = "https://schema.org/",
+            ["@type"] = "Product",
+            ["name"] = vm.Name,
+            ["image"] = vm.Images,
+            ["description"] = ViewBag.PageDescription,
+            ["sku"] = vm.PriceProduct?.ExternalId1,
+            ["mpn"] = vm.PriceProduct?.ExternalId1, // Manufacturer Part Number 製品番号
+            ["category"] = "Category",
+            ["brand"] = new Dictionary<string, object> {
+                ["@type"] = "Brand",
+                ["name"] = "",
+                ["url"] = "",
+                ["logo"] = "",
+                ["slogan"] = ""
+            },
+            ["offers"] = new Dictionary<string, object> {
+                ["@type"] = "Offer",
+                ["url"] = Page.Template.SecuredHost(true) + Page.Request.Url.AbsolutePath,
+                ["priceCurrency"] = "JPY",
+                ["price"] = vm.PriceProduct?.UnitPriceWithTax,
+                // ["priceValidUntil"] = "yyyy-MM-dd",
+                ["itemCondition"] = "https://schema.org/NewCondition",
+                ["availability"] = false ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+                ["seller"] = new Dictionary<string, object> {
+                    ["@type"] = "Organization",
+                    ["name"] = ""
+                }
+            }
+        }
+    };
+    ViewBag.DataLayer = new object[] {
+        // 以下のペイロードはGA4なのでユニバーサルアナライティクスではない
+        new {
+            @event = "view_item",
+            ecommerce = new {
+                details = vm.Products.Select(p => new { 
+                    item_name = p.Name,
+                    item_id = p.ExternalId1,
+                    item_category = vm.Kind,
+                    price = p.UnitPriceWithTax.ToString("F0"),
+                })
+            }
+        },
+        new {
+            @event = "view_item_list",
+            ecommerce = new {
+                impressions = vm.RelateProducts.Select((p, index) => new { 
+                    item_name = p.PriceProductName,
+                    item_id = p.PriceProductExternalId1,
+                    item_category = p.Kind,
+                    item_list_name = $"Relate Products of {vm.Name}",
+                    item_list_id = $"{vm.Code}:RelateProducts",
+                    price = p.UnitPriceWithTax?.ToString("F0"),
+                    index = index + 1,
+                })
+            }
+        },
+    };
+}
+
+<section class="section productDetail">
+    <div class="inner">
+        <div class="productInfo">
+            <div class="productDetailTextBlock">
+                <h1 class="productName">@(vm.Title ?? vm.Name)</h1>
+                <p class="category">
+                    <a href="@CategoryUrl(vm.Kind)" class="tag" style="margin:4px; margin-left:0;">
+                        @if (!string.IsNullOrEmpty(vm.KindIcon)) {
+                            <i class="@vm.KindIcon"></i>
+                        }
+                        @vm.KindName
+                    </a>
+            
+                    @foreach (var tag in vm.Tags) {
+                        <text><a href="@TagUrl(tag.Code)" style="margin:4px" class="tag">#@tag.Name</a></text>
+                    }
+                </p>
+                @if (vm.Campaigns.Length > 0) {
+                    <p>キャンペーン開催中：@string.Join(",", vm.Campaigns)</p>
+                }
+                <div class="flexBox">
+                    <div class="price">
+                        @PrintNormalPrice(vm.PriceProduct?.UnitPriceWithTax, vm.HasMultiplePrice)
+                        @if (vm.PriceProductId.HasValue) {
+                            @:@PrintPoint((int)vm.PriceProduct.UnitPriceWithTax * Page.Template.GetPointChargeRate(vm.PriceProductId.Value) / 100, klass:"point", hasMultiplePrice:vm.HasMultiplePrice)
+                        }
+                    </div>
+                    <!-- <p class="productCode">@(vm.PriceProduct?.ExternalId1)</p> -->
+                </div>
+            </div>
+            <div class="productVariationBlock">
+                <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart" })" method="get">
+                    @if (vm.Products.Count > 1) {
+                        <table class="skuTable">
+                            <thead>
+                                <tr>
+                                    <th style="min-width:32px;"></th>
+                                    @foreach(var colorGroup in vm.Products.GroupBy(p => p.Color)) {
+                                        <th>
+                                            @if (string.IsNullOrEmpty(colorGroup.First().Icon)){
+                                                <text>@colorGroup.Key</text>
+                                            }
+                                            else {
+                                                <figure>
+                                                    <img src="@IconUrl(colorGroup.First().Icon)" alt="@colorGroup.Key" width="128">
+                                                    <figcaption>@colorGroup.Key</figcaption>
+                                                </figure>
+                                            }
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sizeGroup in vm.Products.GroupBy(p => p.Size)) {
+                                    <tr>
+                                        <th>@sizeGroup.Key</th>
+                                        @foreach(var colorGroup in vm.Products.GroupBy(p => p.Color)) {
+                                            var sku = sizeGroup.Where(p => p.Color == colorGroup.Key).FirstOrDefault();
+                                            <td>
+                                                @if (sku != null) {
+                                                    <text>@FormatPrice(sku.UnitPriceWithTax)<br></text>
+                                                    if (sku.Stockout) {
+                                                        if (Page.Template.CanReserveRequest(sku.Id)) {
+                                                            <a href="@ReserveUrl(sku.Id)">仮予約</a>
+                                                        } 
+                                                        else {
+                                                            <text>&times;</text>
+                                                        }
+                                                    }
+                                                    else {
+                                                        var gtm = new {
+                                                            @event = "add_to_cart",
+                                                            ecommerce = new {
+                                                                items = new [] {
+                                                                    new {
+                                                                        item_name = sku.Name,
+                                                                        item_id = sku.ExternalId1,
+                                                                        item_category = vm.Kind,
+                                                                        price = sku.UnitPriceWithTax.ToString("F0"),
+                                                                        quantity = 1,
+                                                                    }
+                                                                }
+                                                            }
+                                                        };
+                                                        <label>
+                                                            <input type="radio" name="item" value="@sku.Id"
+                                                                data-val="true"
+                                                                data-val-required="商品を選択してください。"
+                                                                data-gtm="@Jil.JSON.Serialize(gtm)" >
+                                                            <span class="text"></span>
+                                                        </label>
+                                                    }
+                                                }
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @ValidationMessageFor("item")
+                    }
+                    else {
+                        <input type="hidden" name="item" value="1">
+                    }
+                    <div class="productDetailCartInBlock">
+                        @if (vm.Products.All(sku => sku.Stockout)) {
+                            <button class="btAccent btLargeSize btCartIn btDisabled" disabled>在庫がありません</button>
+                        }
+                        else {
+                            <button type="submit" class="btAccent btLargeSize btCartIn" data-gtm-radio="item">カートに入れる</button>
+                        }
+                        @if (vm.PriceProductId.HasValue) {
+                            <a href="@FavoriteUrl(vm.PriceProductId.Value)" class="btPrimary btLargeSize">お気に入りに登録する</a>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="productImage">
+            <div class="productImageMain">
+                <div class="productImageMainItem">
+                    <img src="@LargeImageUrl(vm.MainImage?.LargeUrl)" alt="@(vm.MainImage?.Alt ?? vm.Name)" loading="lazy">
+                </div>
+                <div class="productImageNavigation">
+                    <a class="productImageNavigationItem prev" style="display: inline;" ic-action="prevMainImage"></a>
+                    <a class="productImageNavigationItem next" style="display: inline;" ic-action="nextMainImage"></a>
+                </div>
+            </div>
+            <ul class="productImageSub" style="display: block;">
+                @foreach(var img in vm.Images) {
+                    <li class="productImageSubItem @when(img == vm.MainImage, "active")">
+                        <a ic-action="replaceMainImage">
+                            <img src="@SmallImageUrl(img.SmallUrl)" alt="@(img.Alt ?? vm.Name)" loading="lazy" data-src="@LargeImageUrl(img.LargeUrl)">
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</section>
+
+<div class="section">
+    <div class="tabNavigation">
+        <ul class="tabList">
+            <li class="tabListItem jp">商品詳細</li>
+        </ul>
+        <div class="tabBody active" id="productDescription">
+            <div class="productDescription">
+                @Raw(vm.Body ?? string.Empty)
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (vm.RelateProducts.Any()) {
+    @SectionBlock("関連商品", () =>
+        ProductTileList(vm.RelateProducts, klass:"grid-pc-x4 grid-tb-x2 grid-sp-x2 recommend", slot:(item, index) =>
+            ProductTile(
+                item.Code,
+                item.Name,
+                item.KindName,
+                item.KindIcon,
+                item.Thumbnail,
+                item.UnitPriceWithTax,
+                item.HasMultiplePrice,
+                gtm: new {
+                    @event = "select_item",
+                    ecommerce = new {
+                        items = new [] {
+                            new { 
+                                item_name = item.PriceProductName,
+                                item_id = item.PriceProductExternalId1,
+                                item_category = item.Kind,
+                                item_list_name = $"Relate Products of {vm.Name}",
+                                item_list_id = $"{vm.Code}:RelateProducts",
+                                price = item.UnitPriceWithTax?.ToString("F0"),
+                                index = index + 1,
+                            } 
+                        }
+                    }
+                }
+            )
+        )
+    )
+}
+
+@if (vm.RelatePages.Any()) {
+    @SectionBlock("特集", () => 
+        TopicTileList(vm.RelatePages, slot:(item, index) => 
+            TopicTile(
+                item.Code,
+                item.Kind,
+                item.Name,
+                item.Thumbnail,
+                item.PublishDate
+            )
+        )
+    )
+}

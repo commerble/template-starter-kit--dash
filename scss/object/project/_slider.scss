@@ -1,0 +1,418 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * スライダー
+ *
+ **************************************************/
+
+[data-role="slider"] {
+  width:calc(100vw - 100px);
+  margin:0 auto;
+}
+
+.slick-slider {
+  position: relative;
+  .slick-arrow {
+    position: absolute;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    top:50%;
+    width:50px;
+    height:100px;
+    background: transparent;
+    font-size:0;
+    line-height:0;
+    padding:0;
+    border:0;
+    outline:none;
+    transform: translateY(-50%);
+    z-index:10;
+    &::before {
+      position: absolute;
+      display: block;
+      content: "";
+      top:50%;
+      width:30px;
+      height:30px;
+      transition: border-color .3s;
+    }
+    &.slick-prev {
+      left:30px;
+      &::before {
+        left:50%;
+        border-left:2px solid #fff;
+        border-top:2px solid #fff;
+        transform: translate(-25%, -50%) rotate(-45deg) skew(-10deg, -10deg);
+      }
+      &:hover {
+        &::before {
+          border-color: $accentColor;
+        }
+      }
+    }
+    &.slick-next {
+      right:30px;
+      &::before {
+        right:50%;
+        border-right:2px solid #fff;
+        border-top:2px solid #fff;
+        transform: translate(25%, -50%) rotate(45deg) skew(10deg, 10deg);
+      }
+      &:hover {
+        &::before {
+          border-color: $accentColor;
+        }
+      }
+    }
+  }
+}
+
+.slick-track {
+  display: flex;
+}
+
+.slick-slide {
+  outline: none;
+}
+
+[data-slider-type="feature"] {
+  width:100vw;
+  height:calc(90vh - 130px);
+  background-image:linear-gradient(102deg,#0d0d0d,rgba(39,39,39,.8) 25%,rgba(39,39,39,.9) 30%,hsla(0,0%,5%,.8) 50%),radial-gradient(ellipse farthest-corner at 24% 60%,#8b8b8b 9%,#4b4b4b 21%,hsla(0,0%,5%,.5) 60%);
+  &.siteTopSlider {
+    height:auto;
+    .bgImageContainer {
+      min-height: 0;
+      // height is calculated by js
+    }
+  }
+  &.wideHeightFeatureSlider {
+    height:900px;
+  }
+  .slick-list,
+  .slick-track {
+    height:100%;
+  }
+  &>* {
+    .textBlock {
+      padding-right: 200px;
+      text-align: left;
+      .buttonContainer {
+        padding:0;
+        text-align: left;
+      }
+    }
+  }
+  @include mq($BP_TB) {
+    width:100vw;
+    min-height:600px;
+    height:auto;
+    &.siteTopSlider {
+      min-height:0;
+    }
+    &.wideHeightFeatureSlider {
+      height:auto;
+    }
+    &>* {
+      height:auto;
+      .textBlock {
+        padding: 0 50px;
+        text-align: center;
+        .buttonContainer {
+          text-align: center;
+        }
+      }
+    }
+    .slick-arrow {
+      top: 50%;
+      &.slick-prev {
+        left:5px;
+      }
+      &.slick-next {
+        right:5px;
+      }
+    }
+  }
+  @include mq($BP_SP) {
+    .slick-arrow {
+      &.slick-prev {
+        left:-5px;
+      }
+      &.slick-next {
+        right:-5px;
+      }
+    }
+  }
+}
+
+[data-slider-type="hasThumbnail"] {
+  position: absolute !important;
+  left:50%;
+  bottom:20px;
+  width:1100px;
+  height:135px;
+  transform: translateX(-50%);
+  .slick-arrow {
+    &.slick-prev {
+      left:-50px;
+    }
+    &.slick-next {
+      right:-50px;
+    }
+  }
+  .slick-list {
+    overflow: hidden;
+    width:100%;
+    height:100%;
+    padding-right: 5px;
+    transform: skew(-20deg, 0);
+  }
+  .slick-track {
+    display: flex;
+    height:100%;
+  }
+  .slick-slide {
+    cursor: pointer;
+    position: relative;
+    border-top:4px solid $accentColor;
+    border-left:5px solid $accentColor;
+    border-bottom:4px solid $accentColor;
+    background-color: #000;
+    &:last-of-type {
+      border-right:5px solid $accentColor;
+    }
+    &.active {
+      .bgWrapper {
+        opacity: .9;
+      }
+      &:hover {
+        .bgWrapper {
+          opacity: .9;
+        }
+      }
+    }
+    &:hover {
+      .bgWrapper {
+        opacity: .25;
+      }
+    }
+    a {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height:100%;
+      color:#fff;
+      text-decoration: none;
+      font-family: $fontFamilyEn;
+      @include fz(15);
+      line-height: 1.6;
+      font-weight: 400;
+      z-index:2;
+      span {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        transform: skew(20deg, 0);
+        text-shadow: 1px 1px #000;
+      }
+    }
+    .bg {
+      &Wrapper {
+        overflow: hidden;
+        position: absolute;
+        display: block;
+        width:100%;
+        height:100%;
+        opacity: .35;
+        transition: opacity .3s;
+        z-index:1;
+      }
+      height:100%;
+      background-position: top center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      transform-origin: 80% top;
+      transform: scale(1.4) skew(20deg, 0);
+    }
+  }
+  @include mq(1200) {
+    width:calc(100% - 100px);
+  }
+  @include mq($BP_TB) {
+    position: absolute !important;
+    left:50%;
+    height:85px;
+    .slick-slide {
+      a {
+        @include fz(12);
+      }
+    }
+  }
+}
+
+[data-slider-type="chronology"] {
+  width:calc(100vw - 100px);
+  margin-top:$GUTTER * 3;
+  padding:$GUTTER 100px;
+  .slick-arrow {
+    &.slick-prev {
+      left:20px;
+    }
+    &.slick-next {
+      right:20px;
+    }
+    &::before {
+      width:15px;
+      height:15px;
+    }
+  }
+  .slick-track {
+    align-items: center;
+  }
+  .slick-list {
+    overflow: hidden;
+  }
+  .slick-slide {
+    cursor: pointer;
+    padding:0 20px;
+    font-family: $fontFamilyEn;
+    font-weight: 300;
+    @include fz(17);
+    text-align: center;
+    &.slick-current {
+      @include fz(60);
+      color:$accentColor;
+    }
+    &.slick-cloned {
+      display: none;
+    }
+  }
+  @include mq($BP_TB) {
+    width:100vw;
+    margin-top:0;
+    padding:$GUTTER 50px;
+    .slick-arrow {
+      &.slick-prev {
+        left:-5px;
+      }
+      &.slick-next {
+        right:-5px;
+      }
+    }
+    .slick-slide {
+      padding:0 10px;
+      @include fz(15);
+      &.slick-current {
+        @include fz(50);
+      }
+    }
+  }
+}
+
+[data-slider-type="history"] {
+  width:calc(100vw - 100px);
+  height:calc(100vh - 200px);
+  padding:0 100px;
+  .slick-list {
+    overflow: hidden;
+    height:100%;
+  }
+  .slick-track {
+    height:100%;
+  }
+  .slick-slide {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .imageBlock {
+    overflow: hidden;
+    width:calc((100vh - 200px) * .75);
+    height:100%;
+    transform-origin: top left;
+    transform: skewX(10deg);
+    img {
+      max-width: none;
+      height:100%;
+      transform-origin: top left;
+      transform: skewX(-10deg) translateX(-20px);
+      object-fit: cover;
+    }
+  }
+  .textBlock {
+    position: relative;
+    width:55%;
+    z-index:2;
+    &Contents {
+      padding-right:$GUTTER * 3;
+      text-shadow: #000 0 0 .4em;
+      .superTitle {
+        padding-bottom:$GUTTER;
+        border-bottom:1px solid $accentColor;
+        @include fz(27);
+        font-family: $fontFamilyEn;
+        font-weight: 700;
+      }
+      .title {
+        margin-top:$GUTTER;
+        padding-left:$GUTTER * 2;
+        @include fz(35);
+        font-family: $fontFamilyEn;
+        font-weight: 700;
+      }
+      .lead {
+        margin-top:$GUTTER;
+        padding-left:$GUTTER * 4;
+        @include fz(15);
+        line-height: 1.6;
+      }
+    }
+  }
+  @include mq($BP_TB) {
+    width:100vw;
+    height:auto;
+    padding:0 50px $GUTTER;
+    .slick-arrow {
+      &.slick-prev {
+        left:-5px;
+      }
+      &.slick-next {
+        right:-5px;
+      }
+    }
+    .slick-slide {
+      display: block;
+    }
+    .imageBlock {
+      height:200px;
+      margin:0 auto;
+      transform: none;
+      img {
+        width:100%;
+        height:100%;
+        transform: none;
+      }
+    }
+    .textBlock {
+      margin-top:$GUTTER * 2;
+      width:100%;
+      &Contents {
+        padding-right:0;
+        .superTitle {
+          @include fz(20);
+        }
+        .title {
+          padding-left: 2px;
+          @include fz(22);
+        }
+        .lead {
+          padding-left: 0;
+          @include fz(13);
+        }
+      }
+    }
+  }
+}
+

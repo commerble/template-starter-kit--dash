@@ -1,0 +1,124 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * 記事詳細
+ *
+ **************************************************/
+.topic {
+  width:$contentWidthPx;
+  margin: ($GUTTER * 3) auto 0;
+  & + .galleryContainer {
+    margin-top:$GUTTER * 5;
+  }
+  @include mq($contentWidth) {
+    width:100%;
+    margin: ($GUTTER * 3) auto 0;
+    padding:0 $GUTTER;
+  }
+}
+
+.topicDate {
+  @include fz(16);
+  line-height: 1;
+  font-family: $fontFamilyEn;
+  color:#4a4a4a;
+}
+
+.topicTitle {
+  margin-top:$GUTTER;
+  @include fz(40);
+  line-height: 1.2;
+  font-weight: 300;
+  word-break: normal;
+  @include mq($BP_TB) {
+    @include fz(26);
+    font-weight: 500;
+  }
+}
+
+.topicTag {
+  &List {
+    margin-top:$GUTTER;
+  }
+  display: inline-block;
+  margin-right:$GUTTER;
+  @include fz(14);
+  line-height: 1;
+  &.hashTag {
+    a {
+      &::before {
+        content:"#";
+      }
+    }
+  }
+  & + .topicTag {
+    padding-left:$GUTTER;
+    border-left:1px solid #777;
+  }
+  a {
+    display: inline-block;
+    color:$accentColor;
+    text-decoration: none;
+    &:not(:last-child) {
+      padding-right:1em;
+      &::after {
+        position: absolute;
+        content:"、";
+        color:#aaa;
+      }
+    }
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  @include mq($BP_TB) {
+    display: inline;
+    margin-right: 0;
+    &:not(:last-child) {
+      padding-right:1em;
+    }
+    & + .topicTag {
+      padding-left:0;
+      border-left:0;
+    }
+    a {
+      display: inline-block;
+      &:not(:last-child) {
+        padding-right:1em;
+        &::after {
+          display: none;
+        }
+      }
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.topicContent {
+  margin-top:$GUTTER * 3;
+  @include fz(16);
+  line-height: 1.8;
+  color:#333;
+  p + p {
+    margin-top:$GUTTER * 1.5;
+  }
+  a {
+    color:$accentColor;
+    text-decoration: none;
+  }
+  .productTile {
+    a {
+      color:unset;
+    }
+  }
+  @include mq($BP_TB) {
+    margin-top:$GUTTER * 2;
+    @include fz(16);
+    p + p {
+      margin-top:$GUTTER;
+    }
+  }
+}

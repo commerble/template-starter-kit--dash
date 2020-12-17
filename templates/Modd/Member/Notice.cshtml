@@ -1,0 +1,118 @@
+﻿@functions {
+	public class ViewModel {
+		public int ProductId { get; set; }
+		public string ProductName { get; set; }
+		public string Code { get; set; }
+		public string PageName { get; set; }
+		public string Icon { get; set; }
+		public string Size { get; set; }
+		public string Color { get; set; }
+		public string ExternalId1 { get; set; }
+		public decimal UnitPriceWithTax { get; set; }
+		public long RequestId { get; set; }
+		public int RequestQty { get; set; }
+		public ReserveRequestStatus Status { get; set; }
+		public string Valiation() {
+			return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+		}
+	}
+	ViewModel LoadViewModel() {
+  		var notice = Page.ViewData.Model as ReserveRequest; 
+		var page = Database.Single(new { Now, Next, notice.ProductId }, (db, args) => (
+			from p in db.ProductPages
+			join r in db.ProductRelations on p.Code equals r.ProductPageCode
+			join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+			where s.Id == args.ProductId
+			select new {
+				p.Code,
+				Icon = string.IsNullOrEmpty(s.Icon) ? p.Icon : s.Icon,
+				p.PriceProductId,
+				PageName = p.Name,
+				ProductName = string.IsNullOrEmpty(s.DisplayName) ? s.Name : s.DisplayName,
+				s.Size,
+				s.Color,
+				s.ExternalId1
+			}
+		).FirstOrDefault());
+
+		if (page == null) {
+			throw new System.Web.HttpException(404, "NotFound");
+		}
+
+		return new ViewModel {
+			RequestId = notice.ReserveRequestId,
+			ProductId = notice.ProductId,
+			RequestQty = notice.Amount,
+			Status = notice.Status,
+			Code = page.Code,
+			Icon = page.Icon,
+			UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(notice.ProductId),
+			PageName = page.PageName,
+			ProductName = page.ProductName,
+			Size = page.Size,
+			Color = page.Color,
+			ExternalId1 = page.ExternalId1,
+		};
+	}
+}
+@{
+	var vm = LoadViewModel();
+}
+
+<div class="section">
+	<div class="inner">
+		<div class="section">
+			<div class="formWrapper">
+				<form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices", id=vm.RequestId})" method="post">
+					@Page.Html.HttpMethodOverride("delete")
+					@Page.Html.SessionAntiForgeryToken()
+					<section class="formSection">
+						<h1 class="formSectionTitle">仮予約キャンセル</h1>
+						<p class="formSectionLead">以下の内容でよろしければ「仮予約をキャンセルする」ボタンをクリックしてください。仮予約のキャンセルが完了します。</p>
+						<table class="cartDetailTable">
+							<tbody>
+								<tr>
+									<td class="dataCell">
+										<div class="cartDetailProductImage">
+											<a href="@ItemUrl(vm.Code)" target="_blank">
+												<img src="@IconUrl(vm.Icon)" alt="@vm.ProductName">
+											</a>
+										</div>
+										<div class="cartDetailProductInfo">
+											<p class="productName"><a href="@ItemUrl(vm.Code)" target="_blank">@(vm.PageName ?? vm.ProductName)</a></p>
+											<p class="productRemarks">
+												<span>@vm.Valiation()</span>
+												<span><i>品番</i>&nbsp;:&nbsp;@vm.ExternalId1</span>
+												<span><i>@ReserveRequestStatusText[vm.Status]</span>
+											</p>
+											@PrintPrice(vm.UnitPriceWithTax)
+											<div class="qty">
+												<div class="qtySelect">
+													<span>数量</span>
+													<p class="selectWrapper">
+														<select name="RequestAmount" ic-action="showRecalc">
+															@for (var i = 1; i <= 10; i++ ) {
+																<option value="@i" @when(i==vm.RequestQty, "selected")>@i</option>
+															}
+														</select>
+													</p>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</section>
+					<div class="buttonContainer">
+						<button type="submit" class="btCallToAction btLargeSize btNext">仮予約をキャンセルする</button>
+					</div>
+					<div class="buttonContainer">
+						<a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices", id=(long?)null})" class="btPrimary btNormalSize btPrev">仮予約一覧へもどる</a>
+					</div>
+				</form>
+			</div>
+        </div>
+    </div>
+</div>
+

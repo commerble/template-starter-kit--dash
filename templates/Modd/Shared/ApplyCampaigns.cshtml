@@ -1,0 +1,21 @@
+﻿@{
+    const int FREE_DELIVERY_CHARGE = 10;
+    var cart = Page.ViewData.Model as ShoppingCart;
+    var campaigns = cart.AppliedCampaigns;
+    foreach (var campaign in cart.ApplyCampaigns) {
+        if (campaign.FirstAction?.CampaignActionID == FREE_DELIVERY_CHARGE) {
+            if (campaign.ApplyPrice.HasValue && cart.Subtotal >= campaign.ApplyPrice) {
+                campaigns.Add(campaign);
+            }
+        }
+    }
+}
+
+@if(campaigns.Any()){ 
+    <p>【 適応されるキャンペーン 】</p>
+    <ul>
+    @foreach(var campaign in campaigns.Distinct()){
+        <li>@campaign.Value @when(campaign.HasLimitOverBenefits, "終了しました") </li>
+    }
+    </ul>
+}

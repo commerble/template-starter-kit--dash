@@ -1,0 +1,111 @@
+﻿@functions {
+	public class ViewModel {
+		public ViewMessages ViewMessages { get; set; }
+		public int ItemCount { get; set; }
+		public int Page { get; set; }
+		public int EachPage { get; set; }
+		public List<FavoriteViewModel> Favorites { get; set; }
+	}
+	public class FavoriteViewModel {
+		public int ProductId { get; set; }
+		public string Code { get; set; }
+		public string Name { get; set; }
+		public string KindName { get; set; }
+		public string KindIcon { get; set; }
+		public string Thumbnail { get; set; }
+		public decimal? UnitPriceWithTax { get; set; }
+		public bool? HasMultiplePrice { get; set; }
+	}
+	ViewModel LoadViewModel() {
+		var favorites = Page.ViewData.Model as IEnumerable<Favorite>;
+		var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+		int page, eachPage = 10;
+		if( !Int32.TryParse((Page.Request.QueryString["page"] ?? "0"), out page)){
+			page = 0;
+		}
+		var productIds = favorites.Skip(page*eachPage).Select(fav => fav.ProductId);
+		return new ViewModel {
+			ViewMessages = viewData,
+			ItemCount = favorites.Count(),
+			Page = page,
+			EachPage = eachPage,
+			Favorites = Database.Query(new { Now, Next, productIds }, db => (
+				from p in db.ProductPages
+				join k in db.ProductKinds on p.Kind equals k.Code
+				join r in db.ProductRelations on p.Code equals r.ProductPageCode
+				join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+				where productIds.Contains(s.Id)
+				select new {
+					s.Id,
+					p.Code,
+					p.Name,
+					p.Thumbnail,
+					p.PriceProductId,
+					p.HasMultiplePrice,
+					KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+					KindIcon = k.Icon,
+				}
+			)).Select(p => new FavoriteViewModel {
+				ProductId = p.Id,
+				Code = p.Code,
+				Name = p.Name,
+				KindName = p.KindName,
+				Thumbnail = p.Thumbnail,
+				UnitPriceWithTax = p.PriceProductId.HasValue ? Page.Template.GetUnitPriceWithTax(p.PriceProductId.Value) : (decimal?)null,
+				HasMultiplePrice = p.HasMultiplePrice,
+				KindIcon = p.KindIcon
+			}).ToList()
+		};
+	}
+}
+@{
+	var vm = LoadViewModel();
+
+	ViewBag.PageTitle = "お気に入り";
+}
+@DisplayViewMessages(vm.ViewMessages)
+
+<div class="section">
+	<div class="inner">
+		<div class="mypageContent">
+            <div class="main">
+				<div class="formSection">
+					<h1 class="formSectionTitle">お気に入り</h1>
+					@if (vm.Favorites.Any()) {
+						<div class="formBlock">
+							<p>これまでにお客様がお気に入り登録された商品の一覧です。</p>
+						</div>
+						<div class="formBlock">
+							<ul class="productTileList grid grid-pc-x4 grid-tb-x2 grid-sp-x2">
+								@foreach(var (item, index) in vm.Favorites.Select((item, index) => (item, index))) {
+									<li class="productTile">
+										<a href="@ItemUrl(item.Code)" title="@item.Name">
+											<div class="productTileImage">
+												<img src="@ThumbnailUrl(item.Thumbnail)" alt="@item.Name">
+												@if (!string.IsNullOrEmpty(item.KindIcon)) {
+													<i class="@item.KindIcon"></i>
+												}
+											</div>
+											<div class="productTileText">
+												<p class="productName" style="height: 21.6px;">@item.Name</p>
+												<p class="productCategory">@item.KindName</p>
+												<div class="price">
+													@PrintNormalPrice(item.UnitPriceWithTax, item.HasMultiplePrice)
+												</div>
+											</div>
+										</a>
+										<a class="delete" href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=item.ProductId })">削除</a>
+									</li>
+								}
+							</ul>
+						</div>
+						@DisplayPager(vm.Page, vm.ItemCount, vm.EachPage)
+					} else {
+						<p class="empty">お気に入り登録された商品はまだありません。</p>
+					}
+				</div>
+			</div>
+        	@Page.Html.PartialEx("ModdSharedMemberNav", null, new { })
+		</div>
+	</div>
+</div>

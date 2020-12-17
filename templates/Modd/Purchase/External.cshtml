@@ -1,0 +1,14 @@
+﻿@using System.Web
+@{
+  var order = Page.ViewData.Model as PurchaseOrder;
+  var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+  var external = "";
+}
+@DisplayViewMessages(viewData)
+
+<h2>決済処理に進みます</h2>
+
+<form name="external" action="@external" method="post">
+  <input type="hidden" name="" value=""/>
+  <input type="submit" value="送信" class="btn btn-primary"/>
+</form>

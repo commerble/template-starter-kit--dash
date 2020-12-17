@@ -1,0 +1,133 @@
+﻿@functions {
+	public class LineViewModel {
+		public int ProductId { get; set; }
+		public string ExternalId1 { get; set; }
+		public string Name { get; set; }
+		public bool HasLimitPerAccount { get; set; }
+		public bool Stockout { get; set; }
+		public bool HasErrors { get; set; }
+		public string Prefix { get; set; }
+		public decimal UnitPriceWithoutTax { get; set; }
+		public decimal UnitPriceWithTax { get; set; }
+		public int Qty { get; set; }
+		public string Kind { get; set; }
+		public string ProductPageCode { get; set; }
+		public string DisplayName { get; set; }
+		public string Icon { get; set; }
+		public string Size { get; set; }
+		public string Color { get; set; }
+		public object ToGtmItem() {
+			return new  {
+				item_name = DisplayName ?? Name,
+				item_id = ExternalId1,
+				item_category = Kind,
+				price = UnitPriceWithoutTax.ToString("F0"),
+				quantity = Qty,
+			};
+		}
+		public string Valiation() {
+			return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+		}
+	}
+
+	List<LineViewModel> LoadViewModel(ShoppingCartBase cart) {
+		var productIds = cart.ExpandItems.Select(item => item.ProductId).ToArray();
+		var productPages = Database.Query(new { Now, Next }, (db, args)=> 
+			from p in db.ProductPages
+			join r in db.ProductRelations on p.Code equals r.ProductPageCode
+			join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+			where productIds.Contains(s.Id)
+			select new {
+				ProductId = s.Id,
+				p.Code,
+				p.Kind,
+				p.Name,
+				s.Size,
+				s.Color,
+				PageIcon = p.Icon,
+				ProductIcon = s.Icon
+			}
+		).ToList();
+		
+		return cart.ExpandOrderItems
+					.Select(item => {
+						var productPage = productPages.Where(p => p.ProductId == item.ProductId).FirstOrDefault();
+						return new LineViewModel {
+							ProductId = item.ProductId,
+							ExternalId1 = item.Product.ExternalId1,
+							Name = item.Product.Name,
+							HasLimitPerAccount = (Page.Template.GetProductSalesPattern(item.ProductId).MaxPurchasePerAccount ?? 0 ) > 0,
+							Stockout = cart.Errors.Any(err => err.Item.ProductId == item.ProductId && err.ErrorType == ShoppingCartErrorType.StockOut),
+							HasErrors = cart.Errors.Any(err => err.Item.ProductId == item.ProductId),
+							Prefix = $"Items[{cart.Items.IndexOf(item)}].",
+							UnitPriceWithoutTax = item.UnitPrice,
+							UnitPriceWithTax = item.UnitPrice + item.UnitTax,
+							Qty = item.OrderAmount,
+							Kind = productPage?.Kind,
+							ProductPageCode = productPage?.Code,
+							DisplayName = productPage?.Name,
+							Icon = productPage?.ProductIcon ?? productPage?.PageIcon,
+							Size = productPage?.Size,
+							Color = productPage?.Color,
+						};
+					}).ToList();
+	}
+}
+@{
+    var cart = Page.ViewData.Model as ShoppingCartBase;
+    var action = Page.ViewData["action"] as bool? ?? true;
+    var vm = LoadViewModel(cart);
+}
+<table class="cartDetailTable">
+    <tbody>
+        @foreach(var line in vm ) {
+            var gtmRemove = new {
+                @event = "remove_from_cart",
+                ecommerce = new {
+                    items = new [] { line.ToGtmItem() }
+                }
+            };
+            <tr>
+                <td class="dataCell">
+                    <div class="cartDetailProductImage">
+                        <a href="@ItemUrl(line.ProductPageCode)">
+                            <img src="@IconUrl(line.Icon)" alt="@line.Name">
+                        </a>
+                    </div>
+                    <div class="cartDetailProductInfo">
+                        <p class="productName"><a href="@ItemUrl(line.ProductPageCode)">@(line.DisplayName ?? line.Name)</a></p>
+                        <p class="productRemarks">
+                            <span>@line.Valiation()</span>
+                            <span><i>品番</i>&nbsp;:&nbsp;@line.ExternalId1</span>
+                        </p>
+                        @PrintPrice(line.UnitPriceWithTax)
+                        <div class="qty">
+                            @if (action) {
+                                <div class="qtySelect">
+                                    <span>数量</span>
+                                    <p class="selectWrapper">
+                                        <input name="@(line.Prefix)ProductId" value="@line.ProductId" type="hidden">
+                                        <select name="@(line.Prefix)RequestAmount" ic-action="showRecalc">
+                                            @for (var i = 1; i <= 10; i++ ) {
+                                                <option value="@i" @when(i==line.Qty, "selected")>@i</option>
+                                            }
+                                        </select>
+                                    </p>
+                                    @if (line.Stockout) {
+                                        <span>在庫がありません</span>
+                                    }
+                                </div>
+                                <p class="delete">
+                                    <a href="@CartOutUrl(line.ProductId)" data-gtm="@Jil.JSON.Serialize(gtmRemove)"><i class="fa fa-close"></i>カートから削除</a>
+                                </p>
+                            }
+                            else {
+                                <text>数量：@line.Qty</text>
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

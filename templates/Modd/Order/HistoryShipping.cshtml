@@ -1,0 +1,69 @@
+﻿@{
+	var shipping = Page.ViewData.Model as VM.HistoryShipping;
+	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+
+	ViewBag.PageTitle = "注文編集 - お届け先";
+}
+@DisplayViewMessages(viewData)
+
+<div class="section">
+	<div class="inner">
+		<div class="formWrapper">
+			<form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryShipping", id=shipping.Cart.OrderId})" method="post">
+                @Page.Html.HttpMethodOverride("put")
+				<section class="formSection">
+					<h2 id="destination" class="formSectionTitle">お届け先</h2>
+					<dl class="formBlock required">
+						<dt class="formBlockTitle">お届け先選択</dt>
+						<dd class="formBlockBody">
+							<div class="formItem">
+								@if(!shipping.IsAnonymous) {
+									@:@Page.Html.DropDownList("DeliveryOrderAddress.AddressId", shipping.MemberAddressList.ToSelectListItems(shipping.IsAnonymous, shipping.DeliveryOrderAddress.AddressId), new {
+										ic_action="selectAddress" 
+									})
+								}
+							</div>
+						</dd>
+					</dl>
+					@Page.Html.PartialEx("ModdSharedAddressEditor", shipping.DeliveryOrderAddress, new {
+						target = "DeliveryOrderAddress", 
+						command = "zipsearch", 
+						commandUrl = Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryShipping", id=shipping.Cart.OrderId })
+					})
+				</section>
+                <div class="buttonContainer">
+                    <button type="submit" class="btCallToAction btLargeSize btNext" name="shipping" value="put">お届け先を変更</button>
+                </div>
+                <div class="buttonContainer">
+                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=shipping.Cart.OrderId})" class="btPrimary btNormalSize btPrev">注文詳細へもどる</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section ScriptBlock {
+<script>
+	(function() {
+		var addrs = @Raw(shipping.MemberAddressList.ToJson(shipping.IsAnonymous));
+		$.fn.selectAddress = function () {
+			var id = $(this).val();
+			var addr = addrs.find(a => a.AddressId+"" == id);
+				
+			if(addr == null)
+				return;
+				
+			$("#DeliveryOrderAddress_Recipientfirstname").val(addr.Recipientfirstname || "");
+			$("#DeliveryOrderAddress_Recipientlastname").val(addr.Recipientlastname || "");
+			$("#DeliveryOrderAddress_Recipientfirstnamekana").val(addr.Recipientfirstnamekana || "");
+			$("#DeliveryOrderAddress_Recipientlastnamekana").val(addr.Recipientlastnamekana || "");
+			$("#DeliveryOrderAddress_ZipCode").val(addr.ZipCode || "");
+			$("#DeliveryOrderAddress_Pref").val(addr.Pref || "");
+			$("#DeliveryOrderAddress_City").val(addr.City || "");
+			$("#DeliveryOrderAddress_Street").val(addr.Street || "");
+			$("#DeliveryOrderAddress_Building").val(addr.Building || "");
+			$("#DeliveryOrderAddress_Tel").val(addr.Tel || "");
+		}
+	}())
+</script>
+}

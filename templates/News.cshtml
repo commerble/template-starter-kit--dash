@@ -1,0 +1,78 @@
+@functions {
+    public class ViewModel {
+        public int ItemCount { get; set; }
+		public int Page { get; set; }
+		public int EachPage { get; set; }
+        public List<NoticeViewModel> Notices { get; set; }
+    }
+    public class NoticeViewModel {
+        public string Code { get; set; }
+        public string Kind { get; set; }
+        public string Name { get; set; }
+        public string Title { get; set; }
+        public int Priority { get; set; }
+        public string PriorityName { get; set; }
+        public string Thumbnail { get; set; }
+        public DateTime? PublishDate { get; set; }
+    }
+    ViewModel LoadViewModel() {
+        int page = int.TryParse(Page.Request.QueryString["page"], out page) ? page : 0;
+        int eachPage = 12;
+        var notices =
+            Database.Query(new { Now, Next, IsPreview }, (db, args) => (
+                from p in db.SitePages
+                join q in db.SitePagePriorities on p.Priority equals q.Priority
+                where p.Kind == "Notice" 
+                &&  p.DisplayStart <= args.Now
+                && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                && (p.IsPublished == true || args.IsPreview)
+                orderby p.Priority descending, p.DisplayStart descending
+                select new NoticeViewModel {
+                    Code = p.Code,
+                    Kind = p.Kind,
+                    Name = p.Name,
+                    Title = p.Title,
+                    Priority = p.Priority,
+                    PriorityName = q.Name,
+                    Thumbnail = p.Thumbnail,
+                    PublishDate = p.PublishDate,
+                }
+            ).Skip(page * eachPage).Take(eachPage)).ToList();
+        var total = 
+            Database.Single(new { Now, Next, IsPreview }, (db, args) => (
+                from p in db.SitePages
+                where p.Kind == "Notice" 
+                &&  p.DisplayStart <= args.Now
+                && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                && (p.IsPublished == true || args.IsPreview)
+                select p.Code
+            ).Count());
+        return new ViewModel {
+            ItemCount = total,
+            Page = page,
+            EachPage = eachPage,
+            Notices = notices,
+        };
+    }
+}
+@{
+    var vm = LoadViewModel();
+
+    ViewBag.PageTitle = "NEWS";
+}
+<div class="section">
+    <div class="inner">
+        <h2 class="sectionTitle bordered">NEWS</h2>
+        @TopicTileList(vm.Notices, slot:(notice, index) =>
+            TopicTile(
+                notice.Code,
+                notice.Kind,
+                notice.Name,
+                notice.Thumbnail,
+                notice.PublishDate
+            ))
+        @if (vm.ItemCount > 0) {
+            @DisplayPager(vm.Page, vm.ItemCount, vm.EachPage)
+        }
+    </div>
+</div>

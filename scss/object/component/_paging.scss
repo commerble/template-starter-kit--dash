@@ -1,0 +1,169 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * ページング
+ *
+ **************************************************/
+.paging {
+  margin-top:$GUTTER * 5;
+  padding-bottom: $GUTTER;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  &>.current {
+    align-self :center;
+    width: 150px;
+    text-align:center;
+  }
+  .top,
+  .prev,
+  .next,
+  .last {
+    position: relative;
+    display: block;
+    width:25px;
+    height:25px;
+    margin:0 2px;
+    text-decoration: none;
+    .text {
+      position: absolute;
+      display: block;
+      top:-15px;
+      left:0;
+      width:100%;
+      text-align: center;
+      color:$baseStringColor;
+      @include fz(11);
+    }
+    &::before,
+    &::after {
+      position: absolute;
+      display: block;
+      content:"";
+      top:50%;
+      width:7px;
+      height:7px;
+    }
+    &:hover {
+      opacity: .5;
+    }
+    &.disabled {
+      pointer-events: none;
+      &::before,
+      &::after {
+        border-color:#ddd;
+      }
+    }
+  }
+  .top {
+    &::before,
+    &::after {
+      border-top:2px solid $accentColor;
+      border-left:2px solid $accentColor;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+    &::before {
+      left:5px;
+    }
+    &::after {
+      left:12px;
+    }
+  }
+  .prev {
+    &::before {
+      border-top:2px solid $accentColor;
+      border-left:2px solid $accentColor;
+      transform: translateY(-50%) rotate(-45deg);
+      left:8px;
+    }
+  }
+  .next {
+    &::before {
+      border-top:2px solid $accentColor;
+      border-right:2px solid $accentColor;
+      transform: translateY(-50%) rotate(45deg);
+      right:8px;
+    }
+  }
+  .last {
+    &::before,
+    &::after {
+      border-top:2px solid $accentColor;
+      border-right:2px solid $accentColor;
+      transform: translateY(-50%) rotate(45deg);
+    }
+    &::before {
+      right:5px;
+    }
+    &::after {
+      right:12px;
+    }
+  }
+  .pageNumList {
+    display: flex;
+    align-items: flex-end;
+    a {
+      position: relative;
+      top:1px;
+      display: block;
+      width:25px;
+      height: 25px;
+      margin:0 2px;
+      color:$baseStringColor;
+      @include fz(16);
+      text-decoration: none;
+      text-align: center;
+      line-height: 25px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      white-space: nowrap;
+      transition: none;
+      font-family: $fontFamilyEn;
+      font-weight: 300;
+      &:hover {
+        background-color: #4a4a4a;
+        color:#fff;
+      }
+    }
+    .current {
+      a {
+        background-color: #4a4a4a;
+        color:#fff;
+        pointer-events: none;
+      }
+    }
+  }
+  @include mq($BP_SP) {
+    margin-top:$GUTTER * 3;
+    padding-bottom:$GUTTER / 2;
+    .top,
+    .prev,
+    .next,
+    .last {
+      &::before,
+      &::after {
+        margin-top:3px;
+        border-width: 1px;
+      }
+    }
+    .pageNumList {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-end;
+      margin:0 0;
+      a {
+        flex:1 0 auto;
+        display: block;
+        width:20px;
+        height: 20px;
+        margin:0 ($GUTTER / 2);
+        @include fz(13);
+        line-height: 20px;
+        border-radius: 50%;
+        box-sizing: border-box;
+      }
+    }
+  }
+}

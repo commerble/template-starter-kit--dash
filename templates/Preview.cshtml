@@ -1,0 +1,43 @@
+@{
+    var validCode = "Basic " + Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(GetConfigValue("PREVIEW_BASIC_AUTH")));
+    var authCode = Page.Request.Headers["Authorization"];
+
+    if (validCode != authCode)
+    {
+        Page.Response.Clear();
+        Page.Response.Status = "401 Unauthorized";
+        Page.Response.StatusCode = 401;
+        Page.Response.AddHeader("WWW-Authenticate", "Basic Realm=SandboxPreviewCredential");
+        Page.Response.SuppressFormsAuthenticationRedirect = true;
+        Page.Response.End();
+    }
+
+    if (IsPost) {
+        System.Web.Helpers.AntiForgery.Validate();
+
+        Page.Response.Cookies.Add(new System.Web.HttpCookie(PREVIEW_KEY, Page.Request.Form["time"]){ Secure = true, HttpOnly = true, Expires = Page.Request.Form["end"] != null ? DateTime.Now.AddSeconds(-1) : default(DateTime) });
+        Page.Response.Redirect("~/");
+    }
+
+    ViewBag.PageTitle = "プレビュー";
+}
+
+<div class="section">
+    <div class="inner">
+        <form method="post">
+            @Page.Html.SessionAntiForgeryToken()
+
+            <p>プレビューを開始すると、発行フラグがOFFのアイテムが確認できるようになります。</p>
+            <p>プレビュー時間を指定すると、表示開始日時、表示終了日時を検証できます。</p>
+
+            <p>
+                <label>プレビュー時間</label>
+                <input type="datetime-local" name="time" value="@Now.ToString("yyyy-MM-ddTHH:mm")">
+            </p>
+            <p>
+                <input type="submit" name="start" value="プレビュー開始" class="btn btn-primary">
+                <input type="submit" name="end" value="プレビュー終了" class="btn btn-default btn-ghost">
+            </p>
+        </form>
+    </div>
+</div>

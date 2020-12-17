@@ -1,0 +1,70 @@
+@charset "utf-8";
+
+/**************************************************
+ *
+ * 標準リスト
+ *
+ **************************************************/
+
+.discList {
+  padding:0 0 0 2em;
+  &>li {
+    position:relative;
+    &:not(:first-of-type) {
+      margin-top:.5em;
+    }
+    &::before {
+      position:absolute;
+      display:block;
+      content:"";
+      width:.3em;
+      height:.3em;
+      top:.6em;
+      left:-1.2em;
+      background-color:$baseStringColor;
+      border-radius:50%;
+    }
+  }
+}
+
+.numericalList {
+  padding:0;
+  counter-reset:num;
+  list-style:none;
+  &>li {
+    position:relative;
+    padding:0 0 0 2em;
+    &:not(:first-of-type) {
+      margin-top:.5em;
+    }
+    &::before {
+      content:counter(num)".";
+      counter-increment:num;
+      position:absolute;
+      top:0;
+      left:0;
+      width:2em;
+      text-align:center;
+    }
+  }
+}
+
+.noteList {
+  &Item {
+    position:relative;
+    margin:0 0 $GUTTER / 2;
+    padding-left:1.1em;
+    border:0;
+    line-height:$baseLineHeight;
+    @include fz(13);
+    &::before {
+      position:absolute;
+      display:inline-block;
+      content:"※";
+      width:1em;
+      top:0;
+      left:0;
+      text-align:center;
+    }
+  }
+}
