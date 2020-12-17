@@ -205,7 +205,7 @@
                 _tags = Page.Template.Cache(cacheKey, Next, () => {
                     return Database.Query(new { Now, Next, IsPreview }, (db, args) => (
                         from t in db.ProductTags
-                        where t.IsPublished || args.IsPreview
+                        where (t.IsPublished || args.IsPreview) && t.IsSearchable
                         orderby t.DisplayOrder
                         select new {
                             GroupCode = t.GroupCode,
