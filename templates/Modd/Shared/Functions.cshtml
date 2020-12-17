@@ -456,8 +456,8 @@
 	<p class="inputError" data-valmsg-for="@name" data-valmsg-replace="true" style="display:none;"></p>
 }
 
-@helper ProductTile(string code, string name, string kindName, string kindIcon, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm, string tag = "li") {
-	<@tag class="productTile">
+@helper ProductTile(string code, string name, string kindName, string kindIcon, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
+	<li class="productTile">
 		<a href="@ItemUrl(code)" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
 			<div class="productTileImage">
 				<img src="@ThumbnailUrl(thumbnail)" alt="@name">
@@ -473,11 +473,11 @@
 				</div>
 			</div>
 		</a>
-	</@tag>
+	</li>
 }
 
-@helper TopicTile(string code, string kind, string name, string thumbnail, DateTime? publishDate, string tag = "li") {
-	<@tag class="topicTile">
+@helper TopicTile(string code, string kind, string name, string thumbnail, DateTime? publishDate) {
+	<li class="topicTile">
         <a href="@PageUrl(code, kind)">
             <div class="topicTileImage">
                 <img src="@ThumbnailUrl(thumbnail)" loading="lazy">
@@ -491,7 +491,7 @@
                 <h2 class="title">@name</h2>
             </div>
         </a>
-	</@tag>
+	</li>
 }
 
 @helper ProductTileList(IEnumerable<dynamic> items, Func<dynamic, int, RazorEngine.Templating.TemplateWriter> slot, string klass = "grid-pc-x4 grid-tb-x2 grid-sp-x2", string id = null) {
