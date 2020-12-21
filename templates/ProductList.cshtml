@@ -207,6 +207,9 @@
                 </li>
             }
         </ul>
+        @if (vm.CheckedKinds.Count == 0 && vm.CheckedTags.Count == 0 && vm.Page == 0) {
+            @ButtonBlock("検索条件を変更する", href:vm.SearchCondition(Href("~/search/condition")), icon:"fa fa-search", btAccent:true, btLargeSize: true, showOnTB:true)
+        }
         @ProductTileList(vm.ProductPages, id:"result", slot:(item, index) =>
             ProductTile(
                 item.Code,
