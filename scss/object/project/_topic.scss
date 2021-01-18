@@ -114,6 +114,20 @@
       color:unset;
     }
   }
+  ul {
+    list-style: outside;
+    margin-left: 1em;
+  }
+  h2,h3,h4,h5 {
+    margin-top: 2em;
+  }
+  h2,h3 {
+    font-weight: bold;
+  }
+  h2 {
+    border-left: $accentColor solid 0.25em;
+    padding-left: $GUTTER;
+  }
   @include mq($BP_TB) {
     margin-top:$GUTTER * 2;
     @include fz(16);

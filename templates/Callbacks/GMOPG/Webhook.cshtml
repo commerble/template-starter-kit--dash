@@ -1,0 +1,158 @@
+@{
+    Layout=null;
+    if (IsPost && long.TryParse(Page.Request.Form["OrderID"], out var id)) {
+        System.Diagnostics.Trace.Write(Page.Request.Form, "GMOPG");
+        var service = Commerble.TypeResolver.Resolve<IOrderService>();
+        
+        var order = service.GetPurchaseOrderById(id);
+        if (order == null) {
+            throw new System.Web.HttpException(400, "Bad Request");
+        }
+
+        bool commit = false;
+        bool sendMail = false;
+        PaymentStatus paymentStatus = PaymentStatus.Processing;
+        DateTime? autoCancelDate = null;
+        var payType = Page.Request.Form["PayType"];
+        var payStatus = Page.Request.Form["Status"];
+        if (payType == "0"){ // クレカ 
+            if (payStatus == "AUTH") {
+                paymentStatus = PaymentStatus.Success;
+                commit = true;
+                sendMail = true;
+            }
+        }
+        else if (payType == "1") { // モバイル Suica 
+        }
+        else if (payType == "2") { //楽天 Edy
+        }
+        else if (payType == "3") { // コンビニ
+            if (payStatus == "REQSUCCESS") {
+                paymentStatus = PaymentStatus.Ready;
+                commit = true;
+            }
+            else if (payStatus == "PAYSUCCESS") {
+                paymentStatus = PaymentStatus.Success;
+                commit = true;
+                sendMail = true;
+            }
+            else if (payStatus == "EXPIRED") {
+                paymentStatus = PaymentStatus.Cancel;
+                commit = true;
+            }
+            else if (payStatus == "CANCEL") {
+                paymentStatus = PaymentStatus.Cancel;
+                commit = true;
+            }
+        }
+        else if (payType == "4") { // Pay-easy
+        }
+        else if (payType == "5") { // PayPal
+        }
+        else if (payType == "6") { // iD
+        }
+        else if (payType == "7") { // WebMoney
+        }
+        else if (payType == "8") { // au
+            if (payStatus == "REQSUCCESS") {
+                paymentStatus = PaymentStatus.Ready;
+                commit = true;
+            }
+            else if (payStatus == "AUTH") {
+                paymentStatus = PaymentStatus.Success;
+                commit = true;
+                sendMail = true;
+            }
+            else if (payStatus == "PAYFAIL") {
+                paymentStatus = PaymentStatus.Fail;
+                commit = true;
+            }
+            else if (payStatus == "CANCEL") {
+                paymentStatus = PaymentStatus.Cancel;
+                commit = true;
+            }
+        }
+        else if (payType == "9") { // docomo
+            if (payStatus == "REQSUCCESS") {
+                paymentStatus = PaymentStatus.Ready;
+                commit = true;
+            }
+            else if (payStatus == "AUTH") {
+                paymentStatus = PaymentStatus.Success;
+                commit = true;
+                sendMail = true;
+            }
+            else if (payStatus == "PAYFAIL") {
+                paymentStatus = PaymentStatus.Fail;
+                commit = true;
+            }
+            else if (payStatus == "EXPIRED") {
+                paymentStatus = PaymentStatus.Cancel;
+                commit = true;
+            }
+            else if (payStatus == "CANCEL") {
+                paymentStatus = PaymentStatus.Cancel;
+                commit = true;
+            }
+        }
+        else if (payType == "B") { // softbank
+            if (payStatus == "REQSUCCESS") {
+                paymentStatus = PaymentStatus.Ready;
+                commit = true;
+            }
+            else if (payStatus == "AUTH") {
+                paymentStatus = PaymentStatus.Success;
+                commit = true;
+                sendMail = true;
+            }
+            else if (payStatus == "PAYFAIL") {
+                paymentStatus = PaymentStatus.Fail;
+                commit = true;
+            }
+            else if (payStatus == "EXPIRED") {
+                paymentStatus = PaymentStatus.Cancel;
+                commit = true;
+            }
+            else if (payStatus == "CANCEL") {
+                paymentStatus = PaymentStatus.Cancel;
+                commit = true;
+            }
+        }
+        else if (payType == "E") { // JCB プリカ
+        }
+        else if (payType == "G") { // NET CASH・nanaco ギフト
+        }
+        else if (payType == "I") { // 楽天ペイ
+        }
+        else if (payType == "J") { // 多通貨クレジットカード（MCP）
+        }
+        else if (payType == "K") { // LINE Pay 決済
+        }
+        else if (payType == "L") { // ネット銀聯決済
+        }
+        else if (payType == "N") { // 銀行振込(バーチャル口座)
+        }
+        else if (payType == "O") { //リクルートかんたん支払い決済
+        }
+        else if (payType == "Z") { // PAYSLE 決済
+        }
+        else if (payType == "d") { // FamiPay
+        }
+        if (commit) {
+            service.UpdatePaymentStatus(order, paymentStatus, autoCancelDate);
+        }
+        if (sendMail) {
+            Crosswarp.Modd.Services.MailService.CustomerTypedMail(
+                Crosswarp.Modd.Models.MailType.CustomerOrder, 
+                "MailCustomerOrderPc", 
+                Crosswarp.Modd.SystemDateTime.GetSystemTime(),
+                Crosswarp.Modd.Services.DefaultMailService.OrderPcSender, 
+                order.OrderCustomer.EmailAddr,
+                order.OrderId, order.OrderCustomer.UserNo,
+                $"<parameters><parameter name=\"orderId\" value=\"{order.OrderId}\"/></parameters>");
+        }
+        Page.Response.ClearContent();
+        Page.Response.Write("0");
+        Page.Response.End();
+    }
+}

@@ -1,0 +1,101 @@
+@{
+    Page.NoCache = true;
+    ViewBag.PageTitle = "お支払い完了";
+    if (IsPost && long.TryParse(Page.Request.Form["OrderID"], out var id)) {
+        var service = Commerble.TypeResolver.Resolve<IOrderService>();
+        
+        var order = service.GetPurchaseOrderById(id);
+        if (order == null) {
+            throw new System.Web.HttpException(400, "Bad Request");
+        }
+
+        var checkString = Page.Request.Form["CheckString"] ?? string.Empty;
+        string computeCheckString = null;
+        PaymentStatus paymentStatus = PaymentStatus.Success;
+        DateTime? autoCancelDate = null;
+        var plain = string.Empty;
+        var payType = Page.Request.Form["PayType"];
+        if (payType == "0"){ // クレカ 
+            plain = Page.Request.Form["OrderID"] + Page.Request.Form["Forwarded"] + Page.Request.Form["Method"] + Page.Request.Form["PayTimes"] + (Page.Request.Form["Approve"]+"       ").Substring(0,7) + Page.Request.Form["TranID"] + Page.Request.Form["TranDate"] + GetConfigValue("GMOPG_SHOP_PASSWORD");
+        }
+        else if (payType == "1") { // モバイル Suica 
+
+        }
+        else if (payType == "2") { //楽天 Edy
+
+        }
+        else if (payType == "3") { // コンビニ
+            plain = Page.Request.Form["OrderID"] + Page.Request.Form["CvsCode"] + Page.Request.Form["CvsConfNo"] + Page.Request.Form["CvsReceiptNo"] + Page.Request.Form["PaymentTerm"] + Page.Request.Form["TranDate"] + GetConfigValue("GMOPG_SHOP_PASSWORD");
+            autoCancelDate = DateTime.ParseExact(Page.Request.Form["PaymentTerm"], "yyyyMMddHHmmss", null);
+            paymentStatus = PaymentStatus.Ready;
+        }
+        else if (payType == "4") { // Pay-easy
+            
+        }
+        else if (payType == "5") { // PayPal
+            
+        }
+        else if (payType == "6") { // iD
+            
+        }
+        else if (payType == "7") { // WebMoney
+            
+        }
+        else if (payType == "8") { // au
+            plain = Page.Request.Form["OrderID"] + Page.Request.Form["TranID"] + Page.Request.Form["TranDate"] + GetConfigValue("GMOPG_SHOP_PASSWORD");
+        }
+        else if (payType == "9") { // docomo
+            plain = Page.Request.Form["OrderID"] + Page.Request.Form["AccessID"] + Page.Request.Form["TranDate"] + GetConfigValue("GMOPG_SHOP_PASSWORD");
+        }
+        else if (payType == "B") { // softbank
+            plain = Page.Request.Form["OrderID"] + Page.Request.Form["AccessID"] + Page.Request.Form["TranDate"] + GetConfigValue("GMOPG_SHOP_PASSWORD");
+        }
+        else if (payType == "E") { // JCB プリカ
+            
+        }
+        else if (payType == "G") { // NET CASH・nanaco ギフト
+            
+        }
+        else if (payType == "I") { // 楽天ペイ
+            
+        }
+        else if (payType == "J") { // 多通貨クレジットカード（MCP）
+            
+        }
+        else if (payType == "K") { // LINE Pay 決済
+            
+        }
+        else if (payType == "L") { // ネット銀聯決済
+            
+        }
+        else if (payType == "N") { // 銀行振込(バーチャル口座)
+            
+        }
+        else if (payType == "O") { //リクルートかんたん支払い決済
+            
+        }
+        else if (payType == "Z") { // PAYSLE 決済
+            
+        }
+        else if (payType == "d") { // FamiPay
+            
+        }
+        using (var md5 = new System.Security.Cryptography.MD5CryptoServiceProvider()) {
+            var data = Encoding.GetEncoding(932).GetBytes(plain);
+            var bs = md5.ComputeHash(data);
+            computeCheckString = BitConverter.ToString(bs).ToLower().Replace("-", "");
+            md5.Clear();
+        }
+
+        if (checkString != computeCheckString) {
+            throw new System.Web.HttpException(400, "Bad Request");
+        }
+
+        service.UpdatePaymentStatus(order, paymentStatus, autoCancelDate);
+
+        Page.Response.Redirect(Page.Url.RouteUrl("ModdPurchase", new { cart=1, action="Complete", id }));
+    }
+    else {
+        throw new System.Web.HttpException(404, "Not Found");
+    }
+}

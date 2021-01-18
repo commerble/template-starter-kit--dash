@@ -316,12 +316,14 @@
   
   @include mq($BP_TB) {
     border-top:0;
-    flex-direction: column;
     .btPrimary,
     .btAccent {
       margin-top:$GUTTER;
       max-width:calc(425px - (#{$GUTTER} * 2));
     }
+  }
+  @include mq($BP_SP) {
+    flex-direction: column;
   }
 }
 

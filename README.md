@@ -1,6 +1,6 @@
-# Template Starter Kit for HTML First
+# Template Starter Kit for Dash
 
-ボイラープレートとして使用可能なCommerbleテンプレートサンプルです。
+CMSスキーマを含んだ。一通りなんでもできるスターターキット。
 
 ## Tasks
 
