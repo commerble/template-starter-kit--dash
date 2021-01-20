@@ -12,11 +12,12 @@
     }
 
     ViewModel LoadViewModel() {
-        var code = ((string)(ViewBag.Code ?? ViewBag.RouteName))?.ToLower();
-        return Database.Single(new { Now, Next, IsPreview, code }, (db, args) => (
+        var code = ((string)(ViewBag.Code))?.ToLower();
+        var route = ((string)ViewBag.RouteName)?.ToLower();
+        return Database.Single(new { Now, Next, IsPreview, code, route }, (db, args) => (
                 from p in db.SitePages
                 join k in db.SitePageKinds on p.Kind equals k.Code
-                where p.Code == args.code
+                where ((p.Code == args.code && k.RouteName == args.route) || p.Code == route)
                 &&  p.DisplayStart <= args.Now
                 && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
                 && (p.IsPublished || args.IsPreview)
