@@ -99,7 +99,7 @@
                 from t in db.ProductTags
                 where t.Code == args.tag
                 select new TagViewModel {
-                    Code = t.Code,
+                    Code = t.Code.ToLower(),
                     Name = string.IsNullOrEmpty(t.DisplayName) ? t.Name : t.DisplayName,
                 }
             ).FirstOrDefault());
