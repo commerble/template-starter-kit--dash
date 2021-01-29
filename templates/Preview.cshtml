@@ -1,4 +1,5 @@
 @{
+    Page.NoCache = true;
     var validCode = "Basic " + Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(GetConfigValue("PREVIEW_BASIC_AUTH")));
     var authCode = Page.Request.Headers["Authorization"];
 
@@ -21,23 +22,31 @@
 
     ViewBag.PageTitle = "プレビュー";
 }
-
 <div class="section">
     <div class="inner">
-        <form method="post">
-            @Page.Html.SessionAntiForgeryToken()
-
-            <p>プレビューを開始すると、発行フラグがOFFのアイテムが確認できるようになります。</p>
-            <p>プレビュー時間を指定すると、表示開始日時、表示終了日時を検証できます。</p>
-
-            <p>
-                <label>プレビュー時間</label>
-                <input type="datetime-local" name="time" value="@Now.ToString("yyyy-MM-ddTHH:mm")">
-            </p>
-            <p>
-                <input type="submit" name="start" value="プレビュー開始" class="btn btn-primary">
-                <input type="submit" name="end" value="プレビュー終了" class="btn btn-default btn-ghost">
-            </p>
-        </form>
+        <div class="formWrapper">
+            <form method="post">
+                @Page.Html.SessionAntiForgeryToken()
+                <section class="formSection">
+                    <h1 class="formSectionTitle center">プレビュー</h1>
+                    <p class="formSectionLead">
+                        プレビューを開始すると、発行フラグがOFFのアイテムが確認できるようになります。<br>
+                        プレビュー時間を指定すると、表示開始日時、表示終了日時を検証できます。
+                    </p>
+                    <dl class="formBlock required">
+                        <dt class="formBlockTitle">プレビュー時間</dt>
+                        <dd class="formBlockBody">
+                            <div class="formItem">
+                                <input type="datetime-local" name="time" value="@Now.ToString("yyyy-MM-ddTHH:mm")">
+                            </div>
+                        </dd>
+                    </dl>
+                    <div class="buttonContainer" style="margin-top:32px;">
+                        <input type="submit" name="start" value="プレビュー開始" class="btCallToAction btNext">
+                        <input type="submit" name="end" value="プレビュー終了" class="btAccent btNext">
+                    </div>
+                </section>
+            </form>
+        </div>
     </div>
 </div>
