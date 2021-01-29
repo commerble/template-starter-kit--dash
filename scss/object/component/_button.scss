@@ -54,6 +54,7 @@ button {
   text-align:center;
   box-sizing:border-box;
   //transition:all .3s;
+  outline-offset: 3px;
   @if $blockType == table {
     margin-left:auto;
     margin-right:auto;
@@ -156,7 +157,6 @@ button {
   //box-shadow:0 0 3px 0 rgba(0,0,0,.3);
   font-family:$fontFamily;
   font-weight:bold;
-  outline-offset: 3px;
 }
 
 .btAccent {
