@@ -7,7 +7,7 @@
 button {
   font-family:$fontFamily;
   //transition:all .3s;
-  outline:none;
+  //outline:none;
 }
 
 /**************************************************
@@ -156,6 +156,7 @@ button {
   //box-shadow:0 0 3px 0 rgba(0,0,0,.3);
   font-family:$fontFamily;
   font-weight:bold;
+  outline-offset: 3px;
 }
 
 .btAccent {

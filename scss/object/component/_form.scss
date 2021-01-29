@@ -28,7 +28,7 @@ textarea {
   background-color:#fff;
   border:1px solid $inputThemeColor;
   box-sizing:border-box;
-  outline:none;
+  //outline:none;
   font-family: $fontFamily;
   border-radius: 0;
   @include fz(14);
@@ -65,7 +65,7 @@ select {
   border:1px solid $inputThemeColor;
   box-sizing:border-box;
   border-radius: 0;
-  outline:none;
+  //outline:none;
   font-family: $fontFamily;
   line-height: 21px;
   @include fz(14);
@@ -151,7 +151,7 @@ input[type=checkbox] {
     padding-left:30px;
     cursor:pointer;
     box-sizing:border-box;
-    outline:none;
+    //outline:none;
     @include fz(14);
     user-select:none;
     text-shadow:none;
