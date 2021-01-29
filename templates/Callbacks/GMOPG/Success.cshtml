@@ -1,14 +1,23 @@
 @{
     Page.NoCache = true;
-    ViewBag.PageTitle = "お支払い完了";
-    if (IsPost && long.TryParse(Page.Request.Form["OrderID"], out var id)) {
-        var service = Commerble.TypeResolver.Resolve<IOrderService>();
-        
-        var order = service.GetPurchaseOrderById(id);
-        if (order == null) {
-            throw new System.Web.HttpException(400, "Bad Request");
-        }
 
+    if (!IsPost) {
+        throw new System.Web.HttpException(404, "Not Found");
+    }
+
+    long id;
+    if (!long.TryParse(Page.Request.Form["OrderID"], out id)) {
+        throw new System.Web.HttpException(400, "Bad Request");
+    }
+
+    var service = Commerble.TypeResolver.Resolve<IOrderService>();
+
+    var order = service.GetPurchaseOrderById(id);
+    if (order == null) {
+        throw new System.Web.HttpException(400, "Bad Request");
+    }
+
+    if (string.IsNullOrEmpty(Page.Request.Form["ErrCode"])) {
         var checkString = Page.Request.Form["CheckString"] ?? string.Empty;
         string computeCheckString = null;
         PaymentStatus paymentStatus = PaymentStatus.Success;
@@ -95,7 +104,29 @@
 
         Page.Response.Redirect(Page.Url.RouteUrl("ModdPurchase", new { cart=1, action="Complete", id }));
     }
-    else {
-        throw new System.Web.HttpException(404, "Not Found");
-    }
+
+    ViewBag.PageTitle = "お支払いキャンセル";
 }
+<div class="section">
+	<div class="inner">
+        <div class="formWrapper">
+            <section class="formSection">
+                <h1 class="formSectionTitle center">お支払いが完了されませんでした</h1>
+                <p class="formSectionLead">
+                    GMOペイメントゲートウェイにてお支払が完了されませんでしたので、この注文は自動的にキャンセルされます。<br>
+                    仮押さえしました在庫は、@(order.OrderCustomer.AutoCancelDate.Value.ToString("yyyy/MM/dd hh:mm:ss"))移行に戻されます。<br>
+                    またのご利用お待ちしております。
+                </p>
+                <dl>
+                    <dt>エラーコード</dt>
+                    <dd>@Page.Request.Form["ErrCode"]</dd>
+                    <dt>エラー情報</dt>
+                    <dd>@Page.Request.Form["ErrInfo"]</dd>
+                </dl>
+                <div class="buttonContainer">
+					<a href="@Href("~/")" class="btPrimary btNormalSize btNext">トップページへ戻る</a>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
