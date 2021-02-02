@@ -16,14 +16,14 @@
                         <dt class="formBlockTitle">メールアドレス</dt>
                         <dd class="formBlockBody">
                             <div class="formItem">
-                                @Page.Html.TextBox("general.CustomerEmail", general?.CustomerEmail, new {
+                                @Page.Html.TextBox("contact.CustomerEmail", general?.CustomerEmail, new {
                                     placeholder = "例）xxxxxx@commerble.com",
                                     data_val = "true",
                                     data_val_required="メールアドレスは必須項目です。",
                                     data_val_email="メールアドレスをご入力ください。"
                                 })
                             </div>
-                            @ValidationMessageFor("general.CustomerEmail")
+                            @ValidationMessageFor("contact.CustomerEmail")
                             <p class="inputNote">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
                         </dd>
                     </dl>
@@ -31,14 +31,14 @@
                         <dt class="formBlockTitle">氏名</dt>
                         <dd class="formBlockBody">
                             <div class="formItem name">
-                                @Page.Html.TextBox("general.LastName", general?.LastName, new {
+                                @Page.Html.TextBox("contact.LastName", general?.LastName, new {
                                     placeholder = "例）山田",
                                     data_val = "true",
                                     data_val_required = "氏名（姓）は必須項目です。",
                                     data_val_length = "氏名（姓）は64文字以内でご入力ください。",
                                     data_val_length_maxlength = "64",
                                 })
-                                @Page.Html.TextBox("general.FirstName", general?.FirstName, new {
+                                @Page.Html.TextBox("contact.FirstName", general?.FirstName, new {
                                     placeholder = "例）太郎",
                                     data_val = "true",
                                     data_val_required = "氏名（名）は必須項目です。",
@@ -46,19 +46,19 @@
                                     data_val_length_maxlength = "64",
                                 })
                             </div>
-                            @ValidationMessageFor("general.LastName")
-                            @ValidationMessageFor("general.FirstName")
+                            @ValidationMessageFor("contact.LastName")
+                            @ValidationMessageFor("contact.FirstName")
                         </dt>
                     </div>
                     <dl class="formBlock optional">
                         <dt class="formBlockTitle">注文番号</dt>
                         <dd class="formBlockBody">
                             <div class="formItem">
-                                @Page.Html.TextBox("general.OrderId", general?.OrderId, new {
+                                @Page.Html.TextBox("contact.OrderId", general?.OrderId, new {
                                     placeholder = "例）10000000"
                                 })
                             </div>
-                            @ValidationMessageFor("general.OrderId")
+                            @ValidationMessageFor("contact.OrderId")
                             <p class="inputNote">注文に対するお問い合わせの場合はご記入ください。</p>
                         </dd>
                     </dl>
@@ -66,7 +66,7 @@
                         <dt class="formBlockTitle">お問い合わせ内容</dt>
                         <dd class="formBlockBody">
                             <div class="formItem">
-                                @Page.Html.TextArea("general.Text", general?.Text, new {
+                                @Page.Html.TextArea("contact.Text", general?.Text, new {
 									@class = "fullWidth",
                                     data_val = "true",
                                     data_val_required = "お問い合わせ内容は必須項目です。",
@@ -74,7 +74,7 @@
                                     data_val_regex_pattern = "^(?!(.|\n|\r)*(&#|[<>]))(.|\n|\r)*$"
                                 })
                             </div>
-                            @ValidationMessageFor("general.Text")
+                            @ValidationMessageFor("contact.Text")
                         </dd>
                     </dl>
                     <div class="buttonContainer">
