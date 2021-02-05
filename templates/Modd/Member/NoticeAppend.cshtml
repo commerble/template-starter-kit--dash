@@ -1,118 +1,118 @@
 ﻿@functions {
-	public class ViewModel {
-		public int ProductId { get; set; }
-		public string ProductName { get; set; }
-		public string Code { get; set; }
-		public string PageName { get; set; }
-		public string Icon { get; set; }
-		public string Size { get; set; }
-		public string Color { get; set; }
-		public string ExternalId1 { get; set; }
-		public decimal UnitPriceWithTax { get; set; }
-		public int RequestQty { get; set; }
-		public string Valiation() {
-			return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
-		}
-	}
-	ViewModel LoadViewModel() {
-  		var notice = Page.ViewData.Model as VM.NoticeAppend; 
-		var page = Database.Single(new { Now, Next, notice.ProductId }, (db, args) => (
-			from p in db.ProductPages
-			join r in db.ProductRelations on p.Code equals r.ProductPageCode
-			join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
-			where s.Id == args.ProductId
-			select new {
-				p.Code,
-				p.Icon,
-				p.PriceProductId,
-				PageName = p.Name,
-				ProductName = string.IsNullOrEmpty(s.DisplayName) ? s.Name : s.DisplayName,
-				s.Size,
-				s.Color,
-				s.ExternalId1
-			}
-		).FirstOrDefault());
+    public class ViewModel {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string Code { get; set; }
+        public string PageName { get; set; }
+        public string Icon { get; set; }
+        public string Size { get; set; }
+        public string Color { get; set; }
+        public string ExternalId1 { get; set; }
+        public decimal UnitPriceWithTax { get; set; }
+        public int RequestQty { get; set; }
+        public string Valiation() {
+            return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+        }
+    }
+    ViewModel LoadViewModel() {
+          var notice = Page.ViewData.Model as VM.NoticeAppend; 
+        var page = Database.Single(new { Now, Next, notice.ProductId }, (db, args) => (
+            from p in db.ProductPages
+            join r in db.ProductRelations on p.Code equals r.ProductPageCode
+            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            where s.Id == args.ProductId
+            select new {
+                p.Code,
+                p.Icon,
+                p.PriceProductId,
+                PageName = p.Name,
+                ProductName = string.IsNullOrEmpty(s.DisplayName) ? s.Name : s.DisplayName,
+                s.Size,
+                s.Color,
+                s.ExternalId1
+            }
+        ).FirstOrDefault());
 
-		if (page == null) {
-			throw new System.Web.HttpException(404, "NotFound");
-		}
+        if (page == null) {
+            throw new System.Web.HttpException(404, "NotFound");
+        }
 
-		return new ViewModel {
-			ProductId = notice.ProductId,
-			RequestQty = notice.RequestAmount,
-			Code = page.Code,
-			Icon = page.Icon,
-			UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(notice.ProductId),
-			PageName = page.PageName,
-			ProductName = page.ProductName,
-			Size = page.Size,
-			Color = page.Color,
-			ExternalId1 = page.ExternalId1,
-		};
-	}
+        return new ViewModel {
+            ProductId = notice.ProductId,
+            RequestQty = notice.RequestAmount,
+            Code = page.Code,
+            Icon = page.Icon,
+            UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(notice.ProductId),
+            PageName = page.PageName,
+            ProductName = page.ProductName,
+            Size = page.Size,
+            Color = page.Color,
+            ExternalId1 = page.ExternalId1,
+        };
+    }
 }
 @{
-	var vm = LoadViewModel();
+    var vm = LoadViewModel();
 
-	ViewBag.PageTitle = "仮予約 - 登録確認";
+    ViewBag.PageTitle = "仮予約 - 登録確認";
 }
 <div class="section">
-	<div class="inner">
-		<form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="CreateNotice", item=vm.ProductId })" method="post">
-		  	@Page.Html.SessionAntiForgeryToken()
+    <div class="inner">
+        <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="CreateNotice", item=vm.ProductId })" method="post">
+              @Page.Html.SessionAntiForgeryToken()
             <div class="flexBoxResponsive flexBoxAlignTop">
                 <div class="cartDetailBlock">
-					<table class="cartDetailTable">
-						<tbody>
-							<tr>
-								<td class="dataCell">
-									<div class="cartDetailProductImage">
-										<a href="@ItemUrl(vm.Code)" target="_blank">
-											<img src="@IconUrl(vm.Icon)" alt="@vm.ProductName">
-										</a>
-									</div>
-									<div class="cartDetailProductInfo">
-										<p class="productName"><a href="@ItemUrl(vm.Code)" target="_blank">@(vm.PageName ?? vm.ProductName)</a></p>
-										<p class="productRemarks">
-											<span>@vm.Valiation()</span>
-											<span><i>品番</i>&nbsp;:&nbsp;@vm.ExternalId1</span>
-										</p>
-										@PrintPrice(vm.UnitPriceWithTax)
-										<div class="qty">
-											<div class="qtySelect">
-												<span>数量</span>
-												<p class="selectWrapper">
-													<select name="RequestAmount" ic-action="showRecalc">
-														@for (var i = 1; i <= 10; i++ ) {
-															<option value="@i" @when(i==vm.RequestQty, "selected")>@i</option>
-														}
-													</select>
-												</p>
-											</div>
-										</div>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+                    <table class="cartDetailTable">
+                        <tbody>
+                            <tr>
+                                <td class="dataCell">
+                                    <div class="cartDetailProductImage">
+                                        <a href="@ItemUrl(vm.Code)" target="_blank">
+                                            <img src="@IconUrl(vm.Icon)" alt="@vm.ProductName">
+                                        </a>
+                                    </div>
+                                    <div class="cartDetailProductInfo">
+                                        <p class="productName"><a href="@ItemUrl(vm.Code)" target="_blank">@(vm.PageName ?? vm.ProductName)</a></p>
+                                        <p class="productRemarks">
+                                            <span>@vm.Valiation()</span>
+                                            <span><i>品番</i>&nbsp;:&nbsp;@vm.ExternalId1</span>
+                                        </p>
+                                        @PrintPrice(vm.UnitPriceWithTax)
+                                        <div class="qty">
+                                            <div class="qtySelect">
+                                                <span>数量</span>
+                                                <p class="selectWrapper">
+                                                    <select name="RequestAmount" ic-action="showRecalc">
+                                                        @for (var i = 1; i <= 10; i++ ) {
+                                                            <option value="@i" @when(i==vm.RequestQty, "selected")>@i</option>
+                                                        }
+                                                    </select>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="cartOrderBlock">
-					<div class="cartOrderBlockBox">
-						<div class="cartOrderBlockPrice">
-							@PrintPrice(vm.UnitPriceWithTax * vm.RequestQty, "合計：")
-						</div>
-						<div class="cartOrderBlockAction">
-							<div class="buttonContainer onsite">
-								<button type="sbumit" name="commit" value="post" class="btCallToAction btLargeSize btNext">仮予約する</button>
-								<button class="btPrimary btLargeSize btRecalc" type="submit" name="recalc" value="recalc" style="display:none;">数量変更して再計算</button>
-							</div>
-						</div>
-					</div>
+                    <div class="cartOrderBlockBox">
+                        <div class="cartOrderBlockPrice">
+                            @PrintPrice(vm.UnitPriceWithTax * vm.RequestQty, "合計：")
+                        </div>
+                        <div class="cartOrderBlockAction">
+                            <div class="buttonContainer onsite">
+                                <button type="sbumit" name="commit" value="post" class="btCallToAction btLargeSize btNext">仮予約する</button>
+                                <button class="btPrimary btLargeSize btRecalc" type="submit" name="recalc" value="recalc" style="display:none;">数量変更して再計算</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-			</div>
-			<div class="buttonContainer more">
-				<a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices"})" class="btPrimary btNormalSize btPrev">仮予約一覧へ</a>
-			</div>
-		</form>
-	</div>
+            </div>
+            <div class="buttonContainer more">
+                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices"})" class="btPrimary btNormalSize btPrev">仮予約一覧へ</a>
+            </div>
+        </form>
+    </div>
 </div>

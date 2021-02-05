@@ -1,191 +1,191 @@
 ﻿@{
-	var cart = Page.ViewData.Model as HistoryCart; 
-	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-	var canPaymentMethodChange = cart.CanModifyPaymentMethod();
-	var hasChanges = cart.Original != null && (
-			cart.Original.PaymentMethod != cart.PaymentMethod
-		|| 	cart.Original.OrderCustomer.PaymentDetail != cart.OrderCustomer.PaymentDetail
-		||	cart.Original.OrderCustomer.EmailAddr != cart.OrderCustomer.EmailAddr
-		||	cart.Original.DeliveryOrderAddress.ToString() != cart.DeliveryOrderAddress.ToString()
-		||	cart.Original.DeliveryOrderAddress.Tel != cart.DeliveryOrderAddress.Tel
-		||	cart.Original.DeliveryOrderAddress.Recipientlastname != cart.DeliveryOrderAddress.Recipientlastname
-		||	cart.Original.DeliveryOrderAddress.Recipientfirstname != cart.DeliveryOrderAddress.Recipientfirstname
-		||	cart.Original.DeliveryOrderAddress.Recipientlastnamekana != cart.DeliveryOrderAddress.Recipientlastnamekana
-		||	cart.Original.DeliveryOrderAddress.Recipientfirstnamekana != cart.DeliveryOrderAddress.Recipientfirstnamekana
-		|| 	cart.Original.DeliveryOrder.DeliveryDate != cart.DeliveryOrder.DeliveryDate
-		|| 	cart.Original.DeliveryOrder.HourRange != cart.DeliveryOrder.HourRange
-		|| 	cart.Original.DeliveryOrder.WrappingType != cart.DeliveryOrder.WrappingType
-		|| 	cart.Original.DeliveryOrder.SenderName != cart.DeliveryOrder.SenderName
-	);
+    var cart = Page.ViewData.Model as HistoryCart; 
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+    var canPaymentMethodChange = cart.CanModifyPaymentMethod();
+    var hasChanges = cart.Original != null && (
+            cart.Original.PaymentMethod != cart.PaymentMethod
+        ||  cart.Original.OrderCustomer.PaymentDetail != cart.OrderCustomer.PaymentDetail
+        ||  cart.Original.OrderCustomer.EmailAddr != cart.OrderCustomer.EmailAddr
+        ||  cart.Original.DeliveryOrderAddress.ToString() != cart.DeliveryOrderAddress.ToString()
+        ||  cart.Original.DeliveryOrderAddress.Tel != cart.DeliveryOrderAddress.Tel
+        ||  cart.Original.DeliveryOrderAddress.Recipientlastname != cart.DeliveryOrderAddress.Recipientlastname
+        ||  cart.Original.DeliveryOrderAddress.Recipientfirstname != cart.DeliveryOrderAddress.Recipientfirstname
+        ||  cart.Original.DeliveryOrderAddress.Recipientlastnamekana != cart.DeliveryOrderAddress.Recipientlastnamekana
+        ||  cart.Original.DeliveryOrderAddress.Recipientfirstnamekana != cart.DeliveryOrderAddress.Recipientfirstnamekana
+        ||  cart.Original.DeliveryOrder.DeliveryDate != cart.DeliveryOrder.DeliveryDate
+        ||  cart.Original.DeliveryOrder.HourRange != cart.DeliveryOrder.HourRange
+        ||  cart.Original.DeliveryOrder.WrappingType != cart.DeliveryOrder.WrappingType
+        ||  cart.Original.DeliveryOrder.SenderName != cart.DeliveryOrder.SenderName
+    );
 
-	ViewBag.PageTitle = "購入履歴 - 詳細";
+    ViewBag.PageTitle = "購入履歴 - 詳細";
 }
 
 @DisplayViewMessages(viewData)
 
 @if (hasChanges) {
-	<div class="successOnSubmit">
-		<p class="successOnSubmitText"><strong>注文変更はまだ確定されていません。他の項目を編集し、「注文を変更する」ボタンから変更を確定してください。</strong></p>
-	</div>
-	<form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="History", id=cart.OrderId} )" method="post">
-		@(Page.Html.SessionAntiForgeryToken())
-		@(Page.Html.HttpMethodOverride("put"))
-		@if(hasChanges && (cart.CanModify || cart.CanModifyPaymentMethod())) {
-			<div class="buttonContainer">
-				<button type="submit" name="commit" value="commit" class="btCallToAction btLargeSize btNext">注文を変更する</button>
-			</div>
-		}
-	</form>
+    <div class="successOnSubmit">
+        <p class="successOnSubmitText"><strong>注文変更はまだ確定されていません。他の項目を編集し、「注文を変更する」ボタンから変更を確定してください。</strong></p>
+    </div>
+    <form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="History", id=cart.OrderId} )" method="post">
+        @(Page.Html.SessionAntiForgeryToken())
+        @(Page.Html.HttpMethodOverride("put"))
+        @if(hasChanges && (cart.CanModify || cart.CanModifyPaymentMethod())) {
+            <div class="buttonContainer">
+                <button type="submit" name="commit" value="commit" class="btCallToAction btLargeSize btNext">注文を変更する</button>
+            </div>
+        }
+    </form>
 }
 
 <div class="section">
-	<div class="inner">
-		<form>
-			<div class="section orderHistory">
-				<div class="section orderInfoList">
-					<p class="orderInfoListTitle"><span class="orderInfoListTitleText">ご注文概要</span></p>
-					<div class="orderInfo">
-						<p class="orderSummary"><span class="title">ご注文日時</span>@cart.OrderDate.ToString("yyyy/MM/dd hh:mm")</p>
-						<p class="orderSummary"><span class="title">ご注文番号</span>@cart.OrderId</p>
-						<p class="orderSummary"><span class="title">受注状態</span>@OrderStatusText[cart.OrderStatus]</p>
-						<p class="orderSummary"><span class="title">クーポンコード</span>@cart.ServiceValues["CampaignCode"]</p>
-					</div>
-				</div>
-				<div class="section flexBoxResponsive flexBoxAlignTop">
-					<div class="cartDetailBlock">
-						<p class="cartDetailBlockTitle"><span class="cartDetailBlockTitleText">ご注文商品</span></p>
-						@Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
-					</div>
-					<div class="cartOrderBlock">
-						<table class="orderSumTable">
-							<tr>
-								<th>商品合計<span class="tax">（税込）</span></th>
-								<td>@FormatPrice(cart.ExpandOrderItems.Sum(item => item.LinePrice + item.PointUsage + item.DiscountPrice))</td>
-							</tr>
-							<tr>
-								<th>送料<span class="tax">（税込）</span></th>
-								<td>@FormatPrice(cart.DeliveryCharge)</td>
-							</tr>
-							<tr>
-								<th>手数料<span class="tax">（税込）</span></th>
-								<td>@FormatPrice(cart.CacheOnDeliveryCharge)</td>
-							</tr>
-							<tr class="sum">
-								<th>合計<span class="tax">（税込）</span></th>
-								<td>@FormatPrice(cart.TotalPayment)</td>
-							</tr>
-							<tr>
-								<th>値引</th>
-								<td class="minus">-@FormatPrice(cart.DiscountPrice)</td>
-							</tr>
-							<tr>
-								<th>ポイント利用</th>
-								<td class="minus">-@FormatPrice(cart.TotalUsagePoint)</td>
-							</tr>
-							<tr class="sum">
-								<th>総計<span class="tax">（税込）</span></th>
-								<td class="total">@FormatPrice(cart.TotalPayment)</td>
-							</tr>
-						</table>
-						<p class="getPoint">獲得ポイント：@FormatPoint(cart.ChargePointSummary)</p>
-					</div>
-				</div>
-				<div class="section orderInfoList">
-					<p class="orderInfoListTitle"><span class="orderInfoListTitleText">ご注文情報詳細</span></p>
-					<dl class="orderInfo">
-						<dt>
-							<p class="title">お客様情報</p>
-							<p class="inTitleLink">
-								@if(cart.CanModify) {
-									<button type="submit" name="customer" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})">変更</button>
-								}
-							</p>
-						</dt>
-						<dd>
-							@(cart.OrderCustomer.LastName + cart.OrderCustomer.FirstName) / @(cart.OrderCustomer.LastNameKana + @cart.OrderCustomer.FirstNameKana) <br> 
-							@cart.OrderCustomerOrderedAddress.ToString() <br>
-							@cart.OrderCustomerOrderedAddress.Tel <br>
-							@cart.OrderCustomer.EmailAddr
-						</dd>
-					</dl>
-					<dl class="orderInfo">
-						<dt>
-							<p class="title">お届け先</p>
-							<p class="inTitleLink">
-								@if(cart.CanModify) {
-									<button type="submit" name="shipping" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})">変更</button>
-								}
-							</p>
-						</dt>
-						<dd>
-							@(cart.DeliveryOrderAddress.Recipientlastname + cart.DeliveryOrderAddress.Recipientfirstname) / @(cart.DeliveryOrderAddress.Recipientlastnamekana + @cart.DeliveryOrderAddress.Recipientfirstnamekana) <br> 
-							@cart.DeliveryOrderAddress.ToString() <br>
-							@cart.DeliveryOrderAddress.Tel <br>
-						</dd>
-					</dl>
-					<dl class="orderInfo">
-						<dt>
-							<p class="title">お届け日時</p>
-							<p class="inTitleLink">
-								@if(cart.CanModify) {
-									<button type="submit" name="delivery" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})">変更</button>
-								}
-							</p>
-						</dt>
-						<dd>
-							@if (cart.DeliveryOrder.DeliveryDate.HasValue) {
-								<text>@PrintDate(cart.DeliveryOrder.DeliveryDate.Value)</text>
-							} 
-							else if (cart.LastReleaseDate > DateTime.Now) {
-								<text>
-									発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br/>
-									発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
-								</text>
-							} else {
-								<text>最短でお届け</text>
-							}
-							@if (!string.IsNullOrEmpty(cart.DeliveryOrder.HourRange)) {
-								<text>（時間帯：@ViewExtensions.HourRanges[cart.DeliveryOrder.HourRange]）</text>
-							}
-						</dd>
-					</dl>
-					<dl class="orderInfo">
-						<dt>
-							<p class="title">お支払い方法</p>
-							<p class="inTitleLink">
-								@if(cart.CanModifyPaymentMethod) {
-									<button type="submit" name="payment" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})">変更</button>
-								}
-							</p>
-						</dt>
-						<dd>@PaymentMethodText[cart.PaymentMethod]</dd>
-					</dl>
-					<dl class="orderInfo">
-						<dt>
-						<p class="title">備考</p>
-						<p class="inTitleLink"></p>
-						</dt>
-						<dd>@(cart.ServiceValues.ContainsKey("Remarks") && !string.IsNullOrEmpty(cart.ServiceValues["Remarks"]) ? cart.ServiceValues["Remarks"] : "なし")</dd>
-					</dl>
-				</div>
-			</div>
-		</form>
-		<form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="History", id=cart.OrderId} )" method="post">
-			@(Page.Html.SessionAntiForgeryToken())
-			@(Page.Html.HttpMethodOverride("put"))
-			@if(hasChanges && (cart.CanModify || cart.CanModifyPaymentMethod())) {
-				<div class="buttonContainer">
-					<button type="submit" name="commit" value="commit" class="btCallToAction btLargeSize btNext">注文を変更する</button>
-				</div>
-			}
-			<div class="buttonContainer">
-				<a href="@Page.Url.RouteUrl("ModdDefault", new {  controller="Order", action="History", id=(long?)null })" class="btPrimary btNormalSize btPrev">購入履歴一覧へもどる</a>
-			</div>
-			@if (cart.CanCancel) {
-				<div class="buttonContainer">
-					<a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryCancel", id=cart.OrderId} )" class="btLargeSize btNext">注文をキャンセルする</a>
-				</div>
-			}
-		</form>
-	</div>
+    <div class="inner">
+        <form>
+            <div class="section orderHistory">
+                <div class="section orderInfoList">
+                    <p class="orderInfoListTitle"><span class="orderInfoListTitleText">ご注文概要</span></p>
+                    <div class="orderInfo">
+                        <p class="orderSummary"><span class="title">ご注文日時</span>@cart.OrderDate.ToString("yyyy/MM/dd hh:mm")</p>
+                        <p class="orderSummary"><span class="title">ご注文番号</span>@cart.OrderId</p>
+                        <p class="orderSummary"><span class="title">受注状態</span>@OrderStatusText[cart.OrderStatus]</p>
+                        <p class="orderSummary"><span class="title">クーポンコード</span>@cart.ServiceValues["CampaignCode"]</p>
+                    </div>
+                </div>
+                <div class="section flexBoxResponsive flexBoxAlignTop">
+                    <div class="cartDetailBlock">
+                        <p class="cartDetailBlockTitle"><span class="cartDetailBlockTitleText">ご注文商品</span></p>
+                        @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
+                    </div>
+                    <div class="cartOrderBlock">
+                        <table class="orderSumTable">
+                            <tr>
+                                <th>商品合計<span class="tax">（税込）</span></th>
+                                <td>@FormatPrice(cart.ExpandOrderItems.Sum(item => item.LinePrice + item.PointUsage + item.DiscountPrice))</td>
+                            </tr>
+                            <tr>
+                                <th>送料<span class="tax">（税込）</span></th>
+                                <td>@FormatPrice(cart.DeliveryCharge)</td>
+                            </tr>
+                            <tr>
+                                <th>手数料<span class="tax">（税込）</span></th>
+                                <td>@FormatPrice(cart.CacheOnDeliveryCharge)</td>
+                            </tr>
+                            <tr class="sum">
+                                <th>合計<span class="tax">（税込）</span></th>
+                                <td>@FormatPrice(cart.TotalPayment)</td>
+                            </tr>
+                            <tr>
+                                <th>値引</th>
+                                <td class="minus">-@FormatPrice(cart.DiscountPrice)</td>
+                            </tr>
+                            <tr>
+                                <th>ポイント利用</th>
+                                <td class="minus">-@FormatPrice(cart.TotalUsagePoint)</td>
+                            </tr>
+                            <tr class="sum">
+                                <th>総計<span class="tax">（税込）</span></th>
+                                <td class="total">@FormatPrice(cart.TotalPayment)</td>
+                            </tr>
+                        </table>
+                        <p class="getPoint">獲得ポイント：@FormatPoint(cart.ChargePointSummary)</p>
+                    </div>
+                </div>
+                <div class="section orderInfoList">
+                    <p class="orderInfoListTitle"><span class="orderInfoListTitleText">ご注文情報詳細</span></p>
+                    <dl class="orderInfo">
+                        <dt>
+                            <p class="title">お客様情報</p>
+                            <p class="inTitleLink">
+                                @if(cart.CanModify) {
+                                    <button type="submit" name="customer" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})">変更</button>
+                                }
+                            </p>
+                        </dt>
+                        <dd>
+                            @(cart.OrderCustomer.LastName + cart.OrderCustomer.FirstName) / @(cart.OrderCustomer.LastNameKana + @cart.OrderCustomer.FirstNameKana) <br> 
+                            @cart.OrderCustomerOrderedAddress.ToString() <br>
+                            @cart.OrderCustomerOrderedAddress.Tel <br>
+                            @cart.OrderCustomer.EmailAddr
+                        </dd>
+                    </dl>
+                    <dl class="orderInfo">
+                        <dt>
+                            <p class="title">お届け先</p>
+                            <p class="inTitleLink">
+                                @if(cart.CanModify) {
+                                    <button type="submit" name="shipping" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})">変更</button>
+                                }
+                            </p>
+                        </dt>
+                        <dd>
+                            @(cart.DeliveryOrderAddress.Recipientlastname + cart.DeliveryOrderAddress.Recipientfirstname) / @(cart.DeliveryOrderAddress.Recipientlastnamekana + @cart.DeliveryOrderAddress.Recipientfirstnamekana) <br> 
+                            @cart.DeliveryOrderAddress.ToString() <br>
+                            @cart.DeliveryOrderAddress.Tel <br>
+                        </dd>
+                    </dl>
+                    <dl class="orderInfo">
+                        <dt>
+                            <p class="title">お届け日時</p>
+                            <p class="inTitleLink">
+                                @if(cart.CanModify) {
+                                    <button type="submit" name="delivery" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})">変更</button>
+                                }
+                            </p>
+                        </dt>
+                        <dd>
+                            @if (cart.DeliveryOrder.DeliveryDate.HasValue) {
+                                <text>@PrintDate(cart.DeliveryOrder.DeliveryDate.Value)</text>
+                            } 
+                            else if (cart.LastReleaseDate > DateTime.Now) {
+                                <text>
+                                    発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br/>
+                                    発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
+                                </text>
+                            } else {
+                                <text>最短でお届け</text>
+                            }
+                            @if (!string.IsNullOrEmpty(cart.DeliveryOrder.HourRange)) {
+                                <text>（時間帯：@ViewExtensions.HourRanges[cart.DeliveryOrder.HourRange]）</text>
+                            }
+                        </dd>
+                    </dl>
+                    <dl class="orderInfo">
+                        <dt>
+                            <p class="title">お支払い方法</p>
+                            <p class="inTitleLink">
+                                @if(cart.CanModifyPaymentMethod) {
+                                    <button type="submit" name="payment" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})">変更</button>
+                                }
+                            </p>
+                        </dt>
+                        <dd>@PaymentMethodText[cart.PaymentMethod]</dd>
+                    </dl>
+                    <dl class="orderInfo">
+                        <dt>
+                        <p class="title">備考</p>
+                        <p class="inTitleLink"></p>
+                        </dt>
+                        <dd>@(cart.ServiceValues.ContainsKey("Remarks") && !string.IsNullOrEmpty(cart.ServiceValues["Remarks"]) ? cart.ServiceValues["Remarks"] : "なし")</dd>
+                    </dl>
+                </div>
+            </div>
+        </form>
+        <form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="History", id=cart.OrderId} )" method="post">
+            @(Page.Html.SessionAntiForgeryToken())
+            @(Page.Html.HttpMethodOverride("put"))
+            @if(hasChanges && (cart.CanModify || cart.CanModifyPaymentMethod())) {
+                <div class="buttonContainer">
+                    <button type="submit" name="commit" value="commit" class="btCallToAction btLargeSize btNext">注文を変更する</button>
+                </div>
+            }
+            <div class="buttonContainer">
+                <a href="@Page.Url.RouteUrl("ModdDefault", new {  controller="Order", action="History", id=(long?)null })" class="btPrimary btNormalSize btPrev">購入履歴一覧へもどる</a>
+            </div>
+            @if (cart.CanCancel) {
+                <div class="buttonContainer">
+                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryCancel", id=cart.OrderId} )" class="btLargeSize btNext">注文をキャンセルする</a>
+                </div>
+            }
+        </form>
+    </div>
 </div>
