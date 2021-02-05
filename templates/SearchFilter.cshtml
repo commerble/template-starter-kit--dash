@@ -14,18 +14,18 @@
         public string Icon { get; set; }
     }
     ViewModel LoadViewModel() {
-        var checkedKinds = (Model.ContainsKey("kinds") ? Model["kinds"] as string[] : null) ?? new string[0];
-        var checkedTags  = (Model.ContainsKey("tags")  ? Model["tags"]  as string[] : null) ?? new string[0];
+        var checkedKinds = ((Model.ContainsKey("kinds") ? Model["kinds"] as string[] : null) ?? new string[0]).Select(k => k.ToLower()).ToArray();
+        var checkedTags  = ((Model.ContainsKey("tags")  ? Model["tags"]  as string[] : null) ?? new string[0]).Select(t => t.ToLower()).ToArray();
         var sort = Page.Request.QueryString["sort"] ?? "new";
         var kinds = Kinds.Select(k => new CategoryViewModel {
             GroupCode = k.GroupCode,
-            Code = k.Code,
+            Code = k.Code.ToLower(),
             Name = k.Name,
             Icon = k.Icon,
         });
         var tags = Tags.Select(t => new CategoryViewModel {
             GroupCode = t.GroupCode,
-            Code = t.Code,
+            Code = t.Code.ToLower(),
             Name = t.Name,
             Icon = t.Icon,
         });
