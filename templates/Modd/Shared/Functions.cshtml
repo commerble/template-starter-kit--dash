@@ -237,7 +237,7 @@
                         .Select(p => new KeyValuePair<Regex, SiteParts>(new Regex(("^" + root + p.Pattern + "$").Replace("//","/"), RegexOptions.IgnoreCase), p)));
 
     var path = Page.Request.Url.AbsolutePath;
-    if ((path + "/") == root) {
+    if (root.Equals(path + "/", StringComparison.OrdinalIgnoreCase)) {
         path = root;
     }
     
