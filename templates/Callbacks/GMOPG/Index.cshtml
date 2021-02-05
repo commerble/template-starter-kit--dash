@@ -1,3 +1,51 @@
+@functions {
+    public class LineViewModel {
+        public int ProductId { get; set; }
+        public string Name { get; set; }
+        public int Qty { get; set; }
+        public string DisplayName { get; set; }
+        public string Icon { get; set; }
+        public string Size { get; set; }
+        public string Color { get; set; }
+        public string Valiation() {
+            return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+        }
+    }
+
+    List<LineViewModel> LoadViewModel(PurchaseOrder order) {
+        var types = new [] { OrderLineType.NormalOrder, OrderLineType.SetProductParent };
+        var items = order.Items.Where(item => types.Contains(item.OrderLineType));
+        var productIds = items.Select(item => item.ProductId).ToArray();
+        var productPages = Database.Query(new { Now, Next }, (db, args)=> 
+            from p in db.ProductPages
+            join r in db.ProductRelations on p.Code equals r.ProductPageCode
+            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            where productIds.Contains(s.Id)
+            select new {
+                ProductId = s.Id,
+                p.Code,
+                p.Name,
+                s.Size,
+                s.Color,
+                PageIcon = p.Icon,
+                ProductIcon = s.Icon
+            }
+        ).ToList();
+        
+        return items.Select(item => {
+                        var productPage = productPages.Where(p => p.ProductId == item.ProductId).FirstOrDefault();
+                        return new LineViewModel {
+                            ProductId = item.ProductId,
+                            Name = item.Product.Name,
+                            Qty = item.OrderAmount,
+                            DisplayName = productPage?.Name,
+                            Icon = productPage?.ProductIcon ?? productPage?.PageIcon,
+                            Size = productPage?.Size,
+                            Color = productPage?.Color,
+                        };
+                    }).ToList();
+    }
+}
 @{
     Page.NoCache = true;
 
@@ -106,6 +154,8 @@
     }
 
     ViewBag.PageTitle = "お支払いキャンセル";
+    var vm = LoadViewModel(order);
+    var cartinUrl = Href("~/Order/Cart?") + string.Join("&", vm.Select(line => $"item={line.ProductId}&qty={line.Qty}"));
 }
 <div class="section">
     <div class="inner">
@@ -117,14 +167,51 @@
                     仮押さえしました在庫は、@(order.OrderCustomer.AutoCancelDate.Value.ToString("yyyy/MM/dd HH:mm:ss"))移行に戻されます。<br>
                     またのご利用お待ちしております。
                 </p>
-                <dl>
-                    <dt>エラーコード</dt>
-                    <dd>@Page.Request.Form["ErrCode"]</dd>
-                    <dt>エラー情報</dt>
-                    <dd>@Page.Request.Form["ErrInfo"]</dd>
+                <dl class="formBlock">
+                    <dt class="formBlockTitle">エラーコード</dt>
+                    <dd class="formBlockBody">
+                        <p class="inputContent">@Page.Request.Form["ErrCode"]</p>
+                    </dd>
                 </dl>
+                <dl class="formBlock">
+                    <dt class="formBlockTitle">エラー情報</dt>
+                    <dd class="formBlockBody">
+                        <p class="inputContent">@Page.Request.Form["ErrInfo"]</p>
+                    </dd>
+                </dl>
+            </section>
+            <section class="formSection">
+                <h2 class="formSectionTitle center">再度購入を試みる</h2>
+                <p class="formSectionLead">
+                    先ほどのカートイン情報はクリアされています。同じ商品をカートインして購入を試みますか？
+                </p>
+                <table class="cartDetailTable" style="margin-top:16px">
+                    <tbody>
+                        @foreach(var line in vm ) {
+                            <tr>
+                                <td class="dataCell">
+                                    <div class="cartDetailProductImage">
+                                        <img src="@IconUrl(line.Icon)" alt="@line.Name">
+                                    </div>
+                                    <div class="cartDetailProductInfo">
+                                        <p class="productName">@(line.DisplayName ?? line.Name)</p>
+                                        <p class="productRemarks">
+                                            <span>@line.Valiation()</span>
+                                        </p>
+                                        <div class="qty">
+                                            <text>数量：@line.Qty</text>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
                 <div class="buttonContainer">
-                    <a href="@Href("~/")" class="btPrimary btNormalSize btNext">トップページへ戻る</a>
+                    <a href="@cartinUrl" class="btCallToAction btLargeSize btNext">もう一度カートにいれる</a>
+                </div>
+                <div class="buttonContainer">
+                    <a href="@Href("~/")" class="btPrimary btNormalSize btNextGhost">トップページへ戻る</a>
                 </div>
             </section>
         </div>
