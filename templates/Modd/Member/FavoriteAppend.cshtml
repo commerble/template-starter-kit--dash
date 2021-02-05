@@ -1,77 +1,77 @@
 ﻿@functions {
-	public class ViewModel {
-		public int ProductId { get; set; }
-		public string Code { get; set; }
-		public string Name { get; set; }
-		public string Icon { get; set; }
-		public decimal? UnitPriceWithTax { get; set; }
-	}
-	ViewModel LoadViewModel() {
-  		var favorite = Page.ViewData.Model as VM.FavoriteAppend; 
-		var page = Database.Single(new { Now, Next, favorite.ProductId }, (db, args) => (
-			from p in db.ProductPages
-			join r in db.ProductRelations on p.Code equals r.ProductPageCode
-			join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
-			where s.Id == args.ProductId
-			select new {
-				p.Code,
-				p.Name,
-				p.Icon,
-				p.PriceProductId
-			}
-		).FirstOrDefault());
+    public class ViewModel {
+        public int ProductId { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Icon { get; set; }
+        public decimal? UnitPriceWithTax { get; set; }
+    }
+    ViewModel LoadViewModel() {
+          var favorite = Page.ViewData.Model as VM.FavoriteAppend; 
+        var page = Database.Single(new { Now, Next, favorite.ProductId }, (db, args) => (
+            from p in db.ProductPages
+            join r in db.ProductRelations on p.Code equals r.ProductPageCode
+            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            where s.Id == args.ProductId
+            select new {
+                p.Code,
+                p.Name,
+                p.Icon,
+                p.PriceProductId
+            }
+        ).FirstOrDefault());
 
-		if (page == null) {
-			throw new System.Web.HttpException(404, "NotFound");
-		}
+        if (page == null) {
+            throw new System.Web.HttpException(404, "NotFound");
+        }
 
-		return new ViewModel {
-			ProductId = favorite.ProductId,
-			Code = page.Code,
-			Name = page.Name,
-			Icon = page.Icon,
-			UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(favorite.ProductId)
-		};
-	}
+        return new ViewModel {
+            ProductId = favorite.ProductId,
+            Code = page.Code,
+            Name = page.Name,
+            Icon = page.Icon,
+            UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(favorite.ProductId)
+        };
+    }
 }
 @{
-	var vm = LoadViewModel();
+    var vm = LoadViewModel();
 
-	ViewBag.PageTitle = "お気に入り - 登録確認";
+    ViewBag.PageTitle = "お気に入り - 登録確認";
 }
 <div class="section">
-	<div class="inner">
-		<div class="formWrapper">
-			<form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Favorites", item=vm.ProductId })" method="post">
-				@Page.Html.SessionAntiForgeryToken()
-				<section class="formSection">
-					<h1 class="formSectionTitle">お気に入り登録のご確認</h1>
-					<p class="formSectionLead">以下の内容でよろしければ「登録する」ボタンをクリックしてください。お気に入り商品を登録します。</p>
-					<table class="cartDetailTable">
-						<tbody>
-							<tr>
-								<td class="dataCell">
-									<div class="cartDetailProductImage">
-										<a href="@ItemUrl(vm.Code)" target="_blank">
-											<img src="@IconUrl(vm.Icon)" alt="@vm.Name">
-										</a>
-									</div>
-									<div class="cartDetailProductInfo">
-										<p class="productName"><a href="@ItemUrl(vm.Code)" target="_blank">@vm.Name</a></p>
-										@PrintPrice(vm.UnitPriceWithTax)
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</section>
-				<div class="buttonContainer">
-					<button type="submit" class="btCallToAction btLargeSize btNext">登録する</button>
-				</div>
-				<div class="buttonContainer">
+    <div class="inner">
+        <div class="formWrapper">
+            <form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Favorites", item=vm.ProductId })" method="post">
+                @Page.Html.SessionAntiForgeryToken()
+                <section class="formSection">
+                    <h1 class="formSectionTitle">お気に入り登録のご確認</h1>
+                    <p class="formSectionLead">以下の内容でよろしければ「登録する」ボタンをクリックしてください。お気に入り商品を登録します。</p>
+                    <table class="cartDetailTable">
+                        <tbody>
+                            <tr>
+                                <td class="dataCell">
+                                    <div class="cartDetailProductImage">
+                                        <a href="@ItemUrl(vm.Code)" target="_blank">
+                                            <img src="@IconUrl(vm.Icon)" alt="@vm.Name">
+                                        </a>
+                                    </div>
+                                    <div class="cartDetailProductInfo">
+                                        <p class="productName"><a href="@ItemUrl(vm.Code)" target="_blank">@vm.Name</a></p>
+                                        @PrintPrice(vm.UnitPriceWithTax)
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <div class="buttonContainer">
+                    <button type="submit" class="btCallToAction btLargeSize btNext">登録する</button>
+                </div>
+                <div class="buttonContainer">
                     <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites"})" class="btPrimary btNormalSize btPrev">お気に入り一覧へ</a>
                 </div>
-			</form>
-		</div>
-	</div>
+            </form>
+        </div>
+    </div>
 </div>

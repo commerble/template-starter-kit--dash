@@ -8,30 +8,30 @@
 @DisplayViewMessages(viewData)
 
 <div class="section">
-	<div class="inner">
-		<div class="formWrapper">
-			<form action="@action" method="post">
+    <div class="inner">
+        <div class="formWrapper">
+            <form action="@action" method="post">
                 @Page.Html.SessionAntiForgeryToken()
-				<section class="formSection">
-					<h2 id="destination" class="formSectionTitle">お届け先</h2>
-					<dl class="formBlock required">
-						<dt class="formBlockTitle">お届け先名</dt>
-						<dd class="formBlockBody">
-							<div class="formItem">
-								@Page.Html.TextBox("AddressName",address.AddressName ?? "", new {
+                <section class="formSection">
+                    <h2 id="destination" class="formSectionTitle">お届け先</h2>
+                    <dl class="formBlock required">
+                        <dt class="formBlockTitle">お届け先名</dt>
+                        <dd class="formBlockBody">
+                            <div class="formItem">
+                                @Page.Html.TextBox("AddressName",address.AddressName ?? "", new {
                                     data_val = "true",
                                     data_val_length = "お届け先名は10文字以内で入力してください。",
                                     data_val_length_maxlength = "10"})
-							</div>
+                            </div>
                             @ValidationMessageFor("AddressName")
-						</dd>
-					</dl>
-					@Page.Html.PartialEx("ModdSharedAddressEditor", address.Address, new {
-						target = "Address", 
-						command = "zipsearch", 
-						commandUrl = action
-					})
-				</section>
+                        </dd>
+                    </dl>
+                    @Page.Html.PartialEx("ModdSharedAddressEditor", address.Address, new {
+                        target = "Address", 
+                        command = "zipsearch", 
+                        commandUrl = action
+                    })
+                </section>
                 @if (address.AddressId == 0) {
                     <div class="buttonContainer">
                         <button type="submit" class="btCallToAction btLargeSize btNext" name="create" value="post">登録する</button>

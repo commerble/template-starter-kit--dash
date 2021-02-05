@@ -1,50 +1,50 @@
 ﻿@{
-	var account = Page.ViewData.Model as VM.Account;
-	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
+    var account = Page.ViewData.Model as VM.Account;
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
 
-	ViewBag.PageTitle = "会員情報編集 - 確認";
+    ViewBag.PageTitle = "会員情報編集 - 確認";
 }
 @DisplayViewMessages(viewData)
 
 <div class="section">
-	<div class="inner">
-		<div class="formWrapper">
-			<form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="Account"})" method="post">
+    <div class="inner">
+        <div class="formWrapper">
+            <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="Account"})" method="post">
                 @Raw(Page.Html.ModelToObjectState("model",account))
-				@Page.Html.SessionAntiForgeryToken()
-				<section class="formSection">
-					<h2 id="customer" class="formSectionTitle">会員情報</h2>
-					<dl class="formBlock">
-						<dt class="formBlockTitle">氏名</dt>
-						<dd class="formBlockBody">
-							<p class="inputContent">@(account.LastName + account.FirstName)</p>
-						</dd>
-					</dl>
-					<dl class="formBlock">
-						<dt class="formBlockTitle">フリガナ</dt>
-						<dd class="formBlockBody">
-							<p class="inputContent">@(account.LastNameKana + account.FirstNameKana)</p>
-						</dd>
-					</dl>
-					<dl class="formBlock">
-						<dt class="formBlockTitle">生年月日</dt>
-						<dd class="formBlockBody">
-							<p class="inputContent">@account.Birthday.Value.ToString("yyyy年MM月dd日")</p>
-						</dd>
-					</dl>
-					<dl class="formBlock">
-						<dt class="formBlockTitle">性別</dt>
-						<dd class="formBlockBody">
-							<p class="inputContent">@HumanSexesText[account.Sex]</p>
-						</dd>
-					</dl>
-					<dl class="formBlock">
-						<dt class="formBlockTitle">メルマガ配信</dt>
-						<dd class="formBlockBody">
-							<p class="inputContent">@SubscribeText[account.Subscribe]</p>
-						</dd>
-					</dl>
-				</section>
+                @Page.Html.SessionAntiForgeryToken()
+                <section class="formSection">
+                    <h2 id="customer" class="formSectionTitle">会員情報</h2>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">氏名</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@(account.LastName + account.FirstName)</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">フリガナ</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@(account.LastNameKana + account.FirstNameKana)</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">生年月日</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@account.Birthday.Value.ToString("yyyy年MM月dd日")</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">性別</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@HumanSexesText[account.Sex]</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock">
+                        <dt class="formBlockTitle">メルマガ配信</dt>
+                        <dd class="formBlockBody">
+                            <p class="inputContent">@SubscribeText[account.Subscribe]</p>
+                        </dd>
+                    </dl>
+                </section>
                 <div class="buttonContainer">
                     <button type="submit" class="btCallToAction btLargeSize btNext" name="update" value="post">会員情報を変更</button>
                 </div>

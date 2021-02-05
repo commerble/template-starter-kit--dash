@@ -1,91 +1,91 @@
 ﻿@functions {
-	public class ViewModel {
-		public int ProductId { get; set; }
-		public string Code { get; set; }
-		public string Name { get; set; }
-		public string KindName { get; set; }
-		public string KindIcon { get; set; }
-		public string Thumbnail { get; set; }
-		public decimal? UnitPriceWithTax { get; set; }
-		public bool? HasMultiplePrice { get; set; }
-	}
-	ViewModel LoadViewModel() {
-  		var favorite = Page.ViewData.Model as Favorite; 
-		var page = Database.Single(new { Now, Next, favorite.ProductId }, (db, args) => (
-			from p in db.ProductPages
-			join k in db.ProductKinds on p.Kind equals k.Code
-			join r in db.ProductRelations on p.Code equals r.ProductPageCode
-			join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
-			where s.Id == args.ProductId
-			select new {
-				p.Code,
-				p.Name,
-				p.Thumbnail,
-				p.PriceProductId,
-				p.HasMultiplePrice,
-				KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-				KindIcon = k.Icon
-			}
-		).FirstOrDefault());
+    public class ViewModel {
+        public int ProductId { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string KindName { get; set; }
+        public string KindIcon { get; set; }
+        public string Thumbnail { get; set; }
+        public decimal? UnitPriceWithTax { get; set; }
+        public bool? HasMultiplePrice { get; set; }
+    }
+    ViewModel LoadViewModel() {
+          var favorite = Page.ViewData.Model as Favorite; 
+        var page = Database.Single(new { Now, Next, favorite.ProductId }, (db, args) => (
+            from p in db.ProductPages
+            join k in db.ProductKinds on p.Kind equals k.Code
+            join r in db.ProductRelations on p.Code equals r.ProductPageCode
+            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            where s.Id == args.ProductId
+            select new {
+                p.Code,
+                p.Name,
+                p.Thumbnail,
+                p.PriceProductId,
+                p.HasMultiplePrice,
+                KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                KindIcon = k.Icon
+            }
+        ).FirstOrDefault());
 
-		if (page == null) {
-			throw new System.Web.HttpException(404, "NotFound");
-		}
+        if (page == null) {
+            throw new System.Web.HttpException(404, "NotFound");
+        }
 
-		return new ViewModel {
-			ProductId = favorite.ProductId,
-			Code = page.Code,
-			Name = page.Name,
-			KindName = page.KindName,
-			Thumbnail = page.Thumbnail,
-			UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(favorite.ProductId),
-			HasMultiplePrice = page.HasMultiplePrice,
-			KindIcon = page.KindIcon,
-		};
-	}
+        return new ViewModel {
+            ProductId = favorite.ProductId,
+            Code = page.Code,
+            Name = page.Name,
+            KindName = page.KindName,
+            Thumbnail = page.Thumbnail,
+            UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(favorite.ProductId),
+            HasMultiplePrice = page.HasMultiplePrice,
+            KindIcon = page.KindIcon,
+        };
+    }
 }
 @{
-	var vm = LoadViewModel();
+    var vm = LoadViewModel();
 
-	ViewBag.PageTitle = "お気に入り - 登録削除";
+    ViewBag.PageTitle = "お気に入り - 登録削除";
 }
 
 <div class="section">
-	<div class="inner">
-		<div class="section">
-			<div class="formWrapper">
-				<form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=vm.ProductId} )" method="post">
-					@Page.Html.HttpMethodOverride("delete")
-					@Page.Html.SessionAntiForgeryToken()
-					<section class="formSection">
-						<h1 class="formSectionTitle">お気に入りの削除</h1>
-						<p class="formSectionLead">以下の内容でよろしければ「お気に入りを削除する」ボタンをクリックしてください。仮予約のキャンセルが完了します。</p>
-						<div class="formBlock flexBox flexBoxCenter">
-							<div class="productTile">
-								<div class="productTileImage">
-									<img src="@ThumbnailUrl(vm.Thumbnail)" alt="@vm.Name">
-									@if (!string.IsNullOrEmpty(vm.KindIcon)) {
-										<i class="@vm.KindIcon"></i>
-									}
-								</div>
-								<div class="productTileText">
-									<p class="productName" style="height: 21.6px;">@vm.Name</p>
-									<p class="productCategory">@vm.KindName</p>
-									<div class="price">
-										@PrintNormalPrice(vm.UnitPriceWithTax, vm.HasMultiplePrice)
-									</div>
-								</div>
-							</div>
-						</div>
-					</section>
-					<div class="buttonContainer">
-						<button type="submit" class="btCallToAction btLargeSize btNext">お気に入りを削除する</button>
-					</div>
-					<div class="buttonContainer">
-						<a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=(int?)null})" class="btPrimary btNormalSize btPrev">お気に入り一覧へもどる</a>
-					</div>
-				</form>
-			</div>
+    <div class="inner">
+        <div class="section">
+            <div class="formWrapper">
+                <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=vm.ProductId} )" method="post">
+                    @Page.Html.HttpMethodOverride("delete")
+                    @Page.Html.SessionAntiForgeryToken()
+                    <section class="formSection">
+                        <h1 class="formSectionTitle">お気に入りの削除</h1>
+                        <p class="formSectionLead">以下の内容でよろしければ「お気に入りを削除する」ボタンをクリックしてください。仮予約のキャンセルが完了します。</p>
+                        <div class="formBlock flexBox flexBoxCenter">
+                            <div class="productTile">
+                                <div class="productTileImage">
+                                    <img src="@ThumbnailUrl(vm.Thumbnail)" alt="@vm.Name">
+                                    @if (!string.IsNullOrEmpty(vm.KindIcon)) {
+                                        <i class="@vm.KindIcon"></i>
+                                    }
+                                </div>
+                                <div class="productTileText">
+                                    <p class="productName" style="height: 21.6px;">@vm.Name</p>
+                                    <p class="productCategory">@vm.KindName</p>
+                                    <div class="price">
+                                        @PrintNormalPrice(vm.UnitPriceWithTax, vm.HasMultiplePrice)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="buttonContainer">
+                        <button type="submit" class="btCallToAction btLargeSize btNext">お気に入りを削除する</button>
+                    </div>
+                    <div class="buttonContainer">
+                        <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=(int?)null})" class="btPrimary btNormalSize btPrev">お気に入り一覧へもどる</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
