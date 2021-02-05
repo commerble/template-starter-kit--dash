@@ -1,6 +1,6 @@
 # Template Starter Kit for Dash
 
-CMSスキーマを含んだ。一通りなんでもできるスターターキット。
+リファレンスCMSスキーマを含んだ一通りなんでもできるスターターキット。
 
 ## Tasks
 
