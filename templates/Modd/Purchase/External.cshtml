@@ -60,7 +60,7 @@
                 <section class="formSection">
                     <h1 class="formSectionTitle center">お支払いのご案内</h1>
                     <p class="formSectionLead">在庫の確保が完了致しました。GMOペイメントゲートウェイ社が提供するお支払ページよりお支払ください。<br>
-                    お支払有効期限は@(order.OrderCustomer.AutoCancelDate.Value.AddMinutes(-10).ToString("yyyy/MM/dd hh:mm:ss"))までとなります。<br>
+                    お支払有効期限は@(order.OrderCustomer.AutoCancelDate.Value.AddMinutes(-1).ToString("yyyy/MM/dd HH:mm:ss"))までとなります。<br>
                     有効期限をすぎますと確保された在庫は自動的にキャンセルされます。</p>
                     <div class="buttonContainer">
                         <button type="submit" class="btCallToAction btLargeSize btNext">お支払いページへ進む</button>

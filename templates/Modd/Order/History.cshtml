@@ -45,7 +45,7 @@
                 <div class="section orderInfoList">
                     <p class="orderInfoListTitle"><span class="orderInfoListTitleText">ご注文概要</span></p>
                     <div class="orderInfo">
-                        <p class="orderSummary"><span class="title">ご注文日時</span>@cart.OrderDate.ToString("yyyy/MM/dd hh:mm")</p>
+                        <p class="orderSummary"><span class="title">ご注文日時</span>@cart.OrderDate.ToString("yyyy/MM/dd HH:mm")</p>
                         <p class="orderSummary"><span class="title">ご注文番号</span>@cart.OrderId</p>
                         <p class="orderSummary"><span class="title">受注状態</span>@OrderStatusText[cart.OrderStatus]</p>
                         <p class="orderSummary"><span class="title">クーポンコード</span>@cart.ServiceValues["CampaignCode"]</p>
