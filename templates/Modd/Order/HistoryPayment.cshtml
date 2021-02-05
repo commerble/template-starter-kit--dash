@@ -3,57 +3,57 @@
     var payment = Page.ViewData.Model as VM.HistoryPayment;
 
     var paymentMethods = new [] {
-		new SelectListItem  { Text = PaymentMethodText[PaymentMethod.CashOnDelivery], Value = "CashOnDelivery", Selected = payment.PaymentMethod == PaymentMethod.CashOnDelivery },
-		new SelectListItem  { Text = PaymentMethodText[PaymentMethod.Offsite], Value = "Offsite", Selected = payment.PaymentMethod == PaymentMethod.Offsite },
-		// new SelectListItem  { Text = PaymentMethodText[PaymentMethod.External], Value = "External", Selected = payment.PaymentMethod == PaymentMethod.External }, 外部決済には変更できない。
-	}.Where(pm => payment.Cart.UsablePaymentMethod.Any(upm => upm.ToString() == pm.Value));
+        new SelectListItem  { Text = PaymentMethodText[PaymentMethod.CashOnDelivery], Value = "CashOnDelivery", Selected = payment.PaymentMethod == PaymentMethod.CashOnDelivery },
+        new SelectListItem  { Text = PaymentMethodText[PaymentMethod.Offsite], Value = "Offsite", Selected = payment.PaymentMethod == PaymentMethod.Offsite },
+        // new SelectListItem  { Text = PaymentMethodText[PaymentMethod.External], Value = "External", Selected = payment.PaymentMethod == PaymentMethod.External }, 外部決済には変更できない。
+    }.Where(pm => payment.Cart.UsablePaymentMethod.Any(upm => upm.ToString() == pm.Value));
 
     ViewBag.PageTitle = "注文編集 - お支払い方法";
 }
 @DisplayViewMessages(viewData)
 
 <div class="section">
-	<div class="inner">
-		<div class="formWrapper">
-			<form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=payment.Cart.OrderId})" method="post">
+    <div class="inner">
+        <div class="formWrapper">
+            <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=payment.Cart.OrderId})" method="post">
                 @Page.Html.HttpMethodOverride("put")
-				<section class="formSection">
-                  	<h2 id="payment" class="formSectionTitle">お支払い方法</h2>
-                  	<dl class="formBlock required">
-						<dt class="formBlockTitle">決済方法</dt>
-						<dd class="formBlockBody">
-                      		<div class="formItem">
-								<span class="selectWrapper">
-									@Page.Html.DropDownList("PaymentMethod", paymentMethods, "--選択してください--", new {
-										ic_action="changePaymentDetail;openAccordion;",
-										data_val = "true",
-										data_val_required = "決済方法は必須項目です。",
-									})
-									@Page.Html.Hidden("OrderCustomer.PaymentDetail", payment.OrderCustomer.PaymentDetail, new {
-										data_cashondelivery = "",
-										data_offsite = "",
-										data_external = "gmopg",
-									})
-								</span>
-							</div>
-							@ValidationMessageFor("PaymentMethod")
-	                    </dd>
-                  	</dl>
-					<div style="margin-top:12px;" class="accordionFormBlock" data-accordion="CashOnDelivery">
-						<div class="inputNote">
-							<p>商品到着時に『商品代金』 ＋ 『荷造り送料』をお支払いください。<br>代金引換でのご注文の場合は、手数料一律330円(税込)がかかります。</p>
-						</div>
-					</div>
-					<div style="margin-top:12px;" class="accordionFormBlock" data-accordion="Offsite">
-						<div class="inputNote">
-							<p>振込先銀行口座は注文確定メールにてお知らせいたします。</p>
-						</div>
-					</div>
-					<div style="margin-top:12px;" class="accordionFormBlock" data-accordion="External">
-						<div class="inputNote">
-							<p>外部決済ページにて、クレジットカード、コンビニ前払い、コンビニ後払い、キャリア決済のいずれかの決済方法でお支払いください。</p>
-						</div>
-					</div>
+                <section class="formSection">
+                      <h2 id="payment" class="formSectionTitle">お支払い方法</h2>
+                      <dl class="formBlock required">
+                        <dt class="formBlockTitle">決済方法</dt>
+                        <dd class="formBlockBody">
+                              <div class="formItem">
+                                <span class="selectWrapper">
+                                    @Page.Html.DropDownList("PaymentMethod", paymentMethods, "--選択してください--", new {
+                                        ic_action="changePaymentDetail;openAccordion;",
+                                        data_val = "true",
+                                        data_val_required = "決済方法は必須項目です。",
+                                    })
+                                    @Page.Html.Hidden("OrderCustomer.PaymentDetail", payment.OrderCustomer.PaymentDetail, new {
+                                        data_cashondelivery = "",
+                                        data_offsite = "",
+                                        data_external = "gmopg",
+                                    })
+                                </span>
+                            </div>
+                            @ValidationMessageFor("PaymentMethod")
+                        </dd>
+                      </dl>
+                    <div style="margin-top:12px;" class="accordionFormBlock" data-accordion="CashOnDelivery">
+                        <div class="inputNote">
+                            <p>商品到着時に『商品代金』 ＋ 『荷造り送料』をお支払いください。<br>代金引換でのご注文の場合は、手数料一律330円(税込)がかかります。</p>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px;" class="accordionFormBlock" data-accordion="Offsite">
+                        <div class="inputNote">
+                            <p>振込先銀行口座は注文確定メールにてお知らせいたします。</p>
+                        </div>
+                    </div>
+                    <div style="margin-top:12px;" class="accordionFormBlock" data-accordion="External">
+                        <div class="inputNote">
+                            <p>外部決済ページにて、クレジットカード、コンビニ前払い、コンビニ後払い、キャリア決済のいずれかの決済方法でお支払いください。</p>
+                        </div>
+                    </div>
                 </section>
                 <div class="buttonContainer">
                     <button type="submit" class="btCallToAction btLargeSize btNext" name="payment" value="put">お支払い方法を変更</button>

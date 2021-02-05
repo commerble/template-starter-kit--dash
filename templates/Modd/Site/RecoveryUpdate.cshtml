@@ -1,62 +1,62 @@
 @{
-  	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+      var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
 
-	ViewBag.PageTitle = "パスワード再設定";
+    ViewBag.PageTitle = "パスワード再設定";
 }
 @DisplayViewMessages(viewData)
 
 <div class="section">
-	<div class="inner">
-		<div class="formWrapper">
-			<form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Recovery", id=Page.ViewData["id"] })" method="post">
-				@Page.Html.SessionAntiForgeryToken()
-				<section class="formSection">
-					<h1 class="formSectionTitle">パスワード再設定</h1>
-					<p class="formSectionLead">新しいパスワードを入力のうえ、下にある「パスワードを再設定」ボタンを押してください。</p>
-					<dl class="formBlock required">
-						<dt class="formBlockTitle">パスワード</dt>
-						<dd class="formBlockBody">
-							<div class="formItem">
-								<span class="removablePasswordMask">
-									@Page.Html.TextBox("Password", null, new {
-										type = "password",
-										autocomplete = "off",
-										data_val = "true",
-										data_val_required = "パスワードは必須項目です。",
-										data_val_regex = "パスワードには英数字8文字以上必要です。",
-										data_val_regex_pattern = @"^(?=.*?[a-zA-Z!#$%&^~])(?=.*?\d)[a-zA-Z\d!#$%&^~]{8,64}$"
-									})
-									<i class="fa fa-eye" ic-action="togglePasswordMask"></i>
-								</span>
-							</div>
-							@ValidationMessageFor("Password")
-							<p class="inputNote">半角英数字8～64文字で設定してください。記号もご使用いただけます。</p>
-						</dd>
-					</dl>
-					<dl class="formBlock required">
-						<dt class="formBlockTitle">パスワード再入力</dt>
-						<dd class="formBlockBody">
-							<div class="formItem">
-								<span class="removablePasswordMask">
-									@Page.Html.TextBox("ConfirmPassword", null, new {
-										type = "password",
-										autocomplete = "off",
-										data_val = "true",
-										data_val_required = "パスワード再入力は必須項目です。",
-										data_val_equalto = "再入力された値がパスワードと異なります。",
-										data_val_equalto_other = "Password"
-									})
-									<i class="fa fa-eye" ic-action="togglePasswordMask"></i>
-								</span>
-							</div>
-							@ValidationMessageFor("ConfirmPassword")
-						</dd>
-					</dl>
-				</section>
-				<div class="buttonContainer">
-					<button type="submit" name="update" value="post" class="btCallToAction btLargeSize btNext">パスワードを再設定</button>
-				</div>
-			</form>
-		</div>
-	</div>
+    <div class="inner">
+        <div class="formWrapper">
+            <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Recovery", id=Page.ViewData["id"] })" method="post">
+                @Page.Html.SessionAntiForgeryToken()
+                <section class="formSection">
+                    <h1 class="formSectionTitle">パスワード再設定</h1>
+                    <p class="formSectionLead">新しいパスワードを入力のうえ、下にある「パスワードを再設定」ボタンを押してください。</p>
+                    <dl class="formBlock required">
+                        <dt class="formBlockTitle">パスワード</dt>
+                        <dd class="formBlockBody">
+                            <div class="formItem">
+                                <span class="removablePasswordMask">
+                                    @Page.Html.TextBox("Password", null, new {
+                                        type = "password",
+                                        autocomplete = "off",
+                                        data_val = "true",
+                                        data_val_required = "パスワードは必須項目です。",
+                                        data_val_regex = "パスワードには英数字8文字以上必要です。",
+                                        data_val_regex_pattern = @"^(?=.*?[a-zA-Z!#$%&^~])(?=.*?\d)[a-zA-Z\d!#$%&^~]{8,64}$"
+                                    })
+                                    <i class="fa fa-eye" ic-action="togglePasswordMask"></i>
+                                </span>
+                            </div>
+                            @ValidationMessageFor("Password")
+                            <p class="inputNote">半角英数字8～64文字で設定してください。記号もご使用いただけます。</p>
+                        </dd>
+                    </dl>
+                    <dl class="formBlock required">
+                        <dt class="formBlockTitle">パスワード再入力</dt>
+                        <dd class="formBlockBody">
+                            <div class="formItem">
+                                <span class="removablePasswordMask">
+                                    @Page.Html.TextBox("ConfirmPassword", null, new {
+                                        type = "password",
+                                        autocomplete = "off",
+                                        data_val = "true",
+                                        data_val_required = "パスワード再入力は必須項目です。",
+                                        data_val_equalto = "再入力された値がパスワードと異なります。",
+                                        data_val_equalto_other = "Password"
+                                    })
+                                    <i class="fa fa-eye" ic-action="togglePasswordMask"></i>
+                                </span>
+                            </div>
+                            @ValidationMessageFor("ConfirmPassword")
+                        </dd>
+                    </dl>
+                </section>
+                <div class="buttonContainer">
+                    <button type="submit" name="update" value="post" class="btCallToAction btLargeSize btNext">パスワードを再設定</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

@@ -1,84 +1,84 @@
 ﻿@{
-	var delivery = Page.ViewData.Model as VM.HistoryDelivery;
-	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-	delivery.Cart.SpecifiableDeliveryDateRangeStart = DateTime.Now.Date.AddDays(Commerble.Sandbox.Services.AppSettings.DeliveryDateRangeStartOffset);
-	delivery.Cart.SpecifiableDeliveryDateRangeEnd = DateTime.Now.Date.AddDays(Commerble.Sandbox.Services.AppSettings.DeliveryDateRangeEndOffset);
+    var delivery = Page.ViewData.Model as VM.HistoryDelivery;
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+    delivery.Cart.SpecifiableDeliveryDateRangeStart = DateTime.Now.Date.AddDays(Commerble.Sandbox.Services.AppSettings.DeliveryDateRangeStartOffset);
+    delivery.Cart.SpecifiableDeliveryDateRangeEnd = DateTime.Now.Date.AddDays(Commerble.Sandbox.Services.AppSettings.DeliveryDateRangeEndOffset);
 
-	ViewBag.PageTitle = "注文編集 - お届け日時";
+    ViewBag.PageTitle = "注文編集 - お届け日時";
 }
 @DisplayViewMessages(viewData)
 
 <div class="section">
-	<div class="inner">
-		<div class="formWrapper">
-			<form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=delivery.Cart.OrderId})" method="post">
+    <div class="inner">
+        <div class="formWrapper">
+            <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=delivery.Cart.OrderId})" method="post">
                 @Page.Html.HttpMethodOverride("put")
-				<section class="formSection">
-                  	<h2 id="delivery" class="formSectionTitle">お届け日時指定</h2>
-                  	<dl class="formBlock optional">
-						<dt class="formBlockTitle">お届け日</dt>
-						<dd class="formBlockBody">
-                      		<div class="formItem">
-								@if (delivery.Cart.CanSpecifyDeliveryDate) {
-									<span class="selectWrapper">
-										@Page.Html.DropDownList("DeliveryOrder.DeliveryDate", delivery.Cart.SelectDeliveryDate(), "最短でお届け", new {
-										})
-									</span>
-								}
-								else {
-									<p class="inputContent">
-										@if (delivery.Cart.DeliveryMethod == DeliveryMethod.Mail) {
-											<text>配送方法が「ゆうメール」のため、</text>
-										}
-										else {
-											var items = delivery.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryDate).Select(item => item.Product.Name).ToArray();
-											if (items.Length > 0) {
-												<text>@string.Join("、",items)が含まれているため、</text>
-											}
-										}
-										お届け日を指定できません。
-									</p>
-								}
-							</div>
-							@ValidationMessageFor("DeliveryOrder.DeliveryDate")
-	                    </dd>
-                  	</dl>
-          			@if (delivery.Cart.LastReleaseDate > DateTime.Now) {
-						<div class="inputNote">
-							<p>
-								※発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br />
-							&nbsp;発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
-							</p>
-						</div>
-		  			}
-					<dl class="formBlock optional">
-						<dt class="formBlockTitle">お届け時間</dt>
-						<dd class="formBlockBody">
-                      		<div class="formItem">
-								@if (delivery.Cart.CanSpecifyDeliveryTime) {
-									<span class="selectWrapper">
-										@Page.Html.DropDownList("DeliveryOrder.HourRange", delivery.Cart.SelectHourRange(), new {})
-									</span>
-								}
-								else {
-									<p class="inputContent">
-										@if (delivery.Cart.DeliveryMethod == DeliveryMethod.Mail) {
-											<text>配送方法が「ゆうメール」のため、</text>
-										}
-										else {
-											var items = delivery.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryHour).Select(item => item.Product.Name).ToArray();
-											if (items.Length > 0) {
-												<text>@string.Join("、",items)が含まれているため、</text>
-											}
-										}
-										お届け時間を指定できません。
-									</p>
-								}
-							</div>
-							@ValidationMessageFor("DeliveryOrder.HourRange")
-	                    </dd>
-                  	</dl>
-				</section>
+                <section class="formSection">
+                      <h2 id="delivery" class="formSectionTitle">お届け日時指定</h2>
+                      <dl class="formBlock optional">
+                        <dt class="formBlockTitle">お届け日</dt>
+                        <dd class="formBlockBody">
+                              <div class="formItem">
+                                @if (delivery.Cart.CanSpecifyDeliveryDate) {
+                                    <span class="selectWrapper">
+                                        @Page.Html.DropDownList("DeliveryOrder.DeliveryDate", delivery.Cart.SelectDeliveryDate(), "最短でお届け", new {
+                                        })
+                                    </span>
+                                }
+                                else {
+                                    <p class="inputContent">
+                                        @if (delivery.Cart.DeliveryMethod == DeliveryMethod.Mail) {
+                                            <text>配送方法が「ゆうメール」のため、</text>
+                                        }
+                                        else {
+                                            var items = delivery.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryDate).Select(item => item.Product.Name).ToArray();
+                                            if (items.Length > 0) {
+                                                <text>@string.Join("、",items)が含まれているため、</text>
+                                            }
+                                        }
+                                        お届け日を指定できません。
+                                    </p>
+                                }
+                            </div>
+                            @ValidationMessageFor("DeliveryOrder.DeliveryDate")
+                        </dd>
+                      </dl>
+                      @if (delivery.Cart.LastReleaseDate > DateTime.Now) {
+                        <div class="inputNote">
+                            <p>
+                                ※発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br />
+                            &nbsp;発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
+                            </p>
+                        </div>
+                      }
+                    <dl class="formBlock optional">
+                        <dt class="formBlockTitle">お届け時間</dt>
+                        <dd class="formBlockBody">
+                              <div class="formItem">
+                                @if (delivery.Cart.CanSpecifyDeliveryTime) {
+                                    <span class="selectWrapper">
+                                        @Page.Html.DropDownList("DeliveryOrder.HourRange", delivery.Cart.SelectHourRange(), new {})
+                                    </span>
+                                }
+                                else {
+                                    <p class="inputContent">
+                                        @if (delivery.Cart.DeliveryMethod == DeliveryMethod.Mail) {
+                                            <text>配送方法が「ゆうメール」のため、</text>
+                                        }
+                                        else {
+                                            var items = delivery.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryHour).Select(item => item.Product.Name).ToArray();
+                                            if (items.Length > 0) {
+                                                <text>@string.Join("、",items)が含まれているため、</text>
+                                            }
+                                        }
+                                        お届け時間を指定できません。
+                                    </p>
+                                }
+                            </div>
+                            @ValidationMessageFor("DeliveryOrder.HourRange")
+                        </dd>
+                      </dl>
+                </section>
                 <div class="buttonContainer">
                     <button type="submit" class="btCallToAction btLargeSize btNext" name="delivery" value="put">お届け日時を変更</button>
                 </div>

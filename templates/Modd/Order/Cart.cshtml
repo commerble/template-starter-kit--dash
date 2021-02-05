@@ -1,146 +1,146 @@
 ﻿@functions {
-	public class ViewModel {
-		public int CartId { get; set; }
-		public bool IsEmpty { get; set; }
-		public bool HasErrors { get; set; }
-		public ViewMessages ViewMessages { get; set; }
-		public decimal TotalPayment { get; set; }
-		public decimal ChargePoint { get; set; }
-		public List<LineViewModel> Lines { get; set; }
-	}
-	public class LineViewModel {
-		public int ProductId { get; set; }
-		public string ExternalId1 { get; set; }
-		public string Name { get; set; }
-		public decimal UnitPriceWithoutTax { get; set; }
-		public int Qty { get; set; }
-		public string Kind { get; set; }
-		public object ToGtmItem() {
-			return new  {
-				item_name = Name,
-				item_id = ExternalId1,
-				item_category = Kind,
-				price = UnitPriceWithoutTax.ToString("F0"),
-				quantity = Qty,
-			};
-		}
-	}
+    public class ViewModel {
+        public int CartId { get; set; }
+        public bool IsEmpty { get; set; }
+        public bool HasErrors { get; set; }
+        public ViewMessages ViewMessages { get; set; }
+        public decimal TotalPayment { get; set; }
+        public decimal ChargePoint { get; set; }
+        public List<LineViewModel> Lines { get; set; }
+    }
+    public class LineViewModel {
+        public int ProductId { get; set; }
+        public string ExternalId1 { get; set; }
+        public string Name { get; set; }
+        public decimal UnitPriceWithoutTax { get; set; }
+        public int Qty { get; set; }
+        public string Kind { get; set; }
+        public object ToGtmItem() {
+            return new  {
+                item_name = Name,
+                item_id = ExternalId1,
+                item_category = Kind,
+                price = UnitPriceWithoutTax.ToString("F0"),
+                quantity = Qty,
+            };
+        }
+    }
 
-	ViewModel LoadViewModel(ShoppingCartBase cart) {
-		var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-		var productIds = cart.ExpandItems.Select(item => item.ProductId).ToArray();
-		var productPages = Database.Query(new { Now, Next }, (db, args)=> 
-			from p in db.ProductPages
-			join r in db.ProductRelations on p.Code equals r.ProductPageCode
-			join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
-			where productIds.Contains(s.Id)
-			select new {
-				ProductId = s.Id,
-				p.Kind,
-				Name = string.IsNullOrEmpty(s.Name) ? p.Name : s.Name
-			}
-		).ToList();
+    ViewModel LoadViewModel(ShoppingCartBase cart) {
+        var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+        var productIds = cart.ExpandItems.Select(item => item.ProductId).ToArray();
+        var productPages = Database.Query(new { Now, Next }, (db, args)=> 
+            from p in db.ProductPages
+            join r in db.ProductRelations on p.Code equals r.ProductPageCode
+            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            where productIds.Contains(s.Id)
+            select new {
+                ProductId = s.Id,
+                p.Kind,
+                Name = string.IsNullOrEmpty(s.Name) ? p.Name : s.Name
+            }
+        ).ToList();
 
-		var emptyCartError = viewData.Errors.FirstOrDefault(code => code == "EmptyCart\t\t");
-		if (emptyCartError != null) {
-			viewData.Errors.Remove(emptyCartError);
-		}
-		
-		return new ViewModel {
-			CartId = cart.CartDefinition.CartId,
-			IsEmpty = cart.Items.Count == 0,
-			HasErrors = HasViewMessages(viewData),
-			ViewMessages = viewData,
-			TotalPayment = cart.Subtotal,
-			ChargePoint = cart.ExpandOrderItems.Sum(item => item.PointCharge+item.ExtraPoint??0),
-			Lines = 
-				cart.ExpandOrderItems
-					.Select(item => {
-						var productPage = productPages.Where(p => p.ProductId == item.ProductId).FirstOrDefault();
-						return new LineViewModel {
-							ProductId = item.ProductId,
-							ExternalId1 = item.Product.ExternalId1,
-							Name = productPage?.Name ?? item.Product.Name,
-							UnitPriceWithoutTax = item.UnitPrice,
-							Qty = item.OrderAmount,
-							Kind = productPage?.Kind,
-						};
-					}).ToList()
-		};
-	}
+        var emptyCartError = viewData.Errors.FirstOrDefault(code => code == "EmptyCart\t\t");
+        if (emptyCartError != null) {
+            viewData.Errors.Remove(emptyCartError);
+        }
+        
+        return new ViewModel {
+            CartId = cart.CartDefinition.CartId,
+            IsEmpty = cart.Items.Count == 0,
+            HasErrors = HasViewMessages(viewData),
+            ViewMessages = viewData,
+            TotalPayment = cart.Subtotal,
+            ChargePoint = cart.ExpandOrderItems.Sum(item => item.PointCharge+item.ExtraPoint??0),
+            Lines = 
+                cart.ExpandOrderItems
+                    .Select(item => {
+                        var productPage = productPages.Where(p => p.ProductId == item.ProductId).FirstOrDefault();
+                        return new LineViewModel {
+                            ProductId = item.ProductId,
+                            ExternalId1 = item.Product.ExternalId1,
+                            Name = productPage?.Name ?? item.Product.Name,
+                            UnitPriceWithoutTax = item.UnitPrice,
+                            Qty = item.OrderAmount,
+                            Kind = productPage?.Kind,
+                        };
+                    }).ToList()
+        };
+    }
 }
 @{
-	var cart = (Page.ViewData.Model as IEnumerable<ShoppingCartBase>).First();
+    var cart = (Page.ViewData.Model as IEnumerable<ShoppingCartBase>).First();
 
-	var vm = LoadViewModel(cart);
-	
-	var gtmItems = vm.Lines.Select(line => line.ToGtmItem()).ToList();
-	var gtmRemoveAll = new {
-		@event = "remove_from_cart",
-		ecommerce = new {
-			items = gtmItems
-		}
-	};
-	var gtmCheckout = new {
-		@event = "begin_checkout",
-		ecommerce = new {
-			items = gtmItems
-		}
-	};
+    var vm = LoadViewModel(cart);
+    
+    var gtmItems = vm.Lines.Select(line => line.ToGtmItem()).ToList();
+    var gtmRemoveAll = new {
+        @event = "remove_from_cart",
+        ecommerce = new {
+            items = gtmItems
+        }
+    };
+    var gtmCheckout = new {
+        @event = "begin_checkout",
+        ecommerce = new {
+            items = gtmItems
+        }
+    };
 
-	ViewBag.PageTitle = vm.IsEmpty ? "カート" : $"({cart.Items.Count}) カート";
+    ViewBag.PageTitle = vm.IsEmpty ? "カート" : $"({cart.Items.Count}) カート";
 }
 @DisplayViewMessages(vm.ViewMessages)
 <div class="section">
-	<div class="inner">
-		<form action="@Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart"})" method="post">
-			@Page.Html.Hidden("CartId", vm.CartId )
-			@if (vm.IsEmpty) {
-			<div class="cartMessage">
-				<p class="cartMessageItem"><span class="cartMessageItemText">カートに商品が入っていません。</span></p>
-				<div class="buttonContainer">
-					<a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">お買い物を続ける</a>
-				</div>
-			</div>
-			}
-			else {
+    <div class="inner">
+        <form action="@Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart"})" method="post">
+            @Page.Html.Hidden("CartId", vm.CartId )
+            @if (vm.IsEmpty) {
+            <div class="cartMessage">
+                <p class="cartMessageItem"><span class="cartMessageItemText">カートに商品が入っていません。</span></p>
+                <div class="buttonContainer">
+                    <a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">お買い物を続ける</a>
+                </div>
+            </div>
+            }
+            else {
             <div class="flexBoxResponsive flexBoxAlignTop">
                 <div class="cartDetailBlock">
-					@Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=true })
+                    @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=true })
                 </div>
                 <div class="cartOrderBlock">
-					<div class="cartOrderBlockBox">
-						<div class="cartOrderBlockPrice">
-							@Page.Html.Partial("ModdSharedApplyCampaigns", cart)
-							@PrintPrice(vm.TotalPayment, "合計：")
-							@PrintPoint(vm.ChargePoint, "今回獲得予定ポイント：")
-						</div>
-						<div class="cartOrderBlockAction">
-							<div class="buttonContainer onsite">
-								@if (vm.HasErrors) {
-									<button class="btCallToAction btLargeSize btNext btDisabled" disabled>メッセージをご確認ください</button>
-								}
-								else {
-									<a href="@Page.Template.SecuredLink("ModdPurchase", new {cart=vm.CartId,action="Index", direct=true})" class="btCallToAction btLargeSize btNext" data-gtm="@Jil.JSON.Serialize(gtmCheckout)">注文手続きへ進む</a>
-								}
-								<button class="btPrimary btLargeSize btRecalc" type="submit" name="recalc" value="recalc" style="display:none;">数量変更して再計算</button>
-							</div>
-						</div>
-					</div>
+                    <div class="cartOrderBlockBox">
+                        <div class="cartOrderBlockPrice">
+                            @Page.Html.Partial("ModdSharedApplyCampaigns", cart)
+                            @PrintPrice(vm.TotalPayment, "合計：")
+                            @PrintPoint(vm.ChargePoint, "今回獲得予定ポイント：")
+                        </div>
+                        <div class="cartOrderBlockAction">
+                            <div class="buttonContainer onsite">
+                                @if (vm.HasErrors) {
+                                    <button class="btCallToAction btLargeSize btNext btDisabled" disabled>メッセージをご確認ください</button>
+                                }
+                                else {
+                                    <a href="@Page.Template.SecuredLink("ModdPurchase", new {cart=vm.CartId,action="Index", direct=true})" class="btCallToAction btLargeSize btNext" data-gtm="@Jil.JSON.Serialize(gtmCheckout)">注文手続きへ進む</a>
+                                }
+                                <button class="btPrimary btLargeSize btRecalc" type="submit" name="recalc" value="recalc" style="display:none;">数量変更して再計算</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-			</div>
-			<div class="buttonContainer more">
-				<a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">お買い物を続ける</a>
-			</div>
-			}
-		</form>
-	</div>
+            </div>
+            <div class="buttonContainer more">
+                <a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">お買い物を続ける</a>
+            </div>
+            }
+        </form>
+    </div>
 </div>
 
 @section ScriptBlock {
 <script>
-	if (location.href.indexOf('?') != -1) {
-		history.replaceState(null, null, '@Href($"~/Order/Cart")')
-	}
+    if (location.href.indexOf('?') != -1) {
+        history.replaceState(null, null, '@Href($"~/Order/Cart")')
+    }
 </script>
 }

@@ -1,60 +1,60 @@
 ﻿@{
-	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-	var orders = Page.ViewData.Model as IEnumerable<PurchaseOrder>;
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+    var orders = Page.ViewData.Model as IEnumerable<PurchaseOrder>;
 
-	int page, eachPage = 10;
-	if( !Int32.TryParse((Page.Request.QueryString["page"] ?? "0"), out page)){
-		page = 0;
-	}
-	var itemCount = orders.Count();
-  	var itemList = orders.Skip(page*eachPage);
+    int page, eachPage = 10;
+    if( !Int32.TryParse((Page.Request.QueryString["page"] ?? "0"), out page)){
+        page = 0;
+    }
+    var itemCount = orders.Count();
+    var itemList = orders.Skip(page*eachPage);
 
-	ViewBag.PageTitle = "購入履歴";
+    ViewBag.PageTitle = "購入履歴";
 }
 @DisplayViewMessages(viewData)
 
 <div class="section">
-	<div class="inner">
-		<div class="mypageContent">
+    <div class="inner">
+        <div class="mypageContent">
             <div class="main">
-				<div class="formSection">
-					<h1 class="formSectionTitle">購入履歴</h1>
-					@if (itemList.Any()) {
-						<div class="formBlock">
-							<p>これまでにお客様がオンラインストアで購入された履歴の一覧です。</p>
-						</div>
-						<div class="formBlock">
-							<table class="orderHistoryTable">
-								<thead>
-									<tr>
-										<th>ご注文日時</th>
-										<th>ご注文番号</th>
-										<th>受注状態</th>
-										<th>お支払い方法</th>
-										<th>合計金額</th>
-									</tr>
-								</thead>
-								<tbody>
-									@foreach (var order in orders) {
-										<tr>
-											<td class="date" data-title="ご注文日時">@order.OrderDate.ToString("yyyy/MM/dd hh:mm")</td>
-											<td class="orderNumber" data-title="ご注文番号">@order.OrderId<a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=order.OrderId} )">詳細を見る</a></td>
-											<td class="status" data-title="受注状態">@OrderStatusText[order.OrderStatus]</td>
-											<td class="payment" data-title="お支払い方法">@PaymentMethodText[order.PaymentMethod]</td>
-											<td class="sum" data-title="合計金額">@FormatPrice(order.TotalPayment)</td>
-										</tr>
-									}
-								</tbody>
-							</table>
-						</div>
-						@DisplayPager(page, itemCount, eachPage)
-					} else {
-						<p class="empty">購入履歴はまだありません。</p>
-					}
-				</div>
-			</div>
+                <div class="formSection">
+                    <h1 class="formSectionTitle">購入履歴</h1>
+                    @if (itemList.Any()) {
+                        <div class="formBlock">
+                            <p>これまでにお客様がオンラインストアで購入された履歴の一覧です。</p>
+                        </div>
+                        <div class="formBlock">
+                            <table class="orderHistoryTable">
+                                <thead>
+                                    <tr>
+                                        <th>ご注文日時</th>
+                                        <th>ご注文番号</th>
+                                        <th>受注状態</th>
+                                        <th>お支払い方法</th>
+                                        <th>合計金額</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in orders) {
+                                        <tr>
+                                            <td class="date" data-title="ご注文日時">@order.OrderDate.ToString("yyyy/MM/dd hh:mm")</td>
+                                            <td class="orderNumber" data-title="ご注文番号">@order.OrderId<a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=order.OrderId} )">詳細を見る</a></td>
+                                            <td class="status" data-title="受注状態">@OrderStatusText[order.OrderStatus]</td>
+                                            <td class="payment" data-title="お支払い方法">@PaymentMethodText[order.PaymentMethod]</td>
+                                            <td class="sum" data-title="合計金額">@FormatPrice(order.TotalPayment)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @DisplayPager(page, itemCount, eachPage)
+                    } else {
+                        <p class="empty">購入履歴はまだありません。</p>
+                    }
+                </div>
+            </div>
 
-        	@Page.Html.PartialEx("ModdSharedMemberNav", null, new { })
-		</div>
-	</div>
+            @Page.Html.PartialEx("ModdSharedMemberNav", null, new { })
+        </div>
+    </div>
 </div>

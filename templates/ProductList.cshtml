@@ -155,7 +155,7 @@
 
         var itemCount = search.Count();
         var pageCount = itemCount / eachPage + ((itemCount % eachPage == 0) ? 0 : 1);
-	    var pageLast = pageCount == 0 ? true : ( ((page+1) == pageCount) ? true : false);
+        var pageLast = pageCount == 0 ? true : ( ((page+1) == pageCount) ? true : false);
 
         return new ViewModel {
             ListName = string.Join(":", listName),

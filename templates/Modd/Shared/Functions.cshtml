@@ -147,26 +147,26 @@
         { PaymentMethod.None, "決済方法なし"},
     };
     Dictionary<HumanSexes, string> HumanSexesText = new Dictionary<HumanSexes, string> {
-		[HumanSexes.NotKnown] = "未選択",
-		[HumanSexes.Male] = "男性",
-		[HumanSexes.Female] = "女性",
-	};
-	Dictionary<bool, string> SubscribeText = new Dictionary<bool, string> {
-		[true] = "希望する",
-		[false] = "希望しない"
-	};
+        [HumanSexes.NotKnown] = "未選択",
+        [HumanSexes.Male] = "男性",
+        [HumanSexes.Female] = "女性",
+    };
+    Dictionary<bool, string> SubscribeText = new Dictionary<bool, string> {
+        [true] = "希望する",
+        [false] = "希望しない"
+    };
     Dictionary<OrderStatus,string> OrderStatusText = new Dictionary<OrderStatus,string>{
-		{OrderStatus.Accept,       "注文完了"},
-		{OrderStatus.UnAllocate,   "注文完了"},
-		{OrderStatus.PartAllocate, "出荷準備中"},
-		{OrderStatus.Allocated,    "出荷準備中"},
-		{OrderStatus.ShipIndicate, "出荷準備中"},
-		{OrderStatus.Ship,         "出荷完了"},
-		{OrderStatus.Arrival,      "お届け完了"},
-		{OrderStatus.Booked,       "お届け完了"},
-		{OrderStatus.Cancel,       "キャンセル"},
-		{OrderStatus.ShipSuspend,  "出荷準備中"}
-	};
+        {OrderStatus.Accept,       "注文完了"},
+        {OrderStatus.UnAllocate,   "注文完了"},
+        {OrderStatus.PartAllocate, "出荷準備中"},
+        {OrderStatus.Allocated,    "出荷準備中"},
+        {OrderStatus.ShipIndicate, "出荷準備中"},
+        {OrderStatus.Ship,         "出荷完了"},
+        {OrderStatus.Arrival,      "お届け完了"},
+        {OrderStatus.Booked,       "お届け完了"},
+        {OrderStatus.Cancel,       "キャンセル"},
+        {OrderStatus.ShipSuspend,  "出荷準備中"}
+    };
     Dictionary<ReserveRequestStatus,string> ReserveRequestStatusText = new Dictionary<ReserveRequestStatus,string>{
         {ReserveRequestStatus.Accept, "未入荷"},
         {ReserveRequestStatus.Allocated, "入荷"},
@@ -222,11 +222,11 @@
 }
 
 @helper RenderPreviewFooter() {
-	if (IsPreview) {
-		<a href="@Href("~/preview")" style="background: red; color: white; padding: 0 1rem; width: 100%; height: 48px; line-height: 48px; position: fixed; text-align: right; bottom:0; z-index:9999;">
-			プレビュー中 &nbsp;&nbsp;&nbsp;&nbsp; プレビュー時間 @Now
-		</a>
-	}
+    if (IsPreview) {
+        <a href="@Href("~/preview")" style="background: red; color: white; padding: 0 1rem; width: 100%; height: 48px; line-height: 48px; position: fixed; text-align: right; bottom:0; z-index:9999;">
+            プレビュー中 &nbsp;&nbsp;&nbsp;&nbsp; プレビュー時間 @Now
+        </a>
+    }
 }
 
 @helper RenderParts(string position) {
@@ -374,110 +374,110 @@
 
 @helper DisplayPager(int currentPage,int itemCount,int itemPerPage){
 
-	int itemCountFrom, itemCountTo;
-	IEnumerable<int> listNum;
-	int pageCount;
-	bool pageFirst, pageLast;
-	
-	
-	pageCount = itemCount / itemPerPage + ((itemCount % itemPerPage == 0) ? 0 : 1);
-	itemCountFrom = currentPage* itemPerPage +1 ;
-	itemCountTo = ((currentPage+1) == pageCount) ? itemCount : (currentPage+1) * itemPerPage;
-	
-	pageFirst = (currentPage== 0) ? true : false;
-	pageLast = pageCount == 0 ? true : ( ((currentPage+1) == pageCount) ? true : false);
-	
-	listNum = Enumerable.Range(0,pageCount);
+    int itemCountFrom, itemCountTo;
+    IEnumerable<int> listNum;
+    int pageCount;
+    bool pageFirst, pageLast;
+    
+    
+    pageCount = itemCount / itemPerPage + ((itemCount % itemPerPage == 0) ? 0 : 1);
+    itemCountFrom = currentPage* itemPerPage +1 ;
+    itemCountTo = ((currentPage+1) == pageCount) ? itemCount : (currentPage+1) * itemPerPage;
+    
+    pageFirst = (currentPage== 0) ? true : false;
+    pageLast = pageCount == 0 ? true : ( ((currentPage+1) == pageCount) ? true : false);
+    
+    listNum = Enumerable.Range(0,pageCount);
 
-	<div class="paging">
-		@if (pageFirst) { <a class="prev disabled"><span class="text">前</span></a> } else { <a class="prev" href="?page=@(currentPage-1)"><span class="text">前</span></a> }
-		<span class="current">@(currentPage+1) / @pageCount</span>
-		@if (pageLast) { <a class="next disabled"><span class="text">次</span></a> } else { <a class="next" href="?page=@(currentPage+1)"><span class="text">次</span></a> }
-	</div>
+    <div class="paging">
+        @if (pageFirst) { <a class="prev disabled"><span class="text">前</span></a> } else { <a class="prev" href="?page=@(currentPage-1)"><span class="text">前</span></a> }
+        <span class="current">@(currentPage+1) / @pageCount</span>
+        @if (pageLast) { <a class="next disabled"><span class="text">次</span></a> } else { <a class="next" href="?page=@(currentPage+1)"><span class="text">次</span></a> }
+    </div>
 }
 
 @helper FormatPrice(decimal? price) {
-	if (price.HasValue) {
-		<text>&yen;@price.Value.ToString("N0")</text>
-	}
-	else {
-		<text>価格未決定</text>
-	}
+    if (price.HasValue) {
+        <text>&yen;@price.Value.ToString("N0")</text>
+    }
+    else {
+        <text>価格未決定</text>
+    }
 }
 
 @helper FormatPoint(decimal? point) {
-	if (point.HasValue) {
-		<text>@point.Value.ToString("N0")</text>
-	}
+    if (point.HasValue) {
+        <text>@point.Value.ToString("N0")</text>
+    }
 }
 
 @helper PrintPrice(decimal? price, string label = null, bool? hasMultiplePrice = false) {
-	<p class="salePrice">
-	@if (price.HasValue) {
-		<text>@label<span class="num">&yen;@price.Value.ToString("N0")</span><span class="tax">（税込）</span></text>
-	}
-	else {
-		<text>価格未決定</text>
-	}
-	</p>
+    <p class="salePrice">
+    @if (price.HasValue) {
+        <text>@label<span class="num">&yen;@price.Value.ToString("N0")</span><span class="tax">（税込）</span></text>
+    }
+    else {
+        <text>価格未決定</text>
+    }
+    </p>
 }
 @helper PrintNormalPrice(decimal? price, bool? hasMultiplePrice = false) {
-	<p class="normalPrice">
-		@if (price.HasValue) {
-			<text>&yen;@price.Value.ToString("N0")</text>
-			if (hasMultiplePrice == true) {
-				<text>～</text>
-			}
-			<span class="tax">（税込）</span>
-		}
-		else {
-			<text>価格未決定</text>
-		}
-	</p>
+    <p class="normalPrice">
+        @if (price.HasValue) {
+            <text>&yen;@price.Value.ToString("N0")</text>
+            if (hasMultiplePrice == true) {
+                <text>～</text>
+            }
+            <span class="tax">（税込）</span>
+        }
+        else {
+            <text>価格未決定</text>
+        }
+    </p>
 }
 
 @helper PrintPoint(decimal? point, string label = null, string klass="getPoint", bool? hasMultiplePrice = false) {
-	if (point.HasValue) {
-		<p class="@klass">
-			@label<span class="num">@point.Value.ToString("N0")</span>&nbsp;pt 
-			@if (hasMultiplePrice == true) {
-				<text>～</text>
-			}
-		</p>
-	}
+    if (point.HasValue) {
+        <p class="@klass">
+            @label<span class="num">@point.Value.ToString("N0")</span>&nbsp;pt 
+            @if (hasMultiplePrice == true) {
+                <text>～</text>
+            }
+        </p>
+    }
 }
 
 @helper PrintDate(DateTime date) {
-	var dayOfWeek = date.ToString("dddd", new System.Globalization.CultureInfo("ja-JP"));
-	<text>@($"{date:yyyy年MM月dd日}({dayOfWeek})")</text>
+    var dayOfWeek = date.ToString("dddd", new System.Globalization.CultureInfo("ja-JP"));
+    <text>@($"{date:yyyy年MM月dd日}({dayOfWeek})")</text>
 }
 
 @helper ValidationMessageFor(string name) {
-	<p class="inputError" data-valmsg-for="@name" data-valmsg-replace="true" style="display:none;"></p>
+    <p class="inputError" data-valmsg-for="@name" data-valmsg-replace="true" style="display:none;"></p>
 }
 
 @helper ProductTile(string code, string name, string kindName, string kindIcon, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
-	<li class="productTile">
-		<a href="@ItemUrl(code)" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
-			<div class="productTileImage">
-				<img src="@ThumbnailUrl(thumbnail)" alt="@name">
+    <li class="productTile">
+        <a href="@ItemUrl(code)" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
+            <div class="productTileImage">
+                <img src="@ThumbnailUrl(thumbnail)" alt="@name">
                 @if (!string.IsNullOrEmpty(kindIcon)) {
                     <i class="@kindIcon"></i>
                 }
-			</div>
-			<div class="productTileText">
-				<p class="productName" style="height: 21.6px;">@name</p>
-				<p class="productCategory">@kindName</p>
-				<div class="price">
-					@PrintNormalPrice(unitPriceWithTax, hasMultiplePrice)
-				</div>
-			</div>
-		</a>
-	</li>
+            </div>
+            <div class="productTileText">
+                <p class="productName" style="height: 21.6px;">@name</p>
+                <p class="productCategory">@kindName</p>
+                <div class="price">
+                    @PrintNormalPrice(unitPriceWithTax, hasMultiplePrice)
+                </div>
+            </div>
+        </a>
+    </li>
 }
 
 @helper TopicTile(string code, string kind, string name, string thumbnail, DateTime? publishDate) {
-	<li class="topicTile">
+    <li class="topicTile">
         <a href="@PageUrl(code, kind)">
             <div class="topicTileImage">
                 <img src="@ThumbnailUrl(thumbnail)" loading="lazy">
@@ -491,7 +491,7 @@
                 <h2 class="title">@name</h2>
             </div>
         </a>
-	</li>
+    </li>
 }
 
 @helper ProductTileList(IEnumerable<dynamic> items, Func<dynamic, int, RazorEngine.Templating.TemplateWriter> slot, string klass = "grid-pc-x4 grid-tb-x2 grid-sp-x2", string id = null) {
@@ -578,48 +578,48 @@
 }
 
 @helper DisplayViewMessages(ViewMessages viewData){
-  	if (viewData != null && (viewData.Errors.Count + viewData.Warnings.Count + viewData.Messages.Count > 0) ) {
-	  	var messageError = new Dictionary<string,string>{};
-	
-    	// 下記はエラー表示を無視する設定をしている。カートも同時に修正する場合もあるので注意！
-		var exceptErrors = new List<string>{
-			"DeliveryDateError",
-			"ItemNotFound",
-			"SalesDateOutOfRangeBefore",
-		};
-		var errors = viewData.Errors.Distinct().Where(m => !exceptErrors.Any(e=>m.StartsWith(e)));
+      if (viewData != null && (viewData.Errors.Count + viewData.Warnings.Count + viewData.Messages.Count > 0) ) {
+          var messageError = new Dictionary<string,string>{};
+    
+        // 下記はエラー表示を無視する設定をしている。カートも同時に修正する場合もあるので注意！
+        var exceptErrors = new List<string>{
+            "DeliveryDateError",
+            "ItemNotFound",
+            "SalesDateOutOfRangeBefore",
+        };
+        var errors = viewData.Errors.Distinct().Where(m => !exceptErrors.Any(e=>m.StartsWith(e)));
 
-		if (errors.Any()) {
-			<div class="errorOnSubmit">
-				@foreach(var msg in errors ) {
-					var msgParts = msg.Split('\t').Concat(new []{"",""}).ToArray();
-					var msgKey = msgParts[0].Trim();
-					var msgFormat = messageError.ContainsKey(msgKey) ? messageError[msgKey] : msg;
-					var errorMessage = string.Format(msgFormat, msgParts[1], msgParts[2]);
+        if (errors.Any()) {
+            <div class="errorOnSubmit">
+                @foreach(var msg in errors ) {
+                    var msgParts = msg.Split('\t').Concat(new []{"",""}).ToArray();
+                    var msgKey = msgParts[0].Trim();
+                    var msgFormat = messageError.ContainsKey(msgKey) ? messageError[msgKey] : msg;
+                    var errorMessage = string.Format(msgFormat, msgParts[1], msgParts[2]);
 
-					<p class="errorOnSubmitText">@errorMessage</p>
-				}
-			</div>
-		}
+                    <p class="errorOnSubmitText">@errorMessage</p>
+                }
+            </div>
+        }
 
-		if (viewData.Warnings.Any()) {
-			<div class="warningOnSubmit">
-				@foreach( var msg in viewData.Warnings ) {
-					<p class="warningOnSubmitText">@(messageError.ContainsKey(msg.Trim()) ? messageError[msg.Trim()] : msg)</p>
-				}
-			</div>
-		}
+        if (viewData.Warnings.Any()) {
+            <div class="warningOnSubmit">
+                @foreach( var msg in viewData.Warnings ) {
+                    <p class="warningOnSubmitText">@(messageError.ContainsKey(msg.Trim()) ? messageError[msg.Trim()] : msg)</p>
+                }
+            </div>
+        }
 
-		if (viewData.Messages.Any()) {
-			<div class="successOnSubmit">
-				@foreach(var msg in viewData.Messages ){
-					<p class="successOnSubmitText">@(messageError.ContainsKey(msg.Trim()) ? messageError[msg.Trim()] : msg)</p>
-				}
-			</div>
-		}
+        if (viewData.Messages.Any()) {
+            <div class="successOnSubmit">
+                @foreach(var msg in viewData.Messages ){
+                    <p class="successOnSubmitText">@(messageError.ContainsKey(msg.Trim()) ? messageError[msg.Trim()] : msg)</p>
+                }
+            </div>
+        }
 
-		if (viewData == null){
-			@:@(Page.Html.ValidationSummary()))
-		}
-  	}
+        if (viewData == null){
+            @:@(Page.Html.ValidationSummary()))
+        }
+      }
 }

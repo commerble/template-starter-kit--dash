@@ -1,10 +1,10 @@
 ﻿@{
-	var order = Page.ViewData.Model as PurchaseOrder;
-	bool isGuest = order.OrderCustomer.IsGuest;
-	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-	var lines = order.Items.Where(l => l.OrderLineType != OrderLineType.SetProductChild && l.OrderLineType != OrderLineType.Benefit);
-	var history = isGuest ? Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="GuestOrder", id=order.OrderCustomer.GuestAccessKey })
-						  : Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=order.OrderId });
+    var order = Page.ViewData.Model as PurchaseOrder;
+    bool isGuest = order.OrderCustomer.IsGuest;
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+    var lines = order.Items.Where(l => l.OrderLineType != OrderLineType.SetProductChild && l.OrderLineType != OrderLineType.Benefit);
+    var history = isGuest ? Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="GuestOrder", id=order.OrderCustomer.GuestAccessKey })
+                          : Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=order.OrderId });
 
   ViewBag.DataLayer = new {
       @event = "purchase",
@@ -30,30 +30,30 @@
   ViewBag.PageTitle = "注文完了";
 }
 <ol class="stepNavigation">
-	<li class="stepNavigationItem"><span>配送情報</span></li>
-	<li class="stepNavigationItem"><span>お支払い方法</span></li>
-	<li class="stepNavigationItem"><span>内容確認</span></li>
-	<li class="stepNavigationItem active"><span>注文完了</span></li>
+    <li class="stepNavigationItem"><span>配送情報</span></li>
+    <li class="stepNavigationItem"><span>お支払い方法</span></li>
+    <li class="stepNavigationItem"><span>内容確認</span></li>
+    <li class="stepNavigationItem active"><span>注文完了</span></li>
 </ol>
 
 @DisplayViewMessages(viewData)
 
 <div class="section">
-	<div class="inner">
-		<div class="formWrapper">
-			<section class="formSection">
-				<h1 class="formSectionTitle center">ご注文ありがとうございました</h1>
-				<div class="completeMessage">
-					<p class="completeMessageText">ご注文いただき、ありがとうございました。ご注文完了の確認メールをお送りいたしますので、必ずご確認ください。<br>最新の在庫状況および納期について確認の上、詳細を改めて担当よりご連絡を差し上げます。</p>
-				</div>
-				@RenderParts("Message")
-				<div class="buttonContainer">
-					<a href="@Href("~/")" class="btPrimary btNormalSize btNext">トップページへ戻る</a>
-				</div>
-				<div class="buttonContainer">
-					<a href="@history" class="btNormalSize btNext">注文詳細を確認する</a>
-				</div>
-			</section>
-		</div>
-	</div>
+    <div class="inner">
+        <div class="formWrapper">
+            <section class="formSection">
+                <h1 class="formSectionTitle center">ご注文ありがとうございました</h1>
+                <div class="completeMessage">
+                    <p class="completeMessageText">ご注文いただき、ありがとうございました。ご注文完了の確認メールをお送りいたしますので、必ずご確認ください。<br>最新の在庫状況および納期について確認の上、詳細を改めて担当よりご連絡を差し上げます。</p>
+                </div>
+                @RenderParts("Message")
+                <div class="buttonContainer">
+                    <a href="@Href("~/")" class="btPrimary btNormalSize btNext">トップページへ戻る</a>
+                </div>
+                <div class="buttonContainer">
+                    <a href="@history" class="btNormalSize btNext">注文詳細を確認する</a>
+                </div>
+            </section>
+        </div>
+    </div>
 </div>

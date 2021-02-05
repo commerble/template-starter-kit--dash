@@ -1,8 +1,8 @@
 @{
-	var general = Page.ViewData.Model as Commerble.Sandbox.Services.ViewModels.Contact;
-	var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+    var general = Page.ViewData.Model as Commerble.Sandbox.Services.ViewModels.Contact;
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     ViewBag.PageTitle = "お問い合わせ";
-	ViewBag.PageDescription = "商品に関する質問などお問い合わせページ。";
+    ViewBag.PageDescription = "商品に関する質問などお問い合わせページ。";
 }
 @DisplayViewMessages(viewData)
 <div class="section">
@@ -67,7 +67,7 @@
                         <dd class="formBlockBody">
                             <div class="formItem">
                                 @Page.Html.TextArea("contact.Text", general?.Text, new {
-									@class = "fullWidth",
+                                    @class = "fullWidth",
                                     data_val = "true",
                                     data_val_required = "お問い合わせ内容は必須項目です。",
                                     data_val_regex = "お問い合わせ内容に半角の「<」「>」「&#」を含めることはできません。",
