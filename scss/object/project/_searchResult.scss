@@ -263,7 +263,10 @@
               max-height:1000px;
             }
           }
-          &.active {
+          & + ul:focus-within {
+            max-height:3000px;
+          }
+          &.active{
             &::after {
               right:9px;
               transform: translate(-50%) rotate(-135deg);

@@ -183,6 +183,13 @@ input[type=checkbox] {
       transform:translateY(15%) rotate(-45deg);
     }
   }
+  &:focus {
+    & + .text{ 
+      &::before {
+        outline: 2px solid $primaryColor;
+      }
+    }
+  }
   &:checked {
     & + .text {
       &::before {
