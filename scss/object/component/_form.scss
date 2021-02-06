@@ -186,7 +186,8 @@ input[type=checkbox] {
   &:focus {
     & + .text{ 
       &::before {
-        outline: 2px solid $primaryColor;
+        border: 2px solid white !important;
+        box-shadow:0 0 0 2px $primaryColor;
       }
     }
   }
