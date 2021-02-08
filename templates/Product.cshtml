@@ -20,6 +20,7 @@
         public ProductViewModel PriceProduct { get; set; }
         public ImageViewModel MainImage { get; set; }
         public string[] Campaigns { get; set; }
+        public string Embed { get; set; }
     }
 
     public class ImageViewModel {
@@ -206,6 +207,8 @@
 
         vm.Campaigns = vm.Products.SelectMany(p => Page.Template.GetProductCampaigns(p.Id).Select(c => c.CampaignName)).Distinct().ToArray();
 
+        vm.Embed = $"<iframe src=\"{Page.Template.SecuredLink("ItemEmbed", new {vm.Code}).Replace("http:","https:")}\" style=\"border:none;width;300px;height:150px;\" scrolling=\"no\" allow=\"autoplay; encrypted-media\"></iframe>";
+
         return vm;
     }
 }
@@ -311,6 +314,11 @@
         <div class="productInfo">
             <div class="productDetailTextBlock">
                 <h1 class="productName">@(vm.Title ?? vm.Name)</h1>
+                <div class="embed">
+                    <input id="embedCheckbox" type="checkbox">
+                    <label for="embedCheckbox"><i class="fa fa-code"></i></label>
+                    <div class="embedBody"><textarea>@vm.Embed</textarea></div>
+                </div>
                 <p class="category">
                     <a href="@CategoryUrl(vm.Kind)" class="tag" style="margin:4px; margin-left:0;">
                         @if (!string.IsNullOrEmpty(vm.KindIcon)) {

@@ -525,3 +525,18 @@ input[type=checkbox].input-mailmagazine_daineseagv {
     }
   }
 }
+
+.embed {
+  label {
+    float: right;
+  }
+  &Body {
+    display: none;
+    & textarea {
+      width: 100%;
+    }
+  }
+}
+#embedCheckbox:checked ~ .embedBody {
+  display: block;
+}
