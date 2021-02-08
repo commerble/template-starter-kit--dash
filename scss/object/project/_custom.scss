@@ -529,6 +529,10 @@ input[type=checkbox].input-mailmagazine_daineseagv {
 .embed {
   label {
     float: right;
+    margin: $GUTTER $GUTTER*3;
+    span {
+      display: none;
+    }
   }
   &Body {
     display: none;
@@ -539,4 +543,7 @@ input[type=checkbox].input-mailmagazine_daineseagv {
 }
 #embedCheckbox:checked ~ .embedBody {
   display: block;
+}
+#embedCheckbox:checked ~ label span {
+  display: inline;
 }
