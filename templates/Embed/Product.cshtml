@@ -1,0 +1,104 @@
+@functions {
+    public class ViewModel {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Thumbnail { get; set; }
+        public string Icon { get; set; }
+        public string MetaDescription { get; set; }
+        public int? PriceProductId { get; set; }
+        public bool? HasMultiplePrice { get; set; }
+
+        public decimal? UnitPriceWithTax {get; set; }
+        public string Url { get; set; }
+        public bool OverDescriptionLimit { get; set; }
+    }
+    public ViewModel LoadViewModel() {
+        var code = (ViewBag.Code as string)?.ToLower();
+        var vm = Database.Single(new { Now, Next, IsPreview, code }, (db, args) => (
+            from p in db.ProductPages
+            where p.Code.ToLower() == args.code
+            select new ViewModel {
+                Code = p.Code,
+                Name = p.Name,
+                Thumbnail = p.Thumbnail,
+                Icon = p.Icon,
+                MetaDescription = p.MetaDescription,
+                PriceProductId = p.PriceProductId,
+                HasMultiplePrice = p.HasMultiplePrice,
+            }
+        ).FirstOrDefault());
+
+        if (vm.PriceProductId.HasValue) {
+            vm.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(vm.PriceProductId.Value);
+        }
+
+        vm.Url = ItemUrl(code);
+
+        if (vm.MetaDescription?.Length > 44 == true) {
+            vm.MetaDescription = vm.MetaDescription.Substring(0, 44);
+            vm.OverDescriptionLimit = true;
+        }
+
+        return vm;
+    }
+}
+@{
+    Layout = null;
+    var vm = LoadViewModel();
+}
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0"/>
+    <link rel="canonical" href="@vm.Url"/>
+    <title></title>
+    <style>
+        html {
+            border: 1px solid lightgray;
+        }
+        body {
+            margin: 8px;
+            display: grid;
+            grid-template-columns: 64px 1fr;
+            grid-template-rows: 2em 2em calc(150px - 4em - 16px - 2px);
+            grid-column-gap: 1em;
+        }
+        a {
+            text-decoration: none;
+        }
+        .icon {
+            grid-column: 1/2;
+            grid-row: 1/3;
+        }
+        .icon img {
+            width: 100%;
+        }
+        .title {
+            grid-column: 2/3;
+            grid-row: 1/2;
+            display: flex;
+            align-items: center;
+        }
+        .normalPrice {
+            grid-column: 2/3;
+            grid-row: 2/3;
+            display: flex;
+            align-items: center;
+        }
+        .desc {
+            grid-column: 2/3;
+            grid-row: 3/4;
+            font-size: 0.8em;
+        }
+    </style>
+  </head>
+  <body>
+    <a href="@vm.Url" target="_blank" title="@vm.Name" class="icon">
+        <img src="@ThumbnailUrl(vm.Thumbnail)" alt="@vm.Name">
+    </a>
+    <a href="@vm.Url" target="_blank" title="@vm.Name" class="title">@vm.Name</a>
+    @PrintNormalPrice(vm.UnitPriceWithTax, vm.HasMultiplePrice)
+    <p class="desc">@(vm.MetaDescription??"No description") @when(vm.OverDescriptionLimit, "…") </p>
+  </body>
+</html>
