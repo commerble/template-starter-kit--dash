@@ -116,9 +116,11 @@
                 break;
         }
 
-        builder.Append(p => p.Take(1000));
-        var search = builder.Execute(new { Now, Next, IsPreview });
-        var codes = search.Skip(page * eachPage).Take(eachPage).Select(p => p.ProductPageCode).ToList();
+        var total = builder.Count(new { Now, Next, IsPreview, checkedKinds, checkedTags, sort });
+
+        builder.Append(query => query.Skip(page * eachPage).Take(eachPage));
+        var search = builder.Execute(new { Now, Next, IsPreview, checkedKinds, checkedTags, sort });
+        var codes = search.Select(p => p.ProductPageCode).ToList();
 
         var items = 
             Database.Query(new { Now, Next, IsPreview }, db =>
@@ -153,14 +155,13 @@
         listName.Add(eachPage.ToString());
         listName.Add(page.ToString());
 
-        var itemCount = search.Count();
-        var pageCount = itemCount / eachPage + ((itemCount % eachPage == 0) ? 0 : 1);
+        var pageCount = total / eachPage + ((total % eachPage == 0) ? 0 : 1);
         var pageLast = pageCount == 0 ? true : ( ((page+1) == pageCount) ? true : false);
 
         return new ViewModel {
             ListName = string.Join(":", listName),
-            HasNextPage = itemCount > 0 && !pageLast,
-            IsEmpty = itemCount == 0,
+            HasNextPage = total > 0 && !pageLast,
+            IsEmpty = total == 0,
             Page = page,
             ProductPages = items,
             CheckedKinds = checkedKinds.Join(kinds, c => c, k => k.Code, (c,k) => k).ToList(),
