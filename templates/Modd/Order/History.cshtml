@@ -72,7 +72,7 @@
                             </tr>
                             <tr class="sum">
                                 <th>合計<span class="tax">（税込）</span></th>
-                                <td>@FormatPrice(cart.TotalPayment)</td>
+                                <td>@FormatPrice(cart.ExpandOrderItems.Sum(item => item.LinePrice + item.DiscountPrice) + cart.DeliveryCharge + cart.CacheOnDeliveryCharge)</td>
                             </tr>
                             <tr>
                                 <th>値引</th>
