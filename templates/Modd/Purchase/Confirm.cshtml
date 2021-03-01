@@ -38,7 +38,7 @@
                     <table class="orderSumTable">
                         <tr>
                             <th>商品合計<span class="tax">（税込）</span></th>
-                            <td>@FormatPrice(cart.ExpandOrderItems.Sum(item => item.LinePrice + item.PointUsage + item.DiscountPrice))</td>
+                            <td>@FormatPrice(cart.ExpandOrderItems.Sum(item => item.LinePrice + item.DiscountPrice))</td>
                         </tr>
                         <tr>
                             <th>送料<span class="tax">（税込）</span></th>
