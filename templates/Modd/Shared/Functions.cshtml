@@ -1,4 +1,4 @@
-﻿@using VM = Crosswarp.Modd.Controllers.ViewModels;
+@using VM = Crosswarp.Modd.Controllers.ViewModels;
 @using PointBank = Crosswarp.Modd.PointBank;
 @using System.Text;
 @using Commerble.Sandbox.CmsDb;
@@ -53,7 +53,7 @@
             return _configs;
         }
     }
-    string GetConfigValue(string configKey) => Configs.ContainsKey(configKey) ? Configs[configKey] : null;
+    string GetConfigValue(string configKey, string defaultValue = null) => Configs.ContainsKey(configKey) ? Configs[configKey] : defaultValue;
 
     Dictionary<string, string> _sitePageKindRoutes = null;
     Dictionary<string, string> SitePageKindRoutes {
@@ -280,7 +280,7 @@
 
 @helper RenderGlobalNav() {
     var cacheKey = globalCacheKey("GlobalNav");
-    var groups = GetConfigValue("GNAV_KIND_GROUPS").Split(',').Select(text => text.Trim()).ToArray();
+    var groups = GetConfigValue("GNAV_KIND_GROUPS", string.Empty).Split(',').Select(text => text.Trim()).ToArray();
     var groupedKinds = 
         Page.Template.Cache(cacheKey, Next, () =>
             Database.Query(new { Now, Next, IsPreview }, (db, args) => 

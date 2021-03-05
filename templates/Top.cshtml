@@ -104,7 +104,7 @@
                 }
             ).FirstOrDefault());
         var items =
-            Database.Query(new { Now, Next, IsPreview, tag = tag.Code }, (db, args) => (
+            Database.Query(new { Now, Next, IsPreview, tag = tag?.Code }, (db, args) => (
                 from p in db.ProductPages
                 join r in db.ProductTagRelations on p.Code equals r.ProductPageCode
                 join k in db.ProductKinds on p.Kind equals k.Code
@@ -146,7 +146,7 @@
         };
     }
 }
-@{ 
+@{
     var vm = LoadViewModel();
 
     ViewBag.PageTitle = "トップ ";
@@ -165,27 +165,30 @@
         }
     }};
 }
-<div class="section withoutTopMargin">
-    <ul class="siteTopSlider">
-        <li class="bgImageContainer" style="background-image:url('@vm.MainBanner.Thumbnail')">
-            <div class="textBlock">
-                <div class="textBlockContents pullAside">
-                    @if (!string.IsNullOrEmpty(vm.MainBanner.Title)) {
-                        <p class="title textShadow">@vm.MainBanner.Title</p>
-                    }
-                    @if (!string.IsNullOrEmpty(vm.MainBanner.Subtitle)) {
-                        <p class="lead textShadow">@vm.MainBanner.Subtitle</p>
-                    }
-                    @if (!string.IsNullOrEmpty(vm.MainBanner.LinkUrl)) {
-                        <div class="buttonContainer">
-                            <a href="@Href(vm.MainBanner.LinkUrl)" class="btAccent btLargeSize">@(vm.MainBanner.LinkText ?? "詳細を見る")</a>
-                        </div>
-                    }
+@if (vm.MainBanner != null) {
+    <div class="section withoutTopMargin">
+        <ul class="siteTopSlider">
+            <li class="bgImageContainer" style="background-image:url('@vm.MainBanner.Thumbnail')">
+                <div class="textBlock">
+                    <div class="textBlockContents pullAside">
+                        @if (!string.IsNullOrEmpty(vm.MainBanner.Title)) {
+                            <p class="title textShadow">@vm.MainBanner.Title</p>
+                        }
+                        @if (!string.IsNullOrEmpty(vm.MainBanner.Subtitle)) {
+                            <p class="lead textShadow">@vm.MainBanner.Subtitle</p>
+                        }
+                        @if (!string.IsNullOrEmpty(vm.MainBanner.LinkUrl)) {
+                            <div class="buttonContainer">
+                                <a href="@Href(vm.MainBanner.LinkUrl)" class="btAccent btLargeSize">@(vm.MainBanner.LinkText ?? "詳細を見る")</a>
+                            </div>
+                        }
+                    </div>
                 </div>
-            </div>
-        </li>
-    </ul>
-</div>
+            </li>
+        </ul>
+    </div>
+}
+
 @if (vm.SubBanners.Any()) {
     <section class="section withoutTopMargin">
         <div class="inner">
@@ -207,58 +210,64 @@
     </section>
 }
 
-@SectionBlock("NEWS", () =>
-    Concat(
-        () => TopicTileList(vm.Notices, slot:(notice, index) =>
-                TopicTile(
-                    notice.Code,
-                    notice.Kind,
-                    notice.Name,
-                    notice.Thumbnail,
-                    notice.PublishDate
-                ))
-        ,() => LinkAnnex("すべてのNEWSを読む", Href("~/news"))
-    ))
+@if (vm.Notices.Count > 0) {
+    @SectionBlock("NEWS", () =>
+        Concat(
+            () => TopicTileList(vm.Notices, slot:(notice, index) =>
+                    TopicTile(
+                        notice.Code,
+                        notice.Kind,
+                        notice.Name,
+                        notice.Thumbnail,
+                        notice.PublishDate
+                    ))
+            ,() => LinkAnnex("すべてのNEWSを読む", Href("~/news"))
+        ))
+}
 
-@SectionBlock(vm.TopTag?.Name, () =>
-    Concat(
-        () => ProductTileList(vm.ProductPages, klass:"grid-pc-x6 grid-tb-x2 grid-sp-x2", slot:(item, index) =>
-                ProductTile(
-                    item.Code,
-                    item.Name,
-                    item.KindName,
-                    item.KindIcon,
-                    item.Thumbnail,
-                    item.UnitPriceWithTax,
-                    item.HasMultiplePrice,
-                    gtm: new {
-                        @event = "select_item",
-                        ecommerce = new {
-                            items = new [] {
-                                new { 
-                                    item_name = item.PriceProductName,
-                                    item_id = item.PriceProductExternalId1,
-                                    item_category = item.Kind,
-                                    item_list_name = "TOP",
-                                    item_list_id = "TOP",
-                                    price = item.UnitPriceWithTax?.ToString("F0"),
-                                    index = index + 1,
-                                } 
+@if (vm.TopTag != null) {
+    @SectionBlock(vm.TopTag.Name, () =>
+        Concat(
+            () => ProductTileList(vm.ProductPages, klass:"grid-pc-x6 grid-tb-x2 grid-sp-x2", slot:(item, index) =>
+                    ProductTile(
+                        item.Code,
+                        item.Name,
+                        item.KindName,
+                        item.KindIcon,
+                        item.Thumbnail,
+                        item.UnitPriceWithTax,
+                        item.HasMultiplePrice,
+                        gtm: new {
+                            @event = "select_item",
+                            ecommerce = new {
+                                items = new [] {
+                                    new { 
+                                        item_name = item.PriceProductName,
+                                        item_id = item.PriceProductExternalId1,
+                                        item_category = item.Kind,
+                                        item_list_name = "TOP",
+                                        item_list_id = "TOP",
+                                        price = item.UnitPriceWithTax?.ToString("F0"),
+                                        index = index + 1,
+                                    } 
+                                }
                             }
-                        }
-                    } 
-                )),
-        () => ButtonBlock("もっと見る", href:TagUrl(vm.TopTag.Code,"rcm_desc"), btAccent:true, btLargeSize:true, btNext:true)
+                        } 
+                    )),
+            () => ButtonBlock("もっと見る", href:TagUrl(vm.TopTag.Code,"rcm_desc"), btAccent:true, btLargeSize:true, btNext:true)
+        )
     )
-)
+}
 
- <section class="section">
-    <div class="inner">
-        <h2 class="sectionTitle">タグから探す</h2>
-        <p class="text tagList flexBoxCenter" style="font-size:18px;">
-            @foreach(var tag in vm.Tags) {
-                <text><a href="@TagUrl(tag.Code,"rcm_desc")" class="tag">#@tag.Name</a> &nbsp;</text>
-            }
-        </p>
-    </div>
-</section>
+@if (vm.Tags.Count > 0) {
+    <section class="section">
+        <div class="inner">
+            <h2 class="sectionTitle">タグから探す</h2>
+            <p class="text tagList flexBoxCenter" style="font-size:18px;">
+                @foreach(var tag in vm.Tags) {
+                    <text><a href="@TagUrl(tag.Code,"rcm_desc")" class="tag">#@tag.Name</a> &nbsp;</text>
+                }
+            </p>
+        </div>
+    </section>
+}
