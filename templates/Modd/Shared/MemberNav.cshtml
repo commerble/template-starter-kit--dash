@@ -11,6 +11,9 @@
             <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices"})" class="@when(active=="notice", "active")">仮予約</a></li>
             <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites"})" class="@when(active=="favorite", "active")">お気に入り</a></li>
             <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses"})" class="@when(active=="address", "active")">お届け先</a></li>
+            @if (Page.Template.UserIsInRole("Preview")) {
+                <li><a href="@Href("~/preview/")">プレビュー</a></li>
+            }
         </ul>
     </section>
 </nav>

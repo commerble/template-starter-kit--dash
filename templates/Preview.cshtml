@@ -1,18 +1,16 @@
 @{
     Page.NoCache = true;
-    var validCode = "Basic " + Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(GetConfigValue("PREVIEW_BASIC_AUTH")));
-    var authCode = Page.Request.Headers["Authorization"];
 
-    if (validCode != authCode)
-    {
-        Page.Response.Clear();
-        Page.Response.Status = "401 Unauthorized";
-        Page.Response.StatusCode = 401;
-        Page.Response.AddHeader("WWW-Authenticate", "Basic Realm=SandboxPreviewCredential");
-        Page.Response.SuppressFormsAuthenticationRedirect = true;
-        Page.Response.End();
+    if (!IsPreview) {
+        if (!Page.Request.IsAuthenticated ) { 
+            Page.Response.Redirect(Page.Template.GetLoginUrl());
+        }
+        
+        if (!Page.Template.UserIsInRole("Preview")) {
+            throw new System.Web.HttpException(403, "Forbidden");
+        }
     }
-
+    
     if (IsPost) {
         System.Web.Helpers.AntiForgery.Validate();
 
