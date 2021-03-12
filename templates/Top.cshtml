@@ -196,9 +196,9 @@
             <ul class="productTileList grid grid-pc-x4 grid-tb-x2 grid-sp-x2 recommend">
                 @foreach(var banner in vm.SubBanners) {
                     <li class="productTile">
-                        <a href="@Href(banner.LinkUrl)" title="@banner.Title">
+                        <a href="@Href(banner.LinkUrl)">
                             <div class="productTileImage">
-                                <img src="@ThumbnailUrl(banner.Thumbnail)" loading="lazy">
+                                <img src="@ThumbnailUrl(banner.Thumbnail)" loading="lazy" alt="@banner.Title">
                             </div>
                             <div class="productTileText">
                                 <p class="productName">@banner.Title</p>

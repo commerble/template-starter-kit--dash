@@ -324,21 +324,21 @@
         <div class="inner">
             <p class="logo">
                 <a href="@Href("~/")">
-                    <img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")">
+                    <img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22">
                 </a>
             </p>
             <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=(int?)null })">
+                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=(int?)null })" title="お気に入り">
                     <span class="headerLinkItemText"><i class="fa fa-heart"></i><span class="showOnPCInline">&nbsp;お気に入り</span></span>
                 </a>
             </div>
             <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index" })">
+                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index" })" title="マイページ">
                     <span class="headerLinkItemText"><i class="fa fa-user"></i><span class="showOnPCInline">&nbsp;マイページ</span></span>
                 </a>
             </div>
             <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart" })">
+                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart" })" title="カート">
                     <span class="headerLinkItemText"><i class="fa fa-shopping-cart"></i><span class="showOnPCInline">&nbsp;カート</span></span>
                 </a>
             </div>
@@ -480,7 +480,7 @@
     <li class="topicTile">
         <a href="@PageUrl(code, kind)">
             <div class="topicTileImage">
-                <img src="@ThumbnailUrl(thumbnail)" loading="lazy">
+                <img src="@ThumbnailUrl(thumbnail)" loading="lazy" alt="@name">
             </div>
             <div class="topicTileText">
                 @if (publishDate.HasValue) {
