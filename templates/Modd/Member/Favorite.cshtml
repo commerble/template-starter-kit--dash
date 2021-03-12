@@ -24,7 +24,7 @@
                 p.Thumbnail,
                 p.PriceProductId,
                 p.HasMultiplePrice,
-                KindName = k == null ? null : string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
                 KindIcon = k == null ? null : k.Icon
             }
         ).FirstOrDefault());

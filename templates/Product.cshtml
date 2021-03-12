@@ -87,7 +87,7 @@
                 select new ViewModel {
                     Code = args.code,
                     Kind = p.Kind,
-                    KindName = k == null ? null : string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                    KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
                     KindIcon = k == null ? null : k.Icon,
                     Name = p.Name,
                     Title = p.Title,
