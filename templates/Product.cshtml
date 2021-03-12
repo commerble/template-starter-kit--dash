@@ -78,7 +78,8 @@
         var vm = 
             Database.Single(new { Now, Next, IsPreview, code }, (db, args) => (
                 from p in db.ProductPages
-                join k in db.ProductKinds on p.Kind equals k.Code
+                join rk in db.ProductKinds on p.Kind equals rk.Code into kinds
+                from k in kinds.DefaultIfEmpty()
                 where p.Code.ToLower() == args.code
                   &&  p.DisplayStart <= args.Now
                   && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
@@ -86,8 +87,8 @@
                 select new ViewModel {
                     Code = args.code,
                     Kind = p.Kind,
-                    KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                    KindIcon = k.Icon,
+                    KindName = k == null ? null : string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                    KindIcon = k == null ? null : k.Icon,
                     Name = p.Name,
                     Title = p.Title,
                     Body = p.Body,
@@ -150,7 +151,8 @@
             Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
                 from r in db.ProductPageRelations
                 join p in db.ProductPages on r.RelateCode equals p.Code
-                join k in db.ProductKinds on p.Kind equals k.Code
+                join rk in db.ProductKinds on p.Kind equals rk.Code into kinds
+                from k in kinds.DefaultIfEmpty()
                 join rs in db.Products on p.PriceProductId equals rs.Id into representatives
                 from s in representatives.DefaultIfEmpty()
                 where r.Code.ToLower() == args.code
@@ -161,14 +163,14 @@
                 select new RelateProductViewModel {
                     Code = p.Code,
                     Kind = p.Kind,
-                    KindName = k.Name,
-                    KindIcon = k.Icon,
+                    KindName = k == null ? null : k.Name,
+                    KindIcon = k == null ? null : k.Icon,
                     Name = p.Name,
                     Thumbnail = p.Thumbnail,
                     HasMultiplePrice = p.HasMultiplePrice,
                     PriceProductId = p.PriceProductId,
-                    PriceProductExternalId1 =  s != null ? s.ExternalId1 : null,
-                    PriceProductName = s != null ? s.Name : null,
+                    PriceProductExternalId1 =  s == null ? null : s.ExternalId1,
+                    PriceProductName = s == null ? null : s.Name,
                 }
             )).ToList();
 

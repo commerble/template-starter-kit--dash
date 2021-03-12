@@ -13,7 +13,8 @@
           var favorite = Page.ViewData.Model as Favorite; 
         var page = Database.Single(new { Now, Next, favorite.ProductId }, (db, args) => (
             from p in db.ProductPages
-            join k in db.ProductKinds on p.Kind equals k.Code
+            join rk in db.ProductKinds on p.Kind equals rk.Code into kinds
+            from k in kinds.DefaultIfEmpty()
             join r in db.ProductRelations on p.Code equals r.ProductPageCode
             join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
             where s.Id == args.ProductId
@@ -23,8 +24,8 @@
                 p.Thumbnail,
                 p.PriceProductId,
                 p.HasMultiplePrice,
-                KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                KindIcon = k.Icon
+                KindName = k == null ? null : string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                KindIcon = k == null ? null : k.Icon
             }
         ).FirstOrDefault());
 

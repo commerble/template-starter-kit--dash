@@ -125,21 +125,22 @@
         var items = 
             Database.Query(new { Now, Next, IsPreview }, db =>
                 from p in db.ProductPages
-                join k in db.ProductKinds on p.Kind equals k.Code
+                join rk in db.ProductKinds on p.Kind equals rk.Code into rkinds
+                from k in rkinds.DefaultIfEmpty()
                 join rs in db.Products on p.PriceProductId equals rs.Id into skus
                 from s in skus.DefaultIfEmpty()
                 where codes.Contains(p.Code)
                 select new ProductPageViewModel {
                     Code = p.Code,
                     Kind = p.Kind,
-                    KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                    KindIcon = k.Icon,
+                    KindName = k == null ? null : string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                    KindIcon = k == null ? null : k.Icon,
                     Name = p.Name,
                     Thumbnail = p.Thumbnail,
                     PriceProductId = p.PriceProductId,
                     HasMultiplePrice = p.HasMultiplePrice,
-                    PriceProductExternalId1 = s != null ? s.ExternalId1 : null,
-                    PriceProductName = s != null ? s.Name : null
+                    PriceProductExternalId1 = s == null ? null : s.ExternalId1,
+                    PriceProductName = s == null ? null : s.Name
                 }
             ).ToList();
 

@@ -107,7 +107,8 @@
             Database.Query(new { Now, Next, IsPreview, tag = tag?.Code }, (db, args) => (
                 from p in db.ProductPages
                 join r in db.ProductTagRelations on p.Code equals r.ProductPageCode
-                join k in db.ProductKinds on p.Kind equals k.Code
+                join rk in db.ProductKinds on p.Kind equals rk.Code into kinds
+                from k in kinds.DefaultIfEmpty()
                 join rs in db.Products on p.PriceProductId equals rs.Id into skus
                 from s in skus.DefaultIfEmpty()
                 where r.ProductTagCode == args.tag
@@ -118,14 +119,14 @@
                 select new ProductPageViewModel {
                     Code = p.Code,
                     Kind = p.Kind,
-                    KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                    KindIcon = k.Icon,
+                    KindName = k == null ? null : string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                    KindIcon = k == null ? null : k.Icon,
                     Name = p.Name,
                     Thumbnail = p.Thumbnail,
                     PriceProductId = p.PriceProductId,
                     HasMultiplePrice = p.HasMultiplePrice,
-                    PriceProductExternalId1 = s != null ? s.ExternalId1 : null,
-                    PriceProductName = s != null ? s.Name : null
+                    PriceProductExternalId1 = s == null ? null : s.ExternalId1,
+                    PriceProductName = s == null ? null : s.Name
                 }
             ).Take(12)).ToList();
         foreach (var item in items) {

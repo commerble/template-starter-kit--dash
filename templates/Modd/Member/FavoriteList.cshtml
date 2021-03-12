@@ -31,7 +31,8 @@
             EachPage = eachPage,
             Favorites = Database.Query(new { Now, Next, productIds }, db => (
                 from p in db.ProductPages
-                join k in db.ProductKinds on p.Kind equals k.Code
+                join rk in db.ProductKinds on p.Kind equals rk.Code into kinds
+                from k in kinds.DefaultIfEmpty()
                 join r in db.ProductRelations on p.Code equals r.ProductPageCode
                 join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
                 where productIds.Contains(s.Id)
@@ -42,8 +43,8 @@
                     p.Thumbnail,
                     p.PriceProductId,
                     p.HasMultiplePrice,
-                    KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                    KindIcon = k.Icon,
+                    KindName = k == null ? null : string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
+                    KindIcon = k == null ? null : k.Icon,
                 }
             )).Select(p => new FavoriteViewModel {
                 ProductId = p.Id,
