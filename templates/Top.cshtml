@@ -125,8 +125,8 @@
                     Thumbnail = p.Thumbnail,
                     PriceProductId = p.PriceProductId,
                     HasMultiplePrice = p.HasMultiplePrice,
-                    PriceProductExternalId1 = s == null ? null : s.ExternalId1,
-                    PriceProductName = s == null ? null : s.Name
+                    PriceProductExternalId1 = s.ExternalId1,
+                    PriceProductName = s.Name
                 }
             ).Take(12)).ToList();
         foreach (var item in items) {

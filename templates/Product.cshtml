@@ -169,8 +169,8 @@
                     Thumbnail = p.Thumbnail,
                     HasMultiplePrice = p.HasMultiplePrice,
                     PriceProductId = p.PriceProductId,
-                    PriceProductExternalId1 =  s == null ? null : s.ExternalId1,
-                    PriceProductName = s == null ? null : s.Name,
+                    PriceProductExternalId1 =  s.ExternalId1,
+                    PriceProductName = s.Name,
                 }
             )).ToList();
 

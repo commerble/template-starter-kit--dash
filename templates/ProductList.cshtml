@@ -134,13 +134,13 @@
                     Code = p.Code,
                     Kind = p.Kind,
                     KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                    KindIcon = k == null ? null : k.Icon,
+                    KindIcon = k.Icon,
                     Name = p.Name,
                     Thumbnail = p.Thumbnail,
                     PriceProductId = p.PriceProductId,
                     HasMultiplePrice = p.HasMultiplePrice,
-                    PriceProductExternalId1 = s == null ? null : s.ExternalId1,
-                    PriceProductName = s == null ? null : s.Name
+                    PriceProductExternalId1 = s.ExternalId1,
+                    PriceProductName = s.Name
                 }
             ).ToList();
 
