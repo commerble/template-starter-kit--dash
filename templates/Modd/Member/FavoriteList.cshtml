@@ -44,7 +44,7 @@
                     p.PriceProductId,
                     p.HasMultiplePrice,
                     KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                    KindIcon = k == null ? null : k.Icon,
+                    KindIcon = k.Icon,
                 }
             )).Select(p => new FavoriteViewModel {
                 ProductId = p.Id,
