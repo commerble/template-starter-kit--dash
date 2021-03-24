@@ -112,6 +112,7 @@
                 break;
             case "new":
             default:
+                sort = "new";
                 builder.Append(query=> query.OrderByDescending(p => p.ReleaseDate));
                 break;
         }
