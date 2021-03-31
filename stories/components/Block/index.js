@@ -1,6 +1,6 @@
 export const render = ({
     direction,
-    left,
+    end,
     wrap,
     full1,
     full2,
@@ -10,8 +10,8 @@ export const render = ({
     if (direction)
         klass.push('block-' + direction);
     
-    if (left)
-        klass.push('block-left');
+    if (end)
+        klass.push('block-' + end);
 
     if (wrap)
         klass.push('block-wrap');

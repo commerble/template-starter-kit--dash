@@ -7,7 +7,9 @@ export default {
     direction: { 
       control: { type: 'select', options: ['vertical', 'horizontal'] },
     },
-    left: { type: 'boolean' },
+    end: { 
+      control: { type: 'select', options: ['', 'left', 'right'] },
+    },
     wrap: { type: 'boolean' },
     full1: { type: 'boolean', name: 'full for Button1' },
     full2: { type: 'boolean', name: 'full for Button2' },

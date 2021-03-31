@@ -12,19 +12,28 @@
         flex-grow: 1;
     }
     &.block-left {
-        justify-content: start;
+        justify-content: flex-start;
+    }
+    &.block-right {
+        justify-content: flex-end;
     }
 }
 .block-vertical {
     flex-direction: column;
     &.block-left {
-        align-items: start;
+        align-items: flex-start;
+    }
+    &.block-right {
+        align-items: flex-end;
     }
 }
 .block-horizontal {
     flex-direction: row;
     &.block-left {
-        justify-content: start;
+        justify-content: flex-start;
+    }
+    &.block-right {
+        justify-content: flex-end;
     }
 }
 .block-wrap {
