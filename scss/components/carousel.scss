@@ -26,6 +26,7 @@
     font-size: 0;
     line-height: 0;
     margin: $unit * .5;
+    letter-spacing: 0;
     @include mq($bp-sp) {
         white-space: nowrap;
         overflow-x: auto;
