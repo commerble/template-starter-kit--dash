@@ -1,0 +1,110 @@
+.field {
+    display: flex;
+    align-items: flex-start;
+    margin: $unit * 4 $unit;
+    .field-title {
+        width: 14em;
+        text-align: left;
+        box-sizing: border-box;
+        font-family: $font-family-title;
+        min-height: $unit * 6 + 2px;
+        line-height:$unit * 6 + 2px;
+        &::before {
+            display: inline-block;
+            margin: 0 5px 0 0;
+            padding: 3px 6px;
+            white-space: nowrap;
+            line-height: 1;
+        }
+    }
+    .field-body {
+        flex: 1 0 0%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        input:not([size]) {
+            flex: 1 0 0%;
+        }
+        & > div,
+        & > p {
+            display: block;
+            width: 100%;
+        }
+    }
+    &.required {
+        .field-title {
+            &::before {
+                content: "必須";
+                background-color: mix(#ff0000, $color-attention, 30%);
+                border: 1px solid mix(#ff0000, $color-attention, 30%);
+                color: #fff;
+            }
+        }
+    }
+    &.optional {
+        .field-title {
+            &::before {
+                content: "任意";
+                background-color: #fff;
+                border: 1px solid $color-primary;
+                color: $color-primary;
+            }
+        }
+    }
+    @include mq($bp-sp) {
+        display:block;
+        margin-top: $unit;
+        padding-bottom:0;
+        border:0;
+        .field-title {
+            width:100%;
+            padding:0;
+        }
+    }
+}
+.field-text {
+    padding:$unit * 2;
+    background-color: $color-aside;
+    box-sizing:border-box;
+    font-size: $font-size-default * 1.2;
+}
+.field-error {
+    display: block;
+    position:relative;
+    color:$color-error;
+    font-size: $font-size-default * 1.2;
+    margin-top: $unit / 2;
+    &::before {
+      content:"!";
+      position: relative;
+      display: inline-block;
+      width: $font-size-default * 1.2;
+      height:$font-size-default * 1.2;
+      line-height: $font-size-default * 1.2;
+      font-size: $font-size-default * 1.2;
+      text-align: center;
+      border: 1px solid $color-error;
+      border-radius: 50%;
+      margin-right: $unit;
+    }
+}
+.field-note {
+    margin-top: $unit / 2;
+    padding: 5px;
+    background-color: $color-aside;
+}
+.field-group {
+    display: flex !important;
+    flex-direction: row;
+    .btn {
+        margin: 0;
+    }
+    input + .btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+}
+.field-desc {
+    margin: 0 $unit;
+}

@@ -1,0 +1,26 @@
+.alert {
+    margin: $unit;
+    padding: $unit $unit * 2;
+    border: 2px solid $color-border;
+    border-radius: 2px;
+}
+.alert-error {
+    border-color: $color-error;
+    color: $color-error;
+    font-weight: $font-weight-bold;
+}
+.alert-warning {
+    border-color: $color-warning;
+    color: $color-warning;
+    font-weight: $font-weight-bold;
+}
+.alert-info {
+    border-color: $color-info;
+    color: adjust-color($color: $color-info, $lightness: -5%);
+    font-weight: $font-weight-bold;
+}
+.alert-success {
+    border-color: $color-success;
+    color: $color-success;
+    font-weight: $font-weight-bold;
+}

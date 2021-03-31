@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+$font-family-default: Verdana, "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif !important;
+$font-family-title: $font-family-default;
+$font-family-price: "Segoe UI", sans-serif;
+
+$font-weight-default: 400;
+$font-weight-bold: 700;
+$font-size-default: $unit * 1.5;
+$line-height-default: $unit * 3;
+$letter-spacing-default: $font-size-default / 5;

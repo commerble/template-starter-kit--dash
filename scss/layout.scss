@@ -1,0 +1,19 @@
+.section {
+    & + .section {
+        margin-top: $unit * 8;
+    }
+}
+
+hr {
+    border: 1px solid $color-border;
+    box-shadow: none;
+    margin: $unit * 4 0;
+}
+
+.mt {
+    margin-top: $unit * 8;
+}
+
+.mb {
+    margin-bottom: $unit * 8;
+}

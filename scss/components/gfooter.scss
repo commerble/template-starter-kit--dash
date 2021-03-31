@@ -1,0 +1,41 @@
+.gfooter {
+    margin-top: $unit * 8;
+    background-color: $color-border;
+    padding: $unit * 4;
+    & > ul {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        & > li {
+            font-size: $font-size-default * 0.9;
+            line-height: $font-size-default * 4;
+            color: lighten($color-primary, 50%);
+            &>ul {
+                &>li {
+                    font-size: $font-size-default;
+                    line-height: $font-size-default * 2;
+                }
+            }
+        }
+        @include mq($bp-sp) {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+
+    a {
+        color: $color-primary;
+        text-decoration: none;
+        opacity: 1;
+    }
+    a:hover {
+        opacity: .5;
+    }
+    a:active {
+        opacity: .25;
+    }
+
+    hr {
+        border-color: $color-secondary;
+    }
+}

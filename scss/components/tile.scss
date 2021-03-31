@@ -1,0 +1,66 @@
+.tiles {
+    display: grid;
+    grid-template-columns: repeat(1fr);
+    grid-auto-rows: minmax(200px, auto);
+    grid-gap: $unit;
+}
+.tiles-x2 {
+    grid-template-columns: repeat(2, 1fr);
+    @include mq($bp-sp) {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+.tiles-x3 {
+    grid-template-columns: repeat(3, 1fr);
+    @include mq($bp-sp) {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+.tiles-x4 {
+    grid-template-columns: repeat(4, 1fr);
+    @include mq($bp-sp) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.tiles-x5 {
+    grid-template-columns: repeat(5, 1fr);
+    @include mq($bp-sp) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.tile>a {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: $unit;
+    padding: $unit;
+    color: $color-primary;
+    border: 2px solid transparent;
+    &:hover {
+        border-color: $color-primary;
+        opacity: .75;
+    }
+    &:active {
+        opacity: .5;
+    }
+    &>figure {
+        order: 1;
+    }
+    &>time {
+        order: 2;
+        padding: 0 $unit;
+        font-size: $font-size-default;
+        font-family: monospace;
+        font-weight: $font-weight-bold;
+    }
+    &>h1 {
+        order: 3;
+        padding: 0 $unit;
+        font-size: $font-size-default;
+        line-height: $line-height-default;
+    }
+    &>.tile-info {
+        order: 4;
+        padding: 0 $unit;
+    }
+}

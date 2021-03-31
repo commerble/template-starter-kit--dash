@@ -1,0 +1,32 @@
+@charset "utf-8";
+
+$color-base: #fff;
+$color-aside: #fafafa;
+$color-primary: #000;
+$color-secondary: #ddd;
+$color-border: #f0f0f0;
+$color-anchor: #000;
+$color-attention: #ff001a;
+$color-action: #257717;
+$color-danger: #ff001a;
+$color-error: #ca0003;
+$color-warning: #ca0003;
+$color-info: #00c3ff;
+$color-success: #257717;
+
+
+:export {
+    base: $color-base;
+    aside: $color-aside;
+    primary: $color-primary;
+    secondary: $color-secondary;
+    border: $color-border;
+    anchor: $color-anchor;
+    attention: $color-attention;
+    action: $color-action;
+    danger: $color-danger;
+    error: $color-error;
+    warning: $color-warning;
+    info: $color-info;
+    success: $color-success;
+}

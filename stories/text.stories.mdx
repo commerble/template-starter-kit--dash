@@ -1,0 +1,39 @@
+import { Meta, Source, Preview } from '@storybook/addon-docs/blocks';
+
+<Meta title="Base/Text" />
+
+プレビューコードが`className`になっているのはMDX(React)の仕様。
+`class`に書き換えて使いましょう。
+
+<Preview isExpanded>
+    <p className="text-center">中央寄せ</p>
+</Preview>
+
+<Preview isExpanded>
+    <p className="text-left">左寄せ</p>
+</Preview>
+
+<Preview isExpanded>
+    <p className="text-right">右寄せ</p>
+</Preview>
+
+<Preview isExpanded>
+    <h1 className="h-text">ヘッダー</h1>
+</Preview>
+
+<Preview isExpanded>
+    <h1 className="h-border">罫線付きヘッダー</h1>
+</Preview>
+
+<Preview isExpanded>
+    <h1 className="h-underline">下線付きヘッダー</h1>
+</Preview>
+
+<Preview isExpanded>
+    <h1 className="h-centerline"><span>中央線付きヘッダー</span></h1>
+</Preview>
+
+
+<Preview isExpanded>
+    <p>線で<span className="text-del">デリート</span>します。</p>
+</Preview>

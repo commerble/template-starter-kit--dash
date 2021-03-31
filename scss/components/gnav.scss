@@ -1,0 +1,92 @@
+.gnav {
+    & > ul {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        & > li {
+            padding: ($unit * 2);
+            @include mq($bp-sp) {
+                padding: ($unit * 2) $unit;
+            }
+        }
+        width: $cw;
+        margin: 0 auto;
+        @include mq($bp-tb) {
+            width: 100%;
+        }
+    }
+
+    a {
+        padding: $unit;
+        text-decoration: none;
+        color: $color-primary;
+        font-family: $font-family-title;
+        font-size: $font-size-default * 1.2;
+    }
+    
+    summary {
+        font-family: $font-family-title;
+        font-size: $font-size-default * 1.2;
+        padding: $unit;
+        cursor: pointer;
+        list-style: none;
+        &::-webkit-details-marker {
+            display: none;
+        }
+    }
+
+    details > ul {
+        position: absolute;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: minmax(64px, auto);
+        gap: $unit;
+        list-style: none;
+        left:0;
+        box-sizing: border-box;
+        padding: $unit;
+        background-color: $color-secondary;
+        border: 1px solid rgba(27, 31, 35, 0.15);
+        border-radius: 3px;
+        box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
+        z-index: 100;
+        width: $cw;
+        margin: $unit * 2 auto 0;
+        @include mq($bp-sp) {
+            grid-template-columns: repeat(1, 1fr);
+        }
+        @include mq($bp-tb) {
+            width: 100%;
+        }
+    }
+    details[open] > summary:before {
+        content: " ";
+        display: block;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 50;
+        background: transparent;
+    }
+}
+.gnav-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $unit;
+    padding: $unit;
+    border: 2px solid transparent;
+    background-color: $color-base;
+    &:hover {
+        border-color: $color-primary;
+    }
+
+    .gnav-link-icon {
+        width: 64px;
+    }
+}

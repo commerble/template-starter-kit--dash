@@ -1,0 +1,10 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
+import colors from '../scss/colors.scss'
+
+<Meta title="Base/Color Palette" />
+
+<ColorPalette>
+    {Object.keys(colors).map((color) => (
+        <ColorItem title={'$color-'+color} subtitle={color} colors={[colors[color]]} />
+    ))}
+</ColorPalette>

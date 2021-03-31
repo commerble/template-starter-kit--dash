@@ -1,0 +1,29 @@
+.gheader {
+    display: grid;
+    grid-template-columns: 1fr 32px 32px 32px; 
+}
+
+.gheader-link {
+    width: 32px;
+    line-height: 32px;
+    text-align: center;
+    text-decoration: none;
+    color: $color-primary;
+
+    img,svg {
+        vertical-align: bottom;
+    }
+
+    &:hover {
+        opacity: .75;
+    }
+    &:active {
+        opacity: .5;
+    }
+}
+
+.logo {
+    width: 220px;
+    max-width: 220px;
+    min-width: 220px;
+}

@@ -1,0 +1,60 @@
+input[type=text],
+input[type=search],
+input[type=tel],
+input[type=url],
+input[type=email],
+input[type=password],
+input[type=datetime-local],
+input[type=date],
+input[type=month],
+input[type=week],
+input[type=time],
+input[type=number],
+input[type=file],
+textarea,
+select {
+  padding:$unit * 2;
+  background:none;
+  background-color: $color-base;
+  border:1px solid $color-secondary;
+  box-sizing:border-box;
+  border-radius: 0;
+  font-size: $font-size-default * 1.2;
+  min-width: 0;
+  max-width: 400px;
+  &::placeholder {
+    color:$color-secondary;
+  }
+  &:-ms-input-placeholder {
+    color:$color-secondary;
+  }
+  &::-ms-input-placeholder {
+    color:$color-secondary;
+  }
+  &.input-validation-error {
+    background-color: adjust-color($color: $color-error, $lightness: +55%);
+    &::placeholder {
+      color:$color-error;
+    }
+    &:-ms-input-placeholder {
+      color:$color-error;
+    }
+    &::-ms-input-placeholder {
+      color:$color-error;
+    }
+  }
+  &:read-only,
+  &[readonly] {
+    background-color: adjust-color($color: $color-secondary, $lightness: +10%);
+    cursor: initial;
+  }
+  &:disabled,
+  &[disabled] {
+    background-color: $color-base;
+    border-color: $color-base;
+    cursor: initial;
+  }
+}
+input + input {
+  margin-left: $unit * 2;
+}

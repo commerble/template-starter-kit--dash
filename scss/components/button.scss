@@ -1,0 +1,186 @@
+@charset "utf-8";
+
+.btn {
+    font-family: $font-family-default;
+    font-size: $font-size-default;
+    font-weight: 600;
+    text-decoration:none;
+    text-align:center;
+    box-sizing:border-box;
+    outline-offset: 3px;
+    color: $color-primary !important;
+    background-color: adjust-color($color: $color-secondary, $lightness: 5%) ;
+    border: 2px solid adjust-color($color: $color-secondary, $lightness: 5%) ;
+    border-radius:3px;
+    padding: $unit ($unit * 2);
+    margin: $unit;
+    cursor:pointer;
+    &:hover {
+        opacity: .75;
+    }
+    &:active {
+        opacity: .5;
+    }
+    &:disabled,
+    &[disabled] {
+        cursor:not-allowed;
+        opacity: .5;
+    }
+}
+.btn-next {
+    position:relative;
+    padding: $unit ($unit * 4);
+    &::after {
+        content:"";
+        position:absolute;
+        display:block;
+        top:50%;
+        width:4px;
+        height:4px;
+        margin-top:-3px;
+        border-top:2px solid $color-primary;
+        border-right:2px solid $color-primary;
+    }
+    // --- next
+    &::before {
+        right:7px;
+    }
+    &::after {
+      right: $unit * 1.5;
+      transform:rotate(45deg);
+    }
+}
+.btn-prev {
+    position:relative;
+    padding: $unit ($unit * 4);
+    &::after {
+        content:"";
+        position:absolute;
+        display:block;
+        top:50%;
+        width:4px;
+        height:4px;
+        margin-top:-3px;
+        border-top:2px solid $color-primary;
+        border-right:2px solid $color-primary;
+    }
+    // --- prev
+    &::before {
+        left:7px;
+    }
+    &::after {
+        left: $unit;
+        transform:rotate(-135deg);
+    }
+}
+.btn-primary {
+    background-color: $color-primary;
+    border-color: $color-primary;
+    outline-color: $color-primary;
+    color: $color-base !important;
+    &::after {
+        border-color: $color-base;
+    }
+}
+.btn-action {
+    background-color: $color-action;
+    border-color: $color-action;
+    outline-color: $color-action;
+    color: $color-base !important;
+    &::after {
+        border-color: $color-base;
+    }
+}
+.btn-danger {
+    background-color: $color-danger;
+    border-color: $color-danger;
+    outline-color: $color-danger;
+    color: $color-base !important;
+    &::after {
+        border-color: $color-base;
+    }
+}
+.btn-ghost.btn-primary {
+    background-color: $color-base;
+    border-color: $color-primary;
+    outline-color: $color-primary;
+    color: $color-primary !important;
+    &::after {
+        border-color: $color-primary;
+    }
+}
+.btn-ghost.btn-action {
+    background-color: $color-base;
+    border-color: $color-action;
+    outline-color: $color-action;
+    color: $color-action !important;
+    &::after {
+        border-color: $color-action;
+    }
+}
+.btn-ghost.btn-danger {
+    background-color: $color-base;
+    border-color: $color-danger;
+    outline-color: $color-danger;
+    color: $color-danger !important;
+    &::after {
+        border-color: $color-danger;
+    }
+}
+.btn-text {
+    outline-offset: 0;
+}
+.btn-text.btn-primary {
+    background-color: $color-base;
+    border-color: $color-base;
+    outline-color: $color-primary;
+    color: $color-primary !important;
+    &:hover, &:active {
+        border-color: $color-primary;
+    }
+    &::after {
+        border-color: $color-primary;
+    }
+}
+.btn-text.btn-action {
+    background-color: $color-base;
+    border-color: $color-base;
+    outline-color: $color-action;
+    color: $color-action !important;
+    &:hover, &:active {
+        border-color: $color-action;
+    }
+    &::after {
+        border-color: $color-action;
+    }
+}
+.btn-text.btn-danger {
+    background-color: $color-base;
+    border-color: $color-base;
+    outline-color: $color-danger;
+    color: $color-danger !important;
+    &:hover, &:active {
+        border-color: $color-danger;
+    }
+    &::after {
+        border-color: $color-danger;
+    }
+}
+.btn-small {
+    font-size: $font-size-default * 0.9;
+    padding: $unit;
+}
+.btn-small.btn-next {
+    padding-right: $unit * 3;
+}
+.btn-small.btn-prev {
+    padding-left: $unit * 3;
+}
+.btn-large {
+    font-size: $font-size-default * 1.5;
+    padding: ($unit * 2) ($unit * 4);
+}
+.btn-large.btn-next,
+.btn-large.btn-prev {
+    padding: ($unit * 2) ($unit * 6);
+}

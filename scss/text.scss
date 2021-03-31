@@ -1,0 +1,99 @@
+.text-center {
+    text-align: center;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+.text-small {
+    font-size: $font-size-default * 0.9;
+}
+.text-large {
+    font-size: $font-size-default * 1.2;
+}
+
+.h-border {
+    border-top: 2px solid $color-primary;
+    border-bottom: 2px solid $color-primary;
+    padding: $unit * 2;
+    margin: 0 $unit $unit * 4;
+    font-family: $font-family-title;
+    font-size: $font-size-default * 1.2;
+    font-weight: $font-weight-bold;
+    letter-spacing: $unit * .5;
+    line-height: $unit * 3;
+}
+
+.h-underline {
+    border-bottom: 2px solid $color-primary;
+    padding: $unit * 2;
+    margin: 0 $unit $unit * 4;
+    font-family: $font-family-title;
+    font-size: $font-size-default * 1.2;
+    font-weight: $font-weight-bold;
+    letter-spacing: $unit * .5;
+    line-height: $unit * 3;
+}
+
+.h-title {
+    padding: $unit * 2 0;
+    margin: 0 $unit $unit;
+    font-family: $font-family-title;
+    font-size: $font-size-default * 1.2;
+    font-weight: $font-weight-bold;
+    letter-spacing: $unit * .5;
+    line-height: $unit * 3;
+}
+
+.h-centerline {
+    padding: $unit * 2;
+    margin: 0 $unit $unit * 4;
+    font-family: $font-family-title;
+    font-size: $font-size-default * 1.2;
+    font-weight: $font-weight-bold;
+    letter-spacing: $unit * .5;
+    line-height: $unit * 3;
+    text-align: center;
+    position: relative;
+    background: linear-gradient(180deg, 
+        $color-base calc(50% - 2px), 
+        $color-primary calc(50%), 
+        $color-base calc(50% + 2px)
+    );
+    &>span {
+        position: relative;
+        background: $color-base;
+        padding: 0 $unit * 2;
+    }
+}
+
+.title {
+    font-family: $font-family-title;
+    font-size: $font-size-default * 1.5;
+    margin-bottom: $unit * 2;
+}
+
+.lead {
+    font-size: $font-size-default * 1.2;
+}
+
+.text-shadow {
+    text-shadow: 2px 1px 4px rgba(0,0,0,.8);
+}
+
+.text-del {
+    text-decoration-line: line-through;
+    text-decoration-style: solid;
+    text-decoration-thickness: 1px;
+}
+
+.text-nowrap {
+    white-space: nowrap;
+}
+
+.text-list-dot {
+    list-style-type:  disc;
+    list-style: inside;
+}

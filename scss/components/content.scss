@@ -1,0 +1,14 @@
+.content {
+    width: $cw;
+    margin: 0 auto;
+    @include mq($bp-tb) {
+        width: 100%;
+    }
+}
+.content-wide {
+    width: $cw * 1.5;
+    margin: 0 auto;
+    @include mq($bp-tb) {
+        width: 100%;
+    }
+}

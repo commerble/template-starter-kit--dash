@@ -1,0 +1,85 @@
+@charset "utf-8";
+
+.image {
+    width: 100%;
+    background-color: $color-secondary;
+    display: block;
+    text-decoration: none;
+    
+    img {
+        top:0;
+        font-family: 'Helvetica';
+        font-weight: 300;
+        line-height: $unit * 4;  
+        text-align: center;
+        
+        width: 100%;
+        height: auto;
+        display: block;
+        position: relative;
+    }
+    
+    img:before { 
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-color: $color-secondary;
+    }
+  
+    img:after { 
+        content: "📷 " attr(alt);
+        display: block;
+        font-size: $font-size-default;
+        font-style: normal;
+        line-height: $unit * 4;
+        color: rgb(100, 100, 100);
+        
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+    }
+}
+.image-square {
+    position: relative;
+    padding-bottom: 100%;
+
+    img {
+        position: absolute;
+        top:0;
+    }
+    img:after {
+        margin-top: 50%;
+        top: $unit * -2;
+    }
+}
+.image-4x3 {
+    position: relative;
+    padding-bottom: 75%;
+
+    img {
+        position: absolute;
+        top:0;
+    }
+    img:after {
+        margin-top: 37.5%;
+        top: $unit * -2;
+    }
+}
+.image-golden {
+    position: relative;
+    padding-bottom: 61.8%;
+
+    img {
+        position: absolute;
+        top:0;
+    }
+    img:after {
+        margin-top: 30.9%;
+        top: $unit * -2;
+    }
+}

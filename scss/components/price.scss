@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+.price {
+    display: inline-block;
+    font-family: $font-family-title;
+}
+.price-tax {
+    font-size: $font-size-default * 0.8;
+}
+.price-attention {
+    color: $color-attention;
+}
+.price-value {
+    font-family: $font-family-price;
+}
+.price-strong .price-value {
+    font-weight: bold;
+}
+.price-large {
+    font-size: $font-size-default * 2;
+    .price-value {
+        font-size: $font-size-default * 2;
+    }
+    .price-tax {
+        font-size: $font-size-default * 1.6;
+    }
+}

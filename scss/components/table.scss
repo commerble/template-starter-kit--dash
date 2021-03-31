@@ -1,0 +1,67 @@
+table.table {
+    width: calc(100% - #{$unit * 2});
+    margin: $unit;
+    td, th {
+        padding: $unit;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid $color-border;
+    }
+    td[align="left"], th[align="left"] {
+        text-align: left;
+    }
+    td[align="center"], th[align="center"] {
+        text-align: center;
+    }
+    td[align="right"], th[align="right"] {
+        text-align: right;
+    }
+    th {
+        font-family: $font-family-title;
+        font-weight: $font-weight-bold;
+    }
+    thead th {
+        background-color: $color-secondary;
+    }
+    caption {
+        padding: $unit;
+    }
+    @include mq($bp-sp){
+        
+        thead {
+            display: none;
+        }
+        tr {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid $color-border;
+            margin: 0 $unit * 2 $unit;
+            padding-bottom: $unit;
+        }
+        td, th {
+            padding: $unit 0;
+            border: none;
+        }
+        td:not([align]) {
+            text-align: left;
+        }
+        td[data-title] {
+            margin-left: 6em;
+            &>*{
+                display: inline-block;
+            }
+        }
+        td[data-title]::before {
+            content: attr(data-title);
+            display: inline-block;
+            width: 6em;
+            margin-left: -6em;
+            font-family: $font-family-title;
+            font-weight: $font-weight-bold;
+            text-overflow: wrap;
+        }
+        td[data-title=""]::before {
+            display: none;
+        }
+    }
+}
