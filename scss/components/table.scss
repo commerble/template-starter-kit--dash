@@ -19,6 +19,7 @@ table.table {
     th {
         font-family: $font-family-title;
         font-weight: $font-weight-bold;
+        white-space: nowrap;
     }
     thead th {
         background-color: $color-secondary;

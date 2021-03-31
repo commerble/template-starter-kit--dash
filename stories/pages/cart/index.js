@@ -81,7 +81,7 @@ export const render = ({
                 <thead>
                     <tr>
                         <th colspan="2">商品</th>
-                        <th class="text-nowrap">個数</th>
+                        <th>個数</th>
                         <th>小計</th>
                     </tr>
                 </thead>
