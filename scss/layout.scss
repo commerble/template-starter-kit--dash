@@ -17,3 +17,15 @@ hr {
 .mb {
     margin-bottom: $unit * 8;
 }
+
+.sp-hide {
+    @include mq($bp-sp) {
+        display: none;
+    }
+}
+.pc-hide {
+    display: none;
+    @include mq($bp-sp) {
+        display: initial;
+    }
+}
