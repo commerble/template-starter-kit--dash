@@ -1,0 +1,33 @@
+.badge {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    border: 1px solid $color-secondary;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 16px;
+    padding: 0 $unit;
+    box-sizing: border-box;
+    overflow: hidden;
+    &:hover,
+    &:focus {
+        border-color: $color-primary;
+    }
+    margin: $unit;
+}
+.badge-removal::after {
+    content: "\d7";
+    margin-left: $unit/2;
+    font-size: $font-size-default * 1.4;
+}
+.badge-icon {
+    font-weight: 700;
+    padding: $unit / 1.5;
+    background-color: $color-secondary;
+    border-radius: 50%;
+    margin-left: $unit * -1;
+    margin-right: $unit / 2;
+    width: 32px;
+    height: 32px;
+    box-sizing: border-box;
+}
