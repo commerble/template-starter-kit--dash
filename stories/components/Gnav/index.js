@@ -4,8 +4,8 @@ export const render = ({
     <ul>
         <li><a href="javascript:void(0)">Home</a></li>
         <li>
-            <details>
-                <summary>Lady's</summary>
+            <button>
+                Lady's
                 <ul>
                     <li>
                         <a href="javascript:void(0)" class="gnav-link">
@@ -56,11 +56,11 @@ export const render = ({
                         </a>
                     </li>
                 </ul>
-            </details>
+            </div>
         </li>
         <li>
-            <details>
-                <summary>Men's</summary>
+            <button>
+                Men's
                 <ul>
                     <li>
                         <a href="javascript:void(0)" class="gnav-link">
@@ -87,11 +87,11 @@ export const render = ({
                         </a>
                     </li>
                 </ul>
-            </details>
+            </button>
         </li>
         <li>
-            <details>
-                <summary>Unisex</summary>
+            <button>
+                Unisex
                 <ul>
                     <li>
                         <a href="javascript:void(0)" class="gnav-link">
@@ -117,8 +117,16 @@ export const render = ({
                             <div class="gnav-link-text">AAAAA</div>
                         </a>
                     </li>
+                    <li>
+                        <a href="javascript:void(0)" class="gnav-link">
+                            <div class="gnav-link-icon">
+                                <div class="image image-square"><img src="https://httpstat.us/404"></div>
+                            </div>
+                            <div class="gnav-link-text">AAAAA</div>
+                        </a>
+                    </li>
                 </ul>
-            </details>
+            </button>
         </li>
     </ul>
 </nav>`;

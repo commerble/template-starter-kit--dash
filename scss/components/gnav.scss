@@ -19,26 +19,20 @@
         }
     }
 
-    a {
+    a, button {
         padding: $unit;
         text-decoration: none;
         color: $color-primary;
-        font-family: $font-family-title;
-        font-size: $font-size-default * 1.2;
-    }
-    
-    summary {
-        font-family: $font-family-title;
-        font-size: $font-size-default * 1.2;
-        padding: $unit;
+        background-color: $color-base;
+        border: none;
         cursor: pointer;
-        list-style: none;
-        &::-webkit-details-marker {
-            display: none;
-        }
+        font-family: $font-family-title;
+        font-size: $font-size-default * 1.2;
     }
-
-    details > ul {
+    button > ul {
+        display: none;
+    }
+    button:focus-within > ul {
         position: absolute;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -61,17 +55,6 @@
         @include mq($bp-tb) {
             width: 100%;
         }
-    }
-    details[open] > summary:before {
-        content: " ";
-        display: block;
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 50;
-        background: transparent;
     }
 }
 .gnav-link {
