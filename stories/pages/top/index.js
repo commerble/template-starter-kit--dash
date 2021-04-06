@@ -66,7 +66,7 @@ export const render = ({
     </section>
     <section class="section content">
         <h1 class="h-border text-center">NEWS</h1>
-        ${renderArticle({columns:3, items:3})}
+        ${renderArticle({columns:3, items:3, unwrap: true})}
         <div class="block">
             <button class="btn btn-text btn-primary btn-next">すべてのお知らせを見る</button>
         </div>
@@ -75,7 +75,7 @@ export const render = ({
         <h1 class="h-border text-center">
             季節の商品<br>春のオシャレコーデ
         </h1>
-        ${renderProduct({columns: 4, items: 8})}
+        ${renderProduct({columns: 4, items: 8, unwrap: true})}
         <div class="block">
             <button class="btn btn-ghost btn-primary btn-next">もっと見る</button>
         </div>

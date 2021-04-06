@@ -138,11 +138,11 @@ export const render = ({
     </article>
     <aside class="section content">
         <h1 class="h-border text-center">関連商品</h1>
-        ${renderProduct({columns:4, items:4})}
+        ${renderProduct({columns:4, items:4, unwrap: true})}
     </aside>
     <aside class="section content">
         <h1 class="h-border text-center">関連ページ</h1>
-        ${renderArticle({columns:2, items:2})}
+        ${renderArticle({columns:2, items:2, unwrap: true})}
     </aside>
     ${renderGFooter({})}
 </body>

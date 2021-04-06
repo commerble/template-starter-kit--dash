@@ -49,7 +49,7 @@ export const render = ({
                             <p class="message text-center lead">ご希望の条件に合致する商品が見つかりませんでした。条件を変更し再度お試しください。</p>
                         </div>
                     ` : `
-                        ${renderProduct({columns:4, items:20})}
+                        ${renderProduct({columns:4, items:20, unwrap: true})}
                         <div class="block block-vertical">
                             <a class="btn btn-primary btn-text btn-next">次のページ</a>
                             <button class="btn btn-primary btn-ghost pc-hide">🔍 絞り込み条件を変更する</button>
