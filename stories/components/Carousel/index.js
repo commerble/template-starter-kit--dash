@@ -1,5 +1,7 @@
+const when = (condition, text) => condition ? text : ''
 export const render = ({
-    notfound
+    notfound,
+    additionalClassName
 }) => {
     let src = "https://via.placeholder.com/600x600?text=Image";
     let thumb = "https://via.placeholder.com/64x64?text=";
@@ -8,7 +10,7 @@ export const render = ({
         thumb = src = 'https://httpstat.us/404'
     }
 
-    return `<div class="carousel">
+    return `<div class="carousel ${when(additionalClassName,additionalClassName)}">
     <ul class="carousel-images">
         ${[...Array(15).keys()].map(i => `
             <li id="carousel-frame-${i}" class="carousel-frame image image-square">

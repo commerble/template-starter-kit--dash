@@ -2,10 +2,12 @@ function when(condition, text){
     return condition ? text : '';
 }
 export const renderProduct = ({
+    columns,
+    items
 }) => {
     return `<div class="content">
-    <div class="tiles tiles-x4">
-        ${[...Array(8).keys()].map(i => `
+    <div class="tiles tiles-x${columns}">
+        ${[...Array(items).keys()].map(i => `
         <article class="tile">
             <a href="javascript:void(0)" rel="bookmark">
                 <h1>Product Name ${i} 商品名${i} 商品名${i}</h1>
@@ -21,10 +23,12 @@ export const renderProduct = ({
 </div>`;
 }
 export const renderArticle = ({
+    columns,
+    items
 }) => {
     return `<div class="content">
-    <div class="tiles tiles-x3">
-        ${[...Array(6).keys()].map(i => `
+    <div class="tiles tiles-x${columns}">
+        ${[...Array(items).keys()].map(i => `
         <article class="tile">
             <a href="javascript:void(0)" rel="bookmark">
                 <h1>Title of the article tile ${i}</h1>

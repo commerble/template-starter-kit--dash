@@ -1,5 +1,5 @@
 import copyCodeBlock from '@pickra/copy-code-block'
-import html from './index.html'
+import {render} from './index.js'
 
 export default {
   title: 'Pages/History',
@@ -8,6 +8,7 @@ export default {
 }
 
 const Template = ({...args }) => {
+  const html = render(args);
   return html + '<hr>' + copyCodeBlock(html)
 };
 
