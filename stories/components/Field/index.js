@@ -9,7 +9,7 @@ export const render = ({
     <dd class="field-body">
         ${text?
             `<p class="field-text">${value} ${value}</p>`:
-            `<input type="text" value="${value}"><input type="text"  value="${value}">
+            `<input type="text" class="${when(invalid,'input-validation-error')}" value="${value}"><input type="text" class="${when(invalid,'input-validation-error')}" value="${value}">
             <p class="field-error" ${when(!invalid,'style="display:none;"')}>${when(invalid,'エラーメッセージ')}</p>`         
         }
     </dd>
@@ -19,7 +19,7 @@ export const render = ({
     <dd class="field-body">
         ${text?
             `<p class="field-text">${value}</p>`:
-            `<input type="text" value="${value}" size="100">
+            `<input type="text" class="${when(invalid,'input-validation-error')}" value="${value}" size="100">
             <p class="field-error" ${when(!invalid,'style="display:none;"')}>${when(invalid,'エラーメッセージ')}</p>
             <p class="field-note">フィールドの補足説明</p>`         
         }
@@ -31,7 +31,7 @@ export const render = ({
     <dd class="field-body">
         ${text?
             `<p class="field-text">${value}</p>`:
-            `<div class="field-group"><input type="text" value="${value}" size="7"><button class="btn">検索</button></div>
+            `<div class="field-group"><input type="text" class="${when(invalid,'input-validation-error')}" value="${value}" size="7"><button class="btn">検索</button></div>
             <p class="field-error" ${when(!invalid,'style="display:none;"')}>${when(invalid,'エラーメッセージ')}</p>`         
         }
     </dd>
