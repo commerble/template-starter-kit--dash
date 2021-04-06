@@ -38,7 +38,7 @@ export const render = ({
                 <div class="col-3">
                     <div class="block block-wrap">
                         <div class="badge badge-removal">
-                            <i class="badge-icon icon-heart"></i> カテゴリ
+                            <i class="badge-icon icon-dash-heart"></i> カテゴリ
                         </div>
                         <div class="badge badge-removal">タグ1</div>
                         <div class="badge badge-removal">タグ4</div>

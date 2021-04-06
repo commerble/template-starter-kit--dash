@@ -27,7 +27,7 @@ export const render = ({
             </p>
             <div class="block block-horizontal">
                 <div class="badge">
-                    <i class="badge-icon icon-heart"></i> カテゴリ
+                    <i class="badge-icon icon-dash-heart"></i> カテゴリ
                 </div>
                 <div class="badge">タグA</div>
                 <div class="badge">タグB</div>

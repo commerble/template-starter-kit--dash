@@ -8,9 +8,9 @@ export const render = ({
         <a href="javascript:void(0)">
             カテゴリグループA
             <ul>
-                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-heart"></i>カテゴリ1</span></label></li>
-                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-heart"></i>カテゴリ2</span></label></li>
-                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-heart"></i>カテゴリ3</span></label></li>
+                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-dash-heart"></i>カテゴリ1</span></label></li>
+                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-dash-heart"></i>カテゴリ2</span></label></li>
+                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-dash-heart"></i>カテゴリ3</span></label></li>
             </ul>
         </a>
     </li>
@@ -18,9 +18,9 @@ export const render = ({
         <a href="javascript:void(0)">
             カテゴリグループB
             <ul>
-                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-heart"></i>カテゴリ4</span></label></li>
-                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-heart"></i>カテゴリ5</span></label></li>
-                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-heart"></i>カテゴリ6</span></label></li>
+                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-dash-heart"></i>カテゴリ4</span></label></li>
+                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-dash-heart"></i>カテゴリ5</span></label></li>
+                <li class="facet-item"><label><input type="checkbox"><span class="text"><i class="facet-icon icon-dash-heart"></i>カテゴリ6</span></label></li>
             </ul>
         </a>
     </li>

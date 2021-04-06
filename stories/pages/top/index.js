@@ -75,7 +75,7 @@ export const render = ({
         <h1 class="h-border text-center">
             季節の商品<br>春のオシャレコーデ
         </h1>
-        ${renderProduct({})}
+        ${renderProduct({columns: 4, items: 8})}
         <div class="block">
             <button class="btn btn-ghost btn-primary btn-next">もっと見る</button>
         </div>

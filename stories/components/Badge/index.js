@@ -13,7 +13,7 @@ export const render = ({
 
     return `<a class="${klass.join(' ')}">
     ${icon=='font' ? `
-    <i class="badge-icon icon-heart"></i>
+    <i class="badge-icon icon-dash-heart"></i>
     `:icon=='img' ? `
     <div class="badge-icon">
         <div class="image image-square">
