@@ -35,7 +35,7 @@
     button:focus-within > ul {
         position: absolute;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         grid-template-rows: minmax(64px, auto);
         gap: $unit;
         list-style: none;
@@ -55,10 +55,14 @@
         @include mq($bp-tb) {
             width: 100%;
         }
+        & > li {
+            display: flex;
+        }
     }
 }
 .gnav-link {
     display: flex;
+    flex: 1;
     flex-direction: row;
     align-items: center;
     gap: $unit;
@@ -71,5 +75,8 @@
 
     .gnav-link-icon {
         width: 64px;
+        i {
+            font-size: 48px;
+        }
     }
 }
