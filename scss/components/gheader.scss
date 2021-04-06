@@ -26,4 +26,10 @@
     width: 220px;
     max-width: 220px;
     min-width: 220px;
+    height: 32px;
+    overflow: hidden;
+    .image img {
+        height: 32px;
+        object-fit: contain;
+    }
 }
