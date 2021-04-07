@@ -31,3 +31,10 @@ a:active {
     color: $color-anchor;
     opacity: .5;
 }
+
+a,button,input,textarea,summary {
+    outline: none;
+    &:focus-visible {
+        outline-style: solid;
+    }
+}

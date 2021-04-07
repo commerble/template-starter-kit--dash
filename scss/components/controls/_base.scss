@@ -58,3 +58,6 @@ select {
 input + input {
   margin-left: $unit * 2;
 }
+label {
+  position: relative;
+}

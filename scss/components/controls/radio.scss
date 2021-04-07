@@ -51,7 +51,7 @@ input[type=checkbox] {
             transform: none;
         }
     }
-    &:focus {
+    &:focus-visible {
         & + .text{ 
             &::before {
                 border: 2px solid white !important;
