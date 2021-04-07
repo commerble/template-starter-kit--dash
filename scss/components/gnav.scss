@@ -32,32 +32,40 @@
     button > ul {
         display: none;
     }
-    button:focus-within > ul {
-        position: absolute;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        grid-template-rows: minmax(64px, auto);
-        gap: $unit;
-        list-style: none;
-        left:0;
-        box-sizing: border-box;
-        padding: $unit;
-        background-color: $color-secondary;
-        border: 1px solid rgba(27, 31, 35, 0.15);
-        border-radius: 3px;
-        box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
-        z-index: 100;
-        width: $cw;
-        margin: $unit * 2 auto 0;
-        @include mq($bp-sp) {
-            grid-template-columns: repeat(1, 1fr);
+    button:focus-within { 
+        outline-style: solid;
+        outline-color: $color-secondary;
+        & > ul {
+            position: absolute;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-rows: minmax(64px, auto);
+            gap: $unit;
+            list-style: none;
+            left:0;
+            box-sizing: border-box;
+            padding: $unit;
+            background-color: $color-secondary;
+            border: 1px solid rgba(27, 31, 35, 0.15);
+            border-radius: 3px;
+            box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);
+            z-index: 100;
+            width: $cw;
+            margin: $unit * 2 auto 0;
+            @include mq($bp-sp) {
+                grid-template-columns: repeat(1, 1fr);
+            }
+            @include mq($bp-tb) {
+                width: 100%;
+            }
+            & > li {
+                display: flex;
+            }
         }
-        @include mq($bp-tb) {
-            width: 100%;
-        }
-        & > li {
-            display: flex;
-        }
+    }
+    button:focus {
+        outline-style: solid;
+        outline-color: $color-primary;
     }
 }
 .gnav-link {
