@@ -6,12 +6,15 @@
     margin-bottom: $unit;
 }
 .facet-group {
-    & > a {
-        display: block;
-        position: relative;
-        text-decoration: none;
-        outline-offset: $unit / 2;
-        &::after {
+    & > details {
+        & > summary {
+            position: relative;
+            outline-offset: $unit / 2;
+            margin-bottom: $unit;
+            cursor: pointer;
+        }
+
+        & > summary::after {
             content: "";
             position: absolute;
             top: 8px;
@@ -24,23 +27,11 @@
             box-sizing: border-box;
             transition: .1s;
         }
-        & > ul{
-            display: none;
-        }
-    }
-    &.active > a,
-    & > a:focus-within {
-        &:hover {
-            opacity: 1;
-        }
-        &::after {
-            transform: rotate(90deg); /* 90度回転 */
+        &[open] > summary::after {
+            transform: rotate(90deg);
             right: 8px;
             top: 10px;
         }
-        & > ul  {
-            display: block;
-        } 
     }
 }
 .facet-icon {
@@ -49,7 +40,9 @@
     border-radius: 50%;
     width: 32px;
     height: 32px;
+    font-size: 24px;
     box-sizing: border-box;
-    margin-right: $unit;
+    margin: 0 $unit;
+    padding: $unit;
     vertical-align:middle;
 }
