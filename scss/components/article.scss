@@ -1,0 +1,30 @@
+.article {
+    h2,h3,h4,h5,h6 {
+        font-family: $font-family-title;
+        margin: 0 $unit $unit;
+    }
+    h2,h3,h4,h5 {
+        font-weight: $font-weight-bold;
+    }
+    h2 { 
+        font-size: $font-size-default * 1.2;
+        border-bottom: 4px dotted $color-secondary;
+        padding: $unit;
+    }
+    h3 { font-size: $font-size-default * 1.2; }
+    h4 { font-size: $font-size-default * 1.1; }
+    ul,dl,ol,table,figure,img,picture,video,p {
+        margin: 0 $unit * 2 $unit * 2;
+    }
+    ul {
+        list-style-type: disc;
+        list-style-position: inside;
+    }
+    ol {
+        list-style-type: decimal;
+        list-style-position: inside;
+    }
+    dt {
+        font-weight: $font-weight-bold;
+    }
+}
