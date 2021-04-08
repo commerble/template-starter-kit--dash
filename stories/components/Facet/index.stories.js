@@ -4,7 +4,6 @@ import {render} from './index.js'
 export default {
   title: 'Components/Facet',
   argTypes: {
-    active: { control: 'boolean' }
   },
 }
 
