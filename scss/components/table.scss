@@ -47,7 +47,7 @@ table.table {
             text-align: left;
         }
         td[data-title] {
-            margin-left: 6em;
+            margin-left: 8em;
             &>*{
                 display: inline-block;
             }
@@ -55,8 +55,8 @@ table.table {
         td[data-title]::before {
             content: attr(data-title);
             display: inline-block;
-            width: 6em;
-            margin-left: -6em;
+            width: 8em;
+            margin-left: -8em;
             font-family: $font-family-title;
             font-weight: $font-weight-bold;
             text-overflow: wrap;

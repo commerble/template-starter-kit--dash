@@ -74,7 +74,7 @@ export const render = ({
             <a href="#next" class="btn btn-primary btn-text btn-next">次のページ</a>
         </dvi>
         <hr>
-        <dvi class="block block-horizontal">
+        <dvi class="block block-horizontal block-wrap">
             <a href="#2021" class="btn btn-primary btn-text">2021年</a>
             <a href="#2020" class="btn btn-primary btn-text">2020年</a>
             <a href="#2019" class="btn btn-primary btn-text">2019年</a>
