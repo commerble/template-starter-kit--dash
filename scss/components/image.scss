@@ -70,6 +70,19 @@
         top: $unit * -2;
     }
 }
+.image-2x1 {
+    position: relative;
+    padding-bottom: 50%;
+
+    img {
+        position: absolute;
+        top:0;
+    }
+    img:after {
+        margin-top: 25%;
+        top: $unit * -2;
+    }
+}
 .image-golden {
     position: relative;
     padding-bottom: 61.8%;

@@ -5,7 +5,7 @@ export default {
   title: 'Components/Image',
   argTypes: {
     src: { control: 'text' },
-    ratio: { control: { type: 'select', options: ['', 'square', 'golden', '4x3'] } },
+    ratio: { control: { type: 'select', options: ['', 'square', 'golden', '4x3', '2x1', 'hero'] } },
     notfound: { control: 'boolean' },
     wrap: { control: 'boolean' },
     wrapWidth: { control: 'number', defaultValue: 500 },
