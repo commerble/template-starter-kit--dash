@@ -47,7 +47,8 @@
 
     ViewBag.Hero = vm.Hero;
     ViewBag.PublishDate = vm.PublishDate;
-    ViewBag.Title = vm.Title ?? vm.Name;
+    ViewBag.Title = vm.Title;
+    ViewBag.Name = vm.Name;
 
     ViewBag.PageTitle = vm.MetaTitle ?? vm.Name;
     ViewBag.PageDescription = vm.MetaDescription;

@@ -189,31 +189,29 @@
         }
     }};
 }
-<div class="searchResultContent">
-    <div class="result">
-        <ul class="tagList">
+<div class="columns">
+    <div class="col-3 col-order-2">
+        <div class="block block-horizontal block-wrap">
             @foreach(var kind in vm.CheckedKinds) {
-                <li>
-                    <a class="tag tagRemoval" href="@vm.SearchCondition(Href("~/search"), removeKind:kind.Code)">
-                        @if (!string.IsNullOrEmpty(kind.Icon)) {
-                            <i class="@kind.Icon"></i>
-                        }
-                        @kind.Name
-                    </a>
-                </li>
+                <a class="badge badge-removal" href="@vm.SearchCondition(Href("~/search"), removeKind:kind.Code)">
+                    @if (!string.IsNullOrEmpty(kind.Icon)) {
+                        <i class="badge-icon @kind.Icon"></i>
+                    }
+                    @kind.Name
+                </a>
             }
             @foreach(var tag in vm.CheckedTags) {
-                <li>
-                    <a class="tag tagRemoval" href="@vm.SearchCondition(Href("~/search"), removeTag:tag.Code)">
-                        #@tag.Name
-                    </a>
-                </li>
+                <a class="badge badge-removal" href="@vm.SearchCondition(Href("~/search"), removeTag:tag.Code)">
+                    #@tag.Name
+                </a>
             }
-        </ul>
+        </div>
         @if (vm.CheckedKinds.Count == 0 && vm.CheckedTags.Count == 0 && vm.Page == 0) {
-            @ButtonBlock("検索条件を変更する", href:vm.SearchCondition(Href("~/search/condition")), icon:"fa fa-search", btAccent:true, btLargeSize: true, showOnTB:true)
+            <div class="block pc-hide">
+                <a href="@(vm.SearchCondition(Href("~/search/condition")))" class="btn btn-default pc-hide">🔍 検索条件を変更する</a>
+            </div>
         }
-        @ProductTileList(vm.ProductPages, id:"result", slot:(item, index) =>
+        @TileList(vm.ProductPages, id:"result", slot:(item, index) =>
             ProductTile(
                 item.Code,
                 item.Name,
@@ -241,14 +239,18 @@
             )
         )
         @if (vm.IsEmpty) {
-            <p class="empty">ご希望の条件に合致する商品が見つかりませんでした。条件を変更し再度お試しください。</p>
+            <div class="message-box">
+                <p class="message text-center lead">ご希望の条件に合致する商品が見つかりませんでした。条件を変更し再度お試しください。</p>
+            </div>
         }
         @if (vm.HasNextPage) {
-            @ButtonBlock("次のページ", href:vm.SearchCondition(Page.Request.Url.AbsolutePath) + $"&page={(vm.Page+1)}", btPrimary:true,  btLargeSize: true, btNext: true)
+            <div class="block block-vertical">
+                <a href="@(vm.SearchCondition(Page.Request.Url.AbsolutePath) + $"&page={(vm.Page+1)}")" class="btn btn-primary btn-text btn-next">次のページ</a>
+                <a href="@(vm.SearchCondition(Href("~/search/condition")))" class="btn btn-default pc-hide">🔍 検索条件を変更する</a>
+            </div>
         }
-        @ButtonBlock("検索条件を変更する", href:vm.SearchCondition(Href("~/search/condition")), icon:"fa fa-search", btAccent:true, btLargeSize: vm.IsEmpty, showOnTB:true)
     </div>
-    <div id="facet" class="facet">
+    <div class="col-1 col-order-1 sp-hide">
         @Include("SearchFilter", Model)
     </div>
 </div>

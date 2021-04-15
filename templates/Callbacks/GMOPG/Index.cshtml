@@ -7,8 +7,15 @@
         public string Icon { get; set; }
         public string Size { get; set; }
         public string Color { get; set; }
-        public string Valiation() {
-            return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+        public string ProductName() {
+            if (string.IsNullOrEmpty(DisplayName)) {
+                return Name;
+            }
+            var valiation = string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+            if (string.IsNullOrEmpty(valiation)) {
+                return DisplayName;
+            }
+            return $"{DisplayName} {valiation}";
         }
     }
 
@@ -157,63 +164,52 @@
     var vm = LoadViewModel(order);
     var cartinUrl = Href("~/Order/Cart?") + string.Join("&", vm.Select(line => $"item={line.ProductId}&qty={line.Qty}"));
 }
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <section class="formSection">
-                <h1 class="formSectionTitle center">お支払いが完了されませんでした</h1>
-                <p class="formSectionLead">
-                    GMOペイメントゲートウェイにてお支払が完了されませんでしたので、この注文は自動的にキャンセルされます。<br>
-                    仮押さえしました在庫は、@(order.OrderCustomer.AutoCancelDate.Value.ToString("yyyy/MM/dd HH:mm:ss"))移行に戻されます。<br>
-                    またのご利用お待ちしております。
-                </p>
-                <dl class="formBlock">
-                    <dt class="formBlockTitle">エラーコード</dt>
-                    <dd class="formBlockBody">
-                        <p class="inputContent">@Page.Request.Form["ErrCode"]</p>
-                    </dd>
-                </dl>
-                <dl class="formBlock">
-                    <dt class="formBlockTitle">エラー情報</dt>
-                    <dd class="formBlockBody">
-                        <p class="inputContent">@Page.Request.Form["ErrInfo"]</p>
-                    </dd>
-                </dl>
-            </section>
-            <section class="formSection">
-                <h2 class="formSectionTitle center">再度購入を試みる</h2>
-                <p class="formSectionLead">
-                    先ほどのカートイン情報はクリアされています。同じ商品をカートインして購入を試みますか？
-                </p>
-                <table class="cartDetailTable" style="margin-top:16px">
-                    <tbody>
-                        @foreach(var line in vm ) {
-                            <tr>
-                                <td class="dataCell">
-                                    <div class="cartDetailProductImage">
-                                        <img src="@IconUrl(line.Icon)" alt="@line.Name">
+<main class="section content">
+    <h1 class="h-underline">お支払いが完了されませんでした</h1>
+    <div class="message-box">
+        <p class="message lead">
+            GMOペイメントゲートウェイにてお支払が完了されませんでしたので、この注文は自動的にキャンセルされます。<br>
+            仮押さえしました在庫は、@(order.OrderCustomer.AutoCancelDate.Value.ToString("yyyy/MM/dd HH:mm:ss"))移行に戻されます。<br>
+            またのご利用お待ちしております。
+        </p>
+        <div class="message block">
+            <ul class="text-list-dot">
+                <li>エラーコード：@Page.Request.Form["ErrCode"]</li>
+                <li>エラー情報：@Page.Request.Form["ErrInfo"]</li>
+            </ul>
+        </div>
+        <div class="message">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th colspan="2">商品</th>
+                        <th>個数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var line in vm ) {
+                        <tr>
+                            <td align="center">
+                                <div class="product-icon">
+                                    <div class="image image-square">
+                                        <img src="@IconUrl(line.Icon)" alt="@line.ProductName()">
                                     </div>
-                                    <div class="cartDetailProductInfo">
-                                        <p class="productName">@(line.DisplayName ?? line.Name)</p>
-                                        <p class="productRemarks">
-                                            <span>@line.Valiation()</span>
-                                        </p>
-                                        <div class="qty">
-                                            <text>数量：@line.Qty</text>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                <div class="buttonContainer">
-                    <a href="@cartinUrl" class="btCallToAction btLargeSize btNext">もう一度カートにいれる</a>
-                </div>
-                <div class="buttonContainer">
-                    <a href="@Href("~/")" class="btPrimary btNormalSize btNextGhost">トップページへ戻る</a>
-                </div>
-            </section>
+                                </div>
+                            </td>
+                            <td align="center">
+                                @line.ProductName()
+                            </td>
+                            <td data-title="個数">
+                                @line.Qty
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="block block-vertical">
+            <a href="@cartinUrl" class="btn btn-action btn-large">もう一度カートにいれる</a>
+            <a href="@Href("~/")" class="btn btn-primary btn-text btn-prev">トップページへ戻る</a>
         </div>
     </div>
-</div>
+</main>

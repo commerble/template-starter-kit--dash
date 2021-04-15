@@ -90,52 +90,38 @@
 
     ViewBag.PageTitle = vm.IsEmpty ? "カート" : $"({cart.Items.Count}) カート";
 }
-@DisplayViewMessages(vm.ViewMessages)
-<div class="section">
-    <div class="inner">
+<main class="section content">
+    <h1 class="h-border">ショッピングカート</h1>
+    @DisplayViewMessages(vm.ViewMessages)
+    @if (vm.IsEmpty) {
+        <div class="message-box">
+            <p class="message text-center lead">カートに商品が入っていません。</p>
+            <div class="block">
+                <a onclick="backToCheckPoint();" class="btn btn-primary btn-prev">お買い物を続ける</a>
+            </div>
+        </div>
+    }
+    else {
         <form action="@Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart"})" method="post">
             @Page.Html.Hidden("CartId", vm.CartId )
-            @if (vm.IsEmpty) {
-            <div class="cartMessage">
-                <p class="cartMessageItem"><span class="cartMessageItemText">カートに商品が入っていません。</span></p>
-                <div class="buttonContainer">
-                    <a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">お買い物を続ける</a>
-                </div>
-            </div>
-            }
-            else {
-            <div class="flexBoxResponsive flexBoxAlignTop">
-                <div class="cartDetailBlock">
-                    @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=true })
-                </div>
-                <div class="cartOrderBlock">
-                    <div class="cartOrderBlockBox">
-                        <div class="cartOrderBlockPrice">
-                            @Page.Html.Partial("ModdSharedApplyCampaigns", cart)
-                            @PrintPrice(vm.TotalPayment, "合計：")
-                            @PrintPoint(vm.ChargePoint, "今回獲得予定ポイント：")
-                        </div>
-                        <div class="cartOrderBlockAction">
-                            <div class="buttonContainer onsite">
-                                @if (vm.HasErrors) {
-                                    <button class="btCallToAction btLargeSize btNext btDisabled" disabled>メッセージをご確認ください</button>
-                                }
-                                else {
-                                    <a href="@Page.Template.SecuredLink("ModdPurchase", new {cart=vm.CartId,action="Index", direct=true})" class="btCallToAction btLargeSize btNext" data-gtm="@Jil.JSON.Serialize(gtmCheckout)">注文手続きへ進む</a>
-                                }
-                                <button class="btPrimary btLargeSize btRecalc" type="submit" name="recalc" value="recalc" style="display:none;">数量変更して再計算</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="buttonContainer more">
-                <a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">お買い物を続ける</a>
-            </div>
-            }
+            @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=true })
         </form>
-    </div>
-</div>
+        if (vm.HasErrors) {
+            <div class="alert alert-error">
+                <p>エラーがあります。購入できない商品をカートから削除してください。</p>
+            </div>
+        }
+        <div class="block block-vertical">
+            @if (vm.HasErrors) {
+                <button class="btn btn-action btn-large btn-next" disabled>メッセージをご確認ください</button>
+            } else {
+                <a href="@Page.Template.SecuredLink("ModdPurchase", new {cart=vm.CartId,action="Index", direct=true})" class="btn btn-action btn-large btn-next">注文手続きへ進む</a>
+            }
+            <button type="submit" name="recalc" value="recalc" class="btn btn-primary btn-large btn-next" style="display:none;">数量変更して再計算</button>
+            <a onclick="backToCheckPoint();" class="btn btn-primary btn-text btn-prev">お買い物を続ける</a>
+        </div>
+    }
+</main>
 
 @section ScriptBlock {
 <script>

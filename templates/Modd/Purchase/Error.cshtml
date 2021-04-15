@@ -3,21 +3,13 @@
 
     ViewBag.PageTitle = "カート - エラー";
 }
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <section class="formSection">
-                <h1 class="formSectionTitle center">カートでエラーが発生しました</h1>
-                <p class="formSectionLead">以下の問題が発生しました。お手数ですが、最初に戻って再度お手続きいただけますようお願いいたします。</p>
-                <div class="formBlock">
-                    <div class="errorMessage">
-                        @DisplayViewMessages(viewData)
-                    </div>
-                </div>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart"})" class="btPrimary btNormalSize btNext">カートの最初に戻る</a>
-                </div>
-            </section>
+<main class="section content">
+    <h1 class="h-underline">カートでエラーが発生しました</h1>
+    <div class="message-box">
+        <p class="message lead">以下の問題が発生しました。<br>お手数ですが、最初に戻って再度お手続きいただけますようお願いいたします。</p>
+        @DisplayViewMessages(viewData)
+        <div class="block">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart"})" class="btn btn-primary btn-prev">カートへ戻る</a>
         </div>
     </div>
-</div>
+</main>

@@ -127,3 +127,14 @@ $('body').on('click', '[type="submit"][data-gtm-radio]', function(e) {
         }));
     }
 })
+
+function backToCheckPoint() {
+    const url = decodeURIComponent(document.cookie.split(';').filter(str => str.startsWith('checkpoint')).map(str => str.substring('checkpoint='.length))[0] || '')
+    const root = document.querySelector('meta[name=x-root]').content;
+    location = url ? url : root;
+}
+
+function updateCheckPoint() {
+    const root = document.querySelector('meta[name=x-root]').content;
+    document.cookie = 'checkpoint=' + encodeURIComponent(location.href) + ';path=' + root; 
+}

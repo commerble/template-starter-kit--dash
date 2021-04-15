@@ -143,7 +143,7 @@
         { PaymentMethod.Offline, "オフライン" },
         { PaymentMethod.Token, "クレジットカード" },
         { PaymentMethod.PointOnly, "全額ポイント" },
-        { PaymentMethod.External, "外部決済（カード・コンビニ・キャリア）" },
+        { PaymentMethod.External, "外部決済 （カード・コンビニ・キャリア）" },
         { PaymentMethod.None, "決済方法なし"},
     };
     Dictionary<HumanSexes, string> HumanSexesText = new Dictionary<HumanSexes, string> {
@@ -296,62 +296,49 @@
                 }
             ).GroupBy(k => k.GroupCode));
     <nav class="gnav">
-        <div class="tabNavigation">
-            <ul class="tabList">
-                @foreach(var kinds in groupedKinds) {
-                    <li class="tabListItem jp">
-                        <a href="#" ic-action="toggleTab:'#@(kinds.Key)-tab'">@kinds.Key</a>
-                    </li>
-                }
-            </ul>
+        <ul>
             @foreach(var kinds in groupedKinds) {
-                <div class="tabBody" id="@(kinds.Key)-tab">
-                    <ul class="gnavList">
-                        @foreach(var kind in kinds.OrderBy(k => k.DisplayOrder)) {
-                            <li class="gnavListItem">
-                                <a href="@CategoryUrl(kind.Code)" title="@kind.Name">@if (!string.IsNullOrEmpty(kind.Icon)) { <i class="@kind.Icon"></i> }@kind.Name</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+                <li>
+                    <button>
+                        @kinds.Key
+                        <ul>
+                            @foreach(var kind in kinds.OrderBy(k => k.DisplayOrder)) {
+                                <li>
+                                    <a href="@CategoryUrl(kind.Code)" rel="bookmark" title="@kind.Name" class="gnav-link">
+                                        @if (!string.IsNullOrEmpty(kind.Icon)) {
+                                            <div class="gnav-link-icon">
+                                                @if (kind.Icon.StartsWith("https://")) {
+                                                    <div class="image image-square"><img src="https://httpstat.us/404"></div>
+                                                } else {
+                                                    <i class="@kind.Icon"></i>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="gnav-link-text">@kind.Name</div>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </button>
+                </li>
             }
-        </div>
+        </ul>
     </nav>
 }
 
 @helper RenderHeader() {
-    <header>
-        <div class="inner">
-            <p class="logo">
-                <a href="@Href("~/")">
-                    <img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22">
-                </a>
-            </p>
-            <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=(int?)null })" title="お気に入り">
-                    <span class="headerLinkItemText"><i class="fa fa-heart"></i><span class="showOnPCInline">&nbsp;お気に入り</span></span>
-                </a>
-            </div>
-            <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index" })" title="マイページ">
-                    <span class="headerLinkItemText"><i class="fa fa-user"></i><span class="showOnPCInline">&nbsp;マイページ</span></span>
-                </a>
-            </div>
-            <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart" })" title="カート">
-                    <span class="headerLinkItemText"><i class="fa fa-shopping-cart"></i><span class="showOnPCInline">&nbsp;カート</span></span>
-                </a>
-            </div>
-        </div>
+    <header class="gheader content-wide">
+        <h1 class="logo"><a href="@Href("~/")" class="image image-base"><img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22"></a></h1>
+        <a href="@Href("~/Member/Favorite")" class="gheader-link"><i class="icon-dash-heart"></i><span class="sp-hide">お気に入り</span></a>
+        <a href="@Href("~/Member/Index")" class="gheader-link"><i class="icon-dash-user"></i><span class="sp-hide">マイページ</span></a>
+        <a href="@Href("~/Order/Cart")" class="gheader-link"><i class="icon-dash-cart"></i><span class="sp-hide">カート</span></a>
     </header>
 }
 
 @helper RenderFooter() {
-    <footer>
+    <footer class="gfooter">
         @RenderParts("Footer")
-        <div class="footerBottomSection">
-            <p class="copyright">@GetConfigValue("BRAND_COPY_RIGHT")</p>
-        </div>
+        <p class="text-center text-small">@GetConfigValue("BRAND_COPY_RIGHT")</p>
     </footer>
 }
 
@@ -371,6 +358,14 @@
         }())
     </script>
 }
+
+@helper RenderCheckPoint() {
+    var routes = new [] { "Top", "Search", "Tag", "Category", "Landing", "Notice" };
+    if (routes.Contains((string)ViewBag.RouteName)) {
+        <script>updateCheckPoint();</script>
+    }
+}
+
 
 @helper DisplayPager(int currentPage,int itemCount,int itemPerPage){
 
@@ -411,15 +406,12 @@
     }
 }
 
-@helper PrintPrice(decimal? price, string label = null, bool? hasMultiplePrice = false) {
-    <p class="salePrice">
-    @if (price.HasValue) {
-        <text>@label<span class="num">&yen;@price.Value.ToString("N0")</span><span class="tax">（税込）</span></text>
+@helper PrintPrice(decimal? price, bool? hasMultiplePrice = false, bool del = false, bool attention = false, bool strong = false) {
+    if (price.HasValue) {
+        <span class="price @when(del,"text-del") @when(attention,"price-attention")  @when(strong,"price-strong")"><span class="price-value">&yen;@price.Value.ToString("N0")</span>@when(hasMultiplePrice == true, "～")<span class="price-tax">(税込)</span></span>
+    } else {
+        <span class="price">価格未決定</span>
     }
-    else {
-        <text>価格未決定</text>
-    }
-    </p>
 }
 @helper PrintNormalPrice(decimal? price, bool? hasMultiplePrice = false) {
     <p class="normalPrice">
@@ -436,14 +428,9 @@
     </p>
 }
 
-@helper PrintPoint(decimal? point, string label = null, string klass="getPoint", bool? hasMultiplePrice = false) {
+@helper PrintPoint(decimal? point, bool? hasMultiplePrice = false) {
     if (point.HasValue) {
-        <p class="@klass">
-            @label<span class="num">@point.Value.ToString("N0")</span>&nbsp;pt 
-            @if (hasMultiplePrice == true) {
-                <text>～</text>
-            }
-        </p>
+        <span class="price"><span class="price-value">@point.Value.ToString("N0")</span>@when(hasMultiplePrice == true, "～") pt</span>
     }
 }
 
@@ -452,70 +439,61 @@
     <text>@($"{date:yyyy年MM月dd日}({dayOfWeek})")</text>
 }
 
+@helper PrintTitleOrName(string title, string name) {
+    if (!string.IsNullOrEmpty(title)) {
+        <text>@Raw(title)</text>
+    } else {
+        <text>@name</text>
+    }
+}
+
 @helper ValidationMessageFor(string name) {
-    <p class="inputError" data-valmsg-for="@name" data-valmsg-replace="true" style="display:none;"></p>
+    <p class="field-error" data-valmsg-for="@name" data-valmsg-replace="true"></p>
 }
 
 @helper ProductTile(string code, string name, string kindName, string kindIcon, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
-    <li class="productTile">
-        <a href="@ItemUrl(code)" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
-            <div class="productTileImage">
-                <img src="@ThumbnailUrl(thumbnail)" alt="@name">
-                @if (!string.IsNullOrEmpty(kindIcon)) {
-                    <i class="@kindIcon"></i>
-                }
-            </div>
-            <div class="productTileText">
-                <p class="productName" style="height: 21.6px;">@name</p>
-                <p class="productCategory">@kindName</p>
-                <div class="price">
-                    @PrintNormalPrice(unitPriceWithTax, hasMultiplePrice)
-                </div>
+    <article class="tile">
+        <a href="@ItemUrl(code)" rel="bookmark" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
+            <h1>@name</h1>
+            <figure class="image image-square">
+                <img src="@ThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
+            </figure>
+            <div class="tile-info text-right">
+                @PrintPrice(unitPriceWithTax, hasMultiplePrice)
             </div>
         </a>
-    </li>
+    </article>
 }
 
 @helper TopicTile(string code, string kind, string name, string thumbnail, DateTime? publishDate) {
-    <li class="topicTile">
-        <a href="@PageUrl(code, kind)">
-            <div class="topicTileImage">
-                <img src="@ThumbnailUrl(thumbnail)" loading="lazy" alt="@name">
-            </div>
-            <div class="topicTileText">
-                @if (publishDate.HasValue) {
-                    <time datetime="@publishDate.Value.ToString("o")">@publishDate.Value.ToString("yyyy-MM-dd")</time>
-                } else {
-                    <time></time>
-                }
-                <h2 class="title">@name</h2>
-            </div>
+    <article class="tile">
+        <a href="@PageUrl(code, kind)" rel="bookmark" title="@name">
+            <h1>@name</h1>
+            @if (publishDate.HasValue) {
+                <time datetime="@publishDate.Value.ToString("o")">@publishDate.Value.ToString("yyyy.MM.dd")</time>
+            } else {
+                <time></time>
+            }
+            <figure class="image image-2x1">
+                <img src="@ThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
+            </figure>
         </a>
-    </li>
+    </article>
 }
 
-@helper ProductTileList(IEnumerable<dynamic> items, Func<dynamic, int, RazorEngine.Templating.TemplateWriter> slot, string klass = "grid-pc-x4 grid-tb-x2 grid-sp-x2", string id = null) {
-    <ul @when(id != null, $"id={id}") class="productTileList grid @klass">
+@helper TileList(IEnumerable<dynamic> items, Func<dynamic, int, RazorEngine.Templating.TemplateWriter> slot, int columns = 4, string klass = null, string id = null) {
+    if (columns < 2 || columns > 5) { throw new ArgumentException("columns"); }
+    <div class="tiles @($"tiles-x{columns}") @klass">
         @foreach(var (item, index) in items.Select((item, index) => (item, index))) {
             @:@slot(item, index)
         }
-    </ul>
-}
-
-@helper TopicTileList(IEnumerable<dynamic> items, Func<dynamic, int, RazorEngine.Templating.TemplateWriter> slot, string klass = "grid-pc-x3 grid-tb-x2 grid-sp-x1", string id = null) {
-    <ul @when(id != null, $"id={id}") class="topicTileList grid @klass">
-        @foreach(var (item, index) in items.Select((item, index) => (item, index))) {
-            @:@slot(item, index)
-        }
-    </ul>
+    </div>
 }
 
 @helper SectionBlock(string title, Func<RazorEngine.Templating.TemplateWriter> slot) {
     <section class="section">
-        <div class="inner">
-            <h2 class="sectionTitle bordered">@title</h2>
-            @slot()
-        </div>
+        <h2 class="h-outline">@title</h2>
+        @slot()
     </section>
 }
 
@@ -590,20 +568,20 @@
         var errors = viewData.Errors.Distinct().Where(m => !exceptErrors.Any(e=>m.StartsWith(e)));
 
         if (errors.Any()) {
-            <div class="errorOnSubmit">
+            <div class="alert alert-error">
                 @foreach(var msg in errors ) {
                     var msgParts = msg.Split('\t').Concat(new []{"",""}).ToArray();
                     var msgKey = msgParts[0].Trim();
                     var msgFormat = messageError.ContainsKey(msgKey) ? messageError[msgKey] : msg;
                     var errorMessage = string.Format(msgFormat, msgParts[1], msgParts[2]);
 
-                    <p class="errorOnSubmitText">@errorMessage</p>
+                    <p>@errorMessage</p>
                 }
             </div>
         }
 
         if (viewData.Warnings.Any()) {
-            <div class="warningOnSubmit">
+            <div class="alert alert-warning">
                 @foreach( var msg in viewData.Warnings ) {
                     <p class="warningOnSubmitText">@(messageError.ContainsKey(msg.Trim()) ? messageError[msg.Trim()] : msg)</p>
                 }
@@ -611,7 +589,7 @@
         }
 
         if (viewData.Messages.Any()) {
-            <div class="successOnSubmit">
+            <div class="alert alert-success">
                 @foreach(var msg in viewData.Messages ){
                     <p class="successOnSubmitText">@(messageError.ContainsKey(msg.Trim()) ? messageError[msg.Trim()] : msg)</p>
                 }

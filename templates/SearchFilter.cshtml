@@ -6,6 +6,7 @@
         public List<IGrouping<string, CategoryViewModel>> GroupedTags { get; set; }
         public string[] CheckedKinds { get; set; }
         public string[] CheckedTags { get; set; }
+        public bool Open { get; set; }
     }
     public class CategoryViewModel {
         public string GroupCode { get; set; }
@@ -16,6 +17,7 @@
     ViewModel LoadViewModel() {
         var checkedKinds = ((Model.ContainsKey("kinds") ? Model["kinds"] as string[] : null) ?? new string[0]).Select(k => k.ToLower()).ToArray();
         var checkedTags  = ((Model.ContainsKey("tags")  ? Model["tags"]  as string[] : null) ?? new string[0]).Select(t => t.ToLower()).ToArray();
+        var open = (Model.ContainsKey("open") ? Model["open"] as bool? : null) == true;
         var sort = Page.Request.QueryString["sort"] ?? "new";
         var kinds = Kinds.Select(k => new CategoryViewModel {
             GroupCode = k.GroupCode,
@@ -30,6 +32,7 @@
             Icon = t.Icon,
         });
         return new ViewModel {
+            Open = open,
             Sort = sort,
             GroupedKinds = kinds.GroupBy(t => t.GroupCode).ToList(),
             GroupedTags = tags.GroupBy(t => t.GroupCode).ToList(),
@@ -43,117 +46,101 @@
 }
 
 <form action="@Page.Url.RouteUrl("Search")" method="get">
-    <div class="drawerBody">
-        @ButtonBlock("絞り込み", icon:"fa fa-search", btAccent:true, submit:true)
-        <div class="facetWrapper">
-            <div class="facetItem">
-                <p class="facetTitle active">
-                    <span class="facetTitleText">商品分類</span>
-                </p>
-                <div class="facetBody active">
-                    <ul class="facetList category">
-                        @foreach(var group in vm.GroupedKinds) {
-                            <li class="facetListItem">
-                                <label class="hasChild @when(group.Any(kind => vm.CheckedKinds.Contains(kind.Code)), "active")" ic-action="toggleClass:'active'">
-                                    <span class="text">@group.Key</span>
+    <div class="block">
+        <button type="submit" class="btn btn-default">🔍 絞り込み</button>
+    </div>
+    <h2 class="h-underline">商品分類</h2>
+    <ul class="facet">
+        @foreach(var group in vm.GroupedKinds) {
+            <li class="facet-group">
+                <details @when(vm.Open || group.Any(kind => vm.CheckedKinds.Contains(kind.Code)), "open")>
+                    <summary>@group.Key</summary>
+                    <ul>
+                        @foreach(var kind in group) {
+                            <li class="facet-item">
+                                <label>
+                                    <input type="checkbox" name="k" value="@kind.Code" @when(vm.CheckedKinds.Contains(kind.Code), "checked")>
+                                    <span class="text">@if (!string.IsNullOrEmpty(kind.Icon)) { <i class="facet-icon @kind.Icon"></i> }@kind.Name</span>
                                 </label>
-                                <ul>
-                                    @foreach(var kind in group) {
-                                        <li class="facetListItem">
-                                            <label>
-                                                <input type="checkbox" name="k" value="@kind.Code" @when(vm.CheckedKinds.Contains(kind.Code), "checked")>
-                                                <span class="text">@if (!string.IsNullOrEmpty(kind.Icon)) { <i class="@kind.Icon"></i> }@kind.Name</span>
-                                            </label>
-                                        </li>
-                                    }
-                                </ul>
                             </li>
                         }
                     </ul>
-                </div>
-            </div>
-            <div class="facetItem">
-                <p class="facetTitle active">
-                    <span class="facetTitleText">商品タグ</span>
-                </p>
-                <div class="facetBody active">
-                    <ul class="facetList category focus">
-                        @foreach(var group in vm.GroupedTags.Where(g => string.IsNullOrEmpty(g.Key))) {
-                            foreach(var tag in group) {
-                                <li class="facetListItem">
-                                    <label>
-                                        <input type="checkbox" name="t" value="@tag.Code" @when(vm.CheckedTags.Contains(tag.Code), "checked")>
-                                        <span class="text">@tag.Name</span>
-                                    </label>
-                                </li>
-                            }
-                        }
-                        @foreach(var group in vm.GroupedTags.Where(g => !string.IsNullOrEmpty(g.Key))) {
-                            <li class="facetListItem">
-                                <label class="hasChild @when(group.Any(tag => vm.CheckedTags.Contains(tag.Code)), "active")" ic-action="toggleClass:'active'">
-                                    <span class="text">@group.Key</span>
+                </details>
+            </li>
+        }
+    </ul>
+    <hr>
+    <h2 class="h-underline">商品タグ</h2>
+    <ul class="facet">
+        @foreach(var group in vm.GroupedTags.Where(g => string.IsNullOrEmpty(g.Key))) {
+            foreach(var tag in group) {
+                <li class="face-item">
+                    <label>
+                        <input type="checkbox" name="t" value="@tag.Code" @when(vm.CheckedTags.Contains(tag.Code), "checked")>
+                        <span class="text">@tag.Name</span>
+                    </label>
+                </li>
+            }
+        }
+        @foreach(var group in vm.GroupedTags.Where(g => !string.IsNullOrEmpty(g.Key))) {
+            <li class="facet-group">
+                <details @when(vm.Open || group.Any(tag => vm.CheckedTags.Contains(tag.Code)), "open")>
+                    <summary>@group.Key</summary>
+                    <ul>
+                        @foreach(var tag in group) {
+                            <li class="facet-item">
+                                <label>
+                                    <input type="checkbox" name="t" value="@tag.Code" @when(vm.CheckedTags.Contains(tag.Code), "checked")>
+                                    <span class="text">@tag.Name</span>
                                 </label>
-                                <ul>
-                                    @foreach(var tag in group) {
-                                        <li class="facetListItem">
-                                            <label>
-                                                <input type="checkbox" name="t" value="@tag.Code" @when(vm.CheckedTags.Contains(tag.Code), "checked")>
-                                                <span class="text">@tag.Name</span>
-                                            </label>
-                                        </li>
-                                    }
-                                </ul>
                             </li>
                         }
                     </ul>
-                </div>
-            </div>
-            <div class="facetItem">
-                <p class="facetTitle active">
-                    <span class="facetTitleText">並び替え</span>
-                </p>
-                <div class="facetBody active">
-                    <ul class="facetList focus">
-                        <li class="facetListItem">
-                            <label>
-                                <input type="radio" name="sort" value="rcm_desc" @when(vm.Sort=="rcm_desc", "checked")>
-                                <span class="text">おすすめ順</span>
-                            </label>
-                        </li>
-                        <li class="facetListItem">
-                            <label>
-                                <input type="radio" name="sort" value="rkg_asc" @when(vm.Sort=="rkg_asc", "checked")>
-                                <span class="text">ランキング順</span>
-                            </label>
-                        </li>
-                        <li class="facetListItem">
-                            <label>
-                                <input type="radio" name="sort" value="prc_asc" @when(vm.Sort=="prc_asc", "checked")>
-                                <span class="text">価格が安い順</span>
-                            </label>
-                        </li>
-                        <li class="facetListItem">
-                            <label>
-                                <input type="radio" name="sort" value="prc_desc" @when(vm.Sort=="prc_desc", "checked")>
-                                <span class="text">価格が高い順</span>
-                            </label>
-                        </li>
-                        <li class="facetListItem">
-                            <label>
-                                <input type="radio" name="sort" value="new" @when(vm.Sort=="new", "checked")>
-                                <span class="text">新しい順</span>
-                            </label>
-                        </li>
-                        <li class="facetListItem">
-                            <label>
-                                <input type="radio" name="sort" value="new" @when(vm.Sort=="old", "checked")>
-                                <span class="text">古い順</span>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        @ButtonBlock("絞り込み", icon:"fa fa-search", btAccent:true, submit:true)
+                </details>
+            </li>
+        }
+    </ul>
+    <hr>
+    <h2 class="h-underline">並び替え</h2>
+    <ul class="facet">
+        <li class="facet-item">
+            <label>
+                <input type="radio" name="sort" value="rcm_desc" @when(vm.Sort=="rcm_desc", "checked")>
+                <span class="text">おすすめ順</span>
+            </label>
+        </li>
+        <li class="facet-item">
+            <label>
+                <input type="radio" name="sort" value="rkg_asc" @when(vm.Sort=="rkg_asc", "checked")>
+                <span class="text">ランキング順</span>
+            </label>
+        </li>
+        <li class="facet-item">
+            <label>
+                <input type="radio" name="sort" value="prc_asc" @when(vm.Sort=="prc_asc", "checked")>
+                <span class="text">価格が安い順</span>
+            </label>
+        </li>
+        <li class="facet-item">
+            <label>
+                <input type="radio" name="sort" value="prc_desc" @when(vm.Sort=="prc_desc", "checked")>
+                <span class="text">価格が高い順</span>
+            </label>
+        </li>
+        <li class="facet-item">
+            <label>
+                <input type="radio" name="sort" value="new" @when(vm.Sort=="new", "checked")>
+                <span class="text">新しい順</span>
+            </label>
+        </li>
+        <li class="facet-item">
+            <label>
+                <input type="radio" name="sort" value="new" @when(vm.Sort=="old", "checked")>
+                <span class="text">古い順</span>
+            </label>
+        </li>
+    </ul>
+    <div class="block">
+        <button type="submit" class="btn btn-default">🔍 絞り込み</button>
     </div>
 </form>

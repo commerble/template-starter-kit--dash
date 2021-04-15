@@ -9,6 +9,10 @@
         public string Prefix { get; set; }
         public decimal UnitPriceWithoutTax { get; set; }
         public decimal UnitPriceWithTax { get; set; }
+        public decimal LinePrice { get; set; }
+        public decimal DiscountPrice { get; set; }
+        public decimal UsagePoint { get; set; }
+        public decimal ChargePoint { get; set; }
         public int Qty { get; set; }
         public string Kind { get; set; }
         public string ProductPageCode { get; set; }
@@ -18,30 +22,38 @@
         public string Color { get; set; }
         public object ToGtmItem() {
             return new  {
-                item_name = DisplayName ?? Name,
+                item_name = Name,
                 item_id = ExternalId1,
                 item_category = Kind,
                 price = UnitPriceWithoutTax.ToString("F0"),
                 quantity = Qty,
             };
         }
-        public string Valiation() {
-            return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+        public string ProductName() {
+            if (string.IsNullOrEmpty(DisplayName)) {
+                return Name;
+            }
+            var valiation = string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+            if (string.IsNullOrEmpty(valiation)) {
+                return DisplayName;
+            }
+            return $"{DisplayName} {valiation}";
         }
     }
 
     List<LineViewModel> LoadViewModel(ShoppingCartBase cart) {
         var productIds = cart.ExpandItems.Select(item => item.ProductId).ToArray();
-        var productPages = Database.Query(new { Now, Next }, (db, args)=> 
-            from p in db.ProductPages
-            join r in db.ProductRelations on p.Code equals r.ProductPageCode
-            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+        var products = Database.Query(new { Now, Next }, (db, args)=> 
+            from s in db.Products
+            join r in db.ProductRelations on s.ExternalId1 equals r.ProductExternalId1
+            join p in db.ProductPages on r.ProductPageCode equals p.Code
             where productIds.Contains(s.Id)
             select new {
                 ProductId = s.Id,
                 p.Code,
                 p.Kind,
-                p.Name,
+                s.Name,
+                s.DisplayName,
                 s.Size,
                 s.Color,
                 PageIcon = p.Icon,
@@ -51,7 +63,7 @@
         
         return cart.ExpandOrderItems
                     .Select(item => {
-                        var productPage = productPages.Where(p => p.ProductId == item.ProductId).FirstOrDefault();
+                        var sku = products.Where(p => p.ProductId == item.ProductId).FirstOrDefault();
                         return new LineViewModel {
                             ProductId = item.ProductId,
                             ExternalId1 = item.Product.ExternalId1,
@@ -60,15 +72,19 @@
                             Stockout = cart.Errors.Any(err => err.Item.ProductId == item.ProductId && err.ErrorType == ShoppingCartErrorType.StockOut),
                             HasErrors = cart.Errors.Any(err => err.Item.ProductId == item.ProductId),
                             Prefix = $"Items[{cart.Items.IndexOf(item)}].",
-                            UnitPriceWithoutTax = (item.LinePrice - item.Tax + item.DiscountPrice) / item.OrderAmount,
-                            UnitPriceWithTax = (item.LinePrice + item.DiscountPrice) / item.OrderAmount,
+                            UnitPriceWithoutTax = (item.LinePrice + item.DiscountPrice + item.PointUsage - item.Tax) / item.OrderAmount,
+                            UnitPriceWithTax = (item.LinePrice + item.DiscountPrice + item.PointUsage) / item.OrderAmount,
+                            LinePrice = item.LinePrice,
+                            DiscountPrice = item.DiscountPrice,
+                            UsagePoint = item.PointUsage,
+                            ChargePoint = item.PointCharge,
                             Qty = item.OrderAmount,
-                            Kind = productPage?.Kind,
-                            ProductPageCode = productPage?.Code,
-                            DisplayName = productPage?.Name,
-                            Icon = productPage?.ProductIcon ?? productPage?.PageIcon,
-                            Size = productPage?.Size,
-                            Color = productPage?.Color,
+                            Kind = sku?.Kind,
+                            ProductPageCode = sku?.Code,
+                            DisplayName = sku?.DisplayName,
+                            Icon = !string.IsNullOrEmpty(sku?.ProductIcon) ? sku.ProductIcon : sku?.PageIcon,
+                            Size = sku?.Size,
+                            Color = sku?.Color,
                         };
                     }).ToList();
     }
@@ -76,9 +92,18 @@
 @{
     var cart = Page.ViewData.Model as ShoppingCartBase;
     var action = Page.ViewData["action"] as bool? ?? true;
+    var total = Page.ViewData["total"] as bool? ?? false;
     var vm = LoadViewModel(cart);
 }
-<table class="cartDetailTable">
+
+<table class="table">
+    <thead>
+        <tr>
+            <th colspan="2">商品</th>
+            <th>個数</th>
+            <th>小計</th>
+        </tr>
+    </thead>
     <tbody>
         @foreach(var line in vm ) {
             var gtmRemove = new {
@@ -88,46 +113,91 @@
                 }
             };
             <tr>
-                <td class="dataCell">
-                    <div class="cartDetailProductImage">
-                        <a href="@ItemUrl(line.ProductPageCode)">
-                            <img src="@IconUrl(line.Icon)" alt="@line.Name">
-                        </a>
-                    </div>
-                    <div class="cartDetailProductInfo">
-                        <p class="productName"><a href="@ItemUrl(line.ProductPageCode)">@(line.DisplayName ?? line.Name)</a></p>
-                        <p class="productRemarks">
-                            <span>@line.Valiation()</span>
-                            <span><i>品番</i>&nbsp;:&nbsp;@line.ExternalId1</span>
-                        </p>
-                        @PrintPrice(line.UnitPriceWithTax)
-                        <div class="qty">
-                            @if (action) {
-                                <div class="qtySelect">
-                                    <span>数量</span>
-                                    <p class="selectWrapper">
-                                        <input name="@(line.Prefix)ProductId" value="@line.ProductId" type="hidden">
-                                        <select name="@(line.Prefix)RequestAmount" ic-action="showRecalc">
-                                            @for (var i = 1; i <= 10; i++ ) {
-                                                <option value="@i" @when(i==line.Qty, "selected")>@i</option>
-                                            }
-                                        </select>
-                                    </p>
-                                    @if (line.Stockout) {
-                                        <span>在庫がありません</span>
-                                    }
-                                </div>
-                                <p class="delete">
-                                    <a href="@CartOutUrl(line.ProductId)" data-gtm="@Jil.JSON.Serialize(gtmRemove)"><i class="fa fa-close"></i>カートから削除</a>
-                                </p>
-                            }
-                            else {
-                                <text>数量：@line.Qty</text>
-                            }
+                <td align="center">
+                    <a href="@ItemUrl(line.ProductPageCode)" class="product-icon">
+                        <div class="image image-square">
+                            <img src="@IconUrl(line.Icon)" alt="@line.Name" loading="lazy" decoding="async">
                         </div>
-                    </div>
+                    </a>
+                </td>
+                <td align="center">
+                    <dl>
+                        <dt><a href="@ItemUrl(line.ProductPageCode)">@line.ProductName()</a></dt>
+                        <dd>
+                            @PrintPrice(line.UnitPriceWithTax, del:line.DiscountPrice > 0)
+                            @if (line.DiscountPrice > 0) {
+                                <br> @PrintPrice(line.LinePrice / line.Qty)
+                            }
+                            @PrintPoint(line.ChargePoint / line.Qty) <br>
+                            <a href="@CartOutUrl(line.ProductId)" class="btn btn-primary btn-text btn-small" data-gtm="@Jil.JSON.Serialize(gtmRemove)">カートから削除</a>
+                        </dd>
+                    </dl>
+                </td>
+                <td data-title="個数">
+                    @if (action) {
+                        if (line.Stockout) {
+                            <span>在庫切れ</span>
+                        } 
+                        else {
+                            <input name="@(line.Prefix)ProductId" value="@line.ProductId" type="hidden">
+                            <select name="@(line.Prefix)RequestAmount" ic-action="showRecalc">
+                                @for (var i = 1; i <= 10; i++ ) {
+                                    <option value="@i" @when(i==line.Qty, "selected")>@i</option>
+                                }
+                            </select>
+                        }
+                    }
+                    else {
+                        <text>数量：@line.Qty</text>
+                    }
+                </td>
+                <td data-title="小計">
+                    @PrintPrice(line.LinePrice, attention: line.DiscountPrice > 0)
+                    @PrintPoint(line.ChargePoint)
+                    @if (line.DiscountPrice > 0) {
+                        <br><span class="price">（<span class="price-value">&yen;@line.DiscountPrice.ToString("N0")</span>値引き）</span>
+                    }
                 </td>
             </tr>
         }
     </tbody>
+    <tfooter>
+        @if (total) {
+            <tr>
+                <th colspan="3">送料</th>
+                <td align="center">@PrintPrice(cart.DeliveryCharge)</td>
+            </tr>
+            <tr>
+                <th colspan="3">決済手数料</th>
+                <td align="center">@PrintPrice(cart.CacheOnDeliveryCharge)</td>
+            </tr>
+        }
+        <tr>
+            <th colspan="3">合計</th>
+            <td align="center">
+                <span class="text-nowrap">
+                    @if (total) {
+                        @PrintPrice(cart.TotalPayment, attention: true, strong: true) <br>
+                    }
+                    else {
+                        @:@PrintPrice(cart.Subtotal, attention: true, strong: true) + 送料<br>
+                    }
+                </span>
+                @if (cart.ChargePointSummary.HasValue) {
+                    <span class="price"><span class="price-value">@((total ? cart.ChargePointSummary.Value : vm.Sum(line => line.ChargePoint)).ToString("N0"))</span> ポイント付与</span>
+                }
+                @if (cart.DiscountPrice > 0) {
+                    <br><span class="price">（<span class="price-value">&yen;@cart.DiscountPrice.ToString("N0")</span>値引き）</span>
+                }
+            </td>
+        </tr>
+        
+        <tr>
+            <th colspan="3">適用キャンペーン</th>
+            <td align="center">
+                @Page.Html.Partial("ModdSharedApplyCampaigns", cart)
+            </td>
+        </tr>
+        
+    </tfooter>
 </table>

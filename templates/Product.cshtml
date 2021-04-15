@@ -39,6 +39,7 @@
         public string Icon { get; set; }
         public bool Stockout { get; set; }
         public decimal UnitPriceWithTax { get; set; }
+        public decimal Point { get;set; }
         public string Valiation() {
             return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
         }
@@ -203,6 +204,7 @@
 
         if (vm.PriceProductId.HasValue) {
             vm.PriceProduct = vm.Products.Where(p => p.Id == vm.PriceProductId).FirstOrDefault();
+            vm.PriceProduct.Point = (int)vm.PriceProduct.UnitPriceWithTax * Page.Template.GetPointChargeRate(vm.PriceProductId.Value) / 100;
         }
 
         vm.MainImage = vm.Images.FirstOrDefault();
@@ -310,200 +312,174 @@
         },
     };
 }
-
-<section class="section productDetail">
-    <div class="inner">
-        <div class="productInfo">
-            <div class="productDetailTextBlock">
-                <h1 class="productName">@(vm.Title ?? vm.Name)</h1>
-                <div class="embed">
-                    <input id="embedCheckbox" type="checkbox">
-                    <label for="embedCheckbox"><i class="fa fa-code"></i><span>埋め込みコード</span></label>
-                    <div class="embedBody"><textarea>@vm.Embed</textarea></div>
-                </div>
-                <p class="category">
-                    <a href="@CategoryUrl(vm.Kind)" class="tag" style="margin:4px; margin-left:0;">
-                        @if (!string.IsNullOrEmpty(vm.KindIcon)) {
-                            <i class="@vm.KindIcon"></i>
-                        }
-                        @vm.KindName
-                    </a>
-            
-                    @foreach (var tag in vm.Tags) {
-                        <text><a href="@TagUrl(tag.Code)" style="margin:4px" class="tag">#@tag.Name</a></text>
+<main class="section product-detail content-wide">
+    <div class="product-summary">
+        <h1 class="title text-center">@PrintTitleOrName(vm.Title, vm.Name)</h1>
+        <p class="product-price text-center">
+            @PrintPrice(vm.PriceProduct?.UnitPriceWithTax, vm.HasMultiplePrice)
+            @PrintPrice(vm.PriceProduct?.Point, vm.HasMultiplePrice)
+        </p>
+        <div class="block block-horizontal block-wrap">
+            <a href="@CategoryUrl(vm.Kind)" class="badge">
+                @if (!string.IsNullOrEmpty(vm.KindIcon)) {
+                    if (vm.KindIcon.StartsWith("https://")) {
+                        <img class="badge-icon" src="@vm.KindIcon" alt="vm.KindName" loading="lazy" decoding="async">
+                    } else {
+                        <i class="badge-icon @vm.KindIcon"></i>
                     }
-                </p>
-                @if (vm.Campaigns.Length > 0) {
-                    <p>キャンペーン開催中：@string.Join(",", vm.Campaigns)</p>
                 }
-                <div class="flexBox">
-                    <div class="price">
-                        @PrintNormalPrice(vm.PriceProduct?.UnitPriceWithTax, vm.HasMultiplePrice)
-                        @if (vm.PriceProductId.HasValue) {
-                            @:@PrintPoint((int)vm.PriceProduct.UnitPriceWithTax * Page.Template.GetPointChargeRate(vm.PriceProductId.Value) / 100, klass:"point", hasMultiplePrice:vm.HasMultiplePrice)
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="productVariationBlock">
-                <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart" })" method="get">
-                    @if (vm.Products.Count > 1) {
-                        <table class="skuTable">
-                            <thead>
-                                <tr>
-                                    <th style="min-width:32px;"></th>
-                                    @foreach(var colorGroup in vm.Products.GroupBy(p => p.Color)) {
-                                        <th>
-                                            @if (string.IsNullOrEmpty(colorGroup.First().Icon)){
-                                                <text>@colorGroup.Key</text>
+                @vm.KindName
+            </a>
+    
+            @foreach (var tag in vm.Tags) {
+                <a href="@TagUrl(tag.Code)" class="badge">#@tag.Name</a>
+            }
+        </div>
+        @if (vm.Campaigns.Length > 0) {
+            <p class="text-center">キャンペーン開催中：@string.Join(",", vm.Campaigns)</p>
+        }
+        <hr>
+        <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart" })" method="get">
+             @if (vm.Products.Count > 1) {
+                <table class="product-skus">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            @foreach(var colorGroup in vm.Products.GroupBy(p => p.Color)) {
+                                <th>
+                                    @if (string.IsNullOrEmpty(colorGroup.First().Icon)){
+                                        <text>@colorGroup.Key</text>
+                                    }
+                                    else {
+                                        <div class="image image-square">
+                                            <img src="@IconUrl(colorGroup.First().Icon)" alt="@colorGroup.Key" loading="lazy" decoding="async">
+                                        </div>
+                                        @colorGroup.Key
+                                    }
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sizeGroup in vm.Products.GroupBy(p => p.Size)) {
+                            <tr>
+                                <th>@sizeGroup.Key</th>
+                                @foreach(var colorGroup in vm.Products.GroupBy(p => p.Color)) {
+                                    var sku = sizeGroup.Where(p => p.Color == colorGroup.Key).FirstOrDefault();
+                                    <td>
+                                        @if (sku != null) {
+                                            <text>@FormatPrice(sku.UnitPriceWithTax)<br></text>
+                                            if (sku.Stockout) {
+                                                if (Page.Template.CanReserveRequest(sku.Id)) {
+                                                    <a href="@ReserveUrl(sku.Id)">次回入荷分を予約</a>
+                                                } 
+                                                else {
+                                                    <text>&times;</text>
+                                                }
                                             }
                                             else {
-                                                <figure>
-                                                    <img src="@IconUrl(colorGroup.First().Icon)" alt="@colorGroup.Key" width="128">
-                                                    <figcaption>@colorGroup.Key</figcaption>
-                                                </figure>
-                                            }
-                                        </th>
-                                    }
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var sizeGroup in vm.Products.GroupBy(p => p.Size)) {
-                                    <tr>
-                                        <th>@sizeGroup.Key</th>
-                                        @foreach(var colorGroup in vm.Products.GroupBy(p => p.Color)) {
-                                            var sku = sizeGroup.Where(p => p.Color == colorGroup.Key).FirstOrDefault();
-                                            <td>
-                                                @if (sku != null) {
-                                                    <text>@FormatPrice(sku.UnitPriceWithTax)<br></text>
-                                                    if (sku.Stockout) {
-                                                        if (Page.Template.CanReserveRequest(sku.Id)) {
-                                                            <a href="@ReserveUrl(sku.Id)">仮予約</a>
-                                                        } 
-                                                        else {
-                                                            <text>&times;</text>
+                                                var gtm = new {
+                                                    @event = "add_to_cart",
+                                                    ecommerce = new {
+                                                        items = new [] {
+                                                            new {
+                                                                item_name = sku.Name,
+                                                                item_id = sku.ExternalId1,
+                                                                item_category = vm.Kind,
+                                                                price = sku.UnitPriceWithTax.ToString("F0"),
+                                                                quantity = 1,
+                                                            }
                                                         }
                                                     }
-                                                    else {
-                                                        var gtm = new {
-                                                            @event = "add_to_cart",
-                                                            ecommerce = new {
-                                                                items = new [] {
-                                                                    new {
-                                                                        item_name = sku.Name,
-                                                                        item_id = sku.ExternalId1,
-                                                                        item_category = vm.Kind,
-                                                                        price = sku.UnitPriceWithTax.ToString("F0"),
-                                                                        quantity = 1,
-                                                                    }
-                                                                }
-                                                            }
-                                                        };
-                                                        <label>
-                                                            <input type="radio" name="item" value="@sku.Id"
-                                                                data-val="true"
-                                                                data-val-required="商品を選択してください。"
-                                                                data-gtm="@Jil.JSON.Serialize(gtm)" >
-                                                            <span class="text"></span>
-                                                        </label>
-                                                    }
-                                                }
-                                            </td>
+                                                };
+                                                <label>
+                                                    <input type="radio" name="item" value="@sku.Id"
+                                                        data-val="true"
+                                                        data-val-required="商品を選択してください。"
+                                                        data-gtm="@Jil.JSON.Serialize(gtm)" >
+                                                    <span class="text"></span>
+                                                </label>
+                                            }
                                         }
-                                    </tr>
+                                    </td>
                                 }
-                            </tbody>
-                        </table>
-                        @ValidationMessageFor("item")
-                    }
-                    else {
-                        <input type="hidden" name="item" value="1">
-                    }
-                    <div class="productDetailCartInBlock">
-                        @if (vm.Products.All(sku => sku.Stockout)) {
-                            <button class="btAccent btLargeSize btCartIn btDisabled" disabled>在庫がありません</button>
+                            </tr>
                         }
-                        else {
-                            <button type="submit" class="btAccent btLargeSize btCartIn" data-gtm-radio="item">カートに入れる</button>
-                        }
-                        @if (vm.PriceProductId.HasValue) {
-                            <a href="@FavoriteUrl(vm.PriceProductId.Value)" class="btPrimary btLargeSize">お気に入りに登録する</a>
-                        }
-                    </div>
-                </form>
+                    </tbody>
+                </table>
+                @ValidationMessageFor("item")
+            }
+            else {
+                <input type="hidden" name="item" value="1">
+            }
+            <hr>
+            <div class="block block-vertical">
+                <button type="submit" class="btn btn-primary btn-large full">カートに入れる</button>
+                <a href="@FavoriteUrl(vm.PriceProductId.Value)" class="btn btn-primary btn-text">お気に入りに追加する</a>
             </div>
-        </div>
-        <div class="productImage">
-            <div class="productImageMain">
-                <div class="productImageMainItem">
-                    <img src="@LargeImageUrl(vm.MainImage?.LargeUrl)" alt="@(vm.MainImage?.Alt ?? vm.Name)" loading="lazy">
-                </div>
-                <div class="productImageNavigation">
-                    <a class="productImageNavigationItem prev" style="display: inline;" ic-action="prevMainImage"></a>
-                    <a class="productImageNavigationItem next" style="display: inline;" ic-action="nextMainImage"></a>
-                </div>
-            </div>
-            <ul class="productImageSub" style="display: block;">
-                @foreach(var img in vm.Images) {
-                    <li class="productImageSubItem @when(img == vm.MainImage, "active")">
-                        <a ic-action="replaceMainImage">
-                            <img src="@SmallImageUrl(img.SmallUrl)" alt="@(img.Alt ?? vm.Name)" loading="lazy" data-src="@LargeImageUrl(img.LargeUrl)">
-                        </a>
-                    </li>
-                }
-            </ul>
-        </div>
+        </form>
     </div>
-</section>
-
-<div class="section">
-    <div class="tabNavigation">
-        <ul class="tabList">
-            <li class="tabListItem jp">商品詳細</li>
+    <div class="product-description content">
+        <h2 class="title text-center">商品説明</h2>
+        @Raw(vm.Body ?? string.Empty)
+    </div>
+    <div class="carousel product-image">
+        <ul class="carousel-images">
+            @foreach(var (img, index) in vm.Images.Select((img, index) => (img, index))) {
+                <li id="carousel-frame-@index" class="carousel-frame image image-square">
+                    <img src="@LargeImageUrl(img.LargeUrl)" alt="@(img.Alt ?? vm.Name)" loading="lazy" decoding="async">
+                </li>
+            }
         </ul>
-        <div class="tabBody active" id="productDescription">
-            <div class="productDescription">
-                @Raw(vm.Body ?? string.Empty)
-            </div>
+        <div class="carousel-thumbnails">
+            @foreach(var (img, index) in vm.Images.Select((img, index) => (img, index))) {
+                <a href="#carousel-frame-@index" target="_self">
+                    <div class="image image-square">
+                        <img src="@SmallImageUrl(img.SmallUrl)" width="64" height="64" loading="lazy" decoding="async">
+                    </div>
+                </a>
+            }
         </div>
     </div>
-</div>
+</main>
 
 @if (vm.RelateProducts.Any()) {
-    @SectionBlock("関連商品", () =>
-        ProductTileList(vm.RelateProducts, klass:"grid-pc-x4 grid-tb-x2 grid-sp-x2 recommend", slot:(item, index) =>
-            ProductTile(
-                item.Code,
-                item.Name,
-                item.KindName,
-                item.KindIcon,
-                item.Thumbnail,
-                item.UnitPriceWithTax,
-                item.HasMultiplePrice,
-                gtm: new {
-                    @event = "select_item",
-                    ecommerce = new {
-                        items = new [] {
-                            new { 
-                                item_name = item.PriceProductName,
-                                item_id = item.PriceProductExternalId1,
-                                item_category = item.Kind,
-                                item_list_name = $"Relate Products of {vm.Name}",
-                                item_list_id = $"{vm.Code}:RelateProducts",
-                                price = item.UnitPriceWithTax?.ToString("F0"),
-                                index = index + 1,
-                            } 
-                        }
+<aside class="section content">
+    <h1 class="h-border text-center">関連商品</h1>
+    @TileList(vm.RelateProducts, columns:4, slot:(item, index) =>
+        ProductTile(
+            item.Code,
+            item.Name,
+            item.KindName,
+            item.KindIcon,
+            item.Thumbnail,
+            item.UnitPriceWithTax,
+            item.HasMultiplePrice,
+            gtm: new {
+                @event = "select_item",
+                ecommerce = new {
+                    items = new [] {
+                        new { 
+                            item_name = item.PriceProductName,
+                            item_id = item.PriceProductExternalId1,
+                            item_category = item.Kind,
+                            item_list_name = $"Relate Products of {vm.Name}",
+                            item_list_id = $"{vm.Code}:RelateProducts",
+                            price = item.UnitPriceWithTax?.ToString("F0"),
+                            index = index + 1,
+                        } 
                     }
                 }
-            )
+            }
         )
     )
+</aside>
 }
 
 @if (vm.RelatePages.Any()) {
-    @SectionBlock("特集", () => 
-        TopicTileList(vm.RelatePages, slot:(item, index) => 
+<aside class="section content">
+    <h1 class="h-border text-center">関連ページ</h1>
+        @TileList(vm.RelatePages, columns:2, slot:(item, index) => 
             TopicTile(
                 item.Code,
                 item.Kind,
@@ -513,4 +489,5 @@
             )
         )
     )
+</aside>
 }

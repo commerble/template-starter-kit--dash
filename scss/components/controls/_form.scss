@@ -23,12 +23,12 @@
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
-        input:not([size]) {
+        input:not([size]),
+        select:not([size]) {
             flex: 1 0 0%;
         }
         & > div,
         & > p {
-            display: block;
             width: 100%;
         }
     }
@@ -70,7 +70,7 @@
     font-size: $font-size-default * 1.2;
 }
 .field-error {
-    display: block;
+    display: none;
     position:relative;
     color:$color-error;
     font-size: $font-size-default * 1.2;
@@ -87,6 +87,12 @@
       border: 1px solid $color-error;
       border-radius: 50%;
       margin-right: $unit;
+    }
+    &.field-validation-valid {
+        display: none;
+    }
+    &.field-validation-error {
+        display: block;
     }
 }
 .field-note {

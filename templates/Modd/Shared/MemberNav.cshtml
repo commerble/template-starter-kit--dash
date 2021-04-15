@@ -1,19 +1,31 @@
 @{
-    var active = Page.ViewData["active"] as string;
+    var controller = (string)Page.Request.RequestContext.RouteData.Values["controller"];
+    var action = (string)Page.Request.RequestContext.RouteData.Values["action"];
 }
-<nav class="aside">
-    <section class="mypageLinkSection">
-        <h3 class="title">会員メニュー</h3>
-        <ul>
-            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index"})" class="@when(active=="account", "active")">会員情報</a></li>
-            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Point"})" class="@when(active=="point", "active")">ポイント</a></li>
-            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History"})" class="@when(active=="history", "active")">購入履歴</a></li>
-            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices"})" class="@when(active=="notice", "active")">仮予約</a></li>
-            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites"})" class="@when(active=="favorite", "active")">お気に入り</a></li>
-            <li><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses"})" class="@when(active=="address", "active")">お届け先</a></li>
-            @if (Page.Template.UserIsInRole("Preview")) {
-                <li><a href="@Href("~/preview/")">プレビュー</a></li>
-            }
-        </ul>
-    </section>
+<hr class="pc-hide">
+<nav>
+    <h1 class="h-title text-center">会員メニュー</h1>
+    <ul class="menu">
+        <li class="menu-item @when(controller=="Member" && action=="Index", "active")">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index"})" >会員情報</a>
+        </li>
+        <li class="menu-item @when(controller=="Member" && action=="Point", "active")">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Point"})">ポイント</a>
+        </li>
+        <li class="menu-item @when(controller=="Order" && action=="History", "active")">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History"})">購入履歴</a>
+        </li>
+        <li class="menu-item @when(controller=="Member" && action=="Addresses", "active")">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses"})">お届け先</a>
+        </li>
+        <li class="menu-item @when(controller=="Member" && action=="Favorites", "active")">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites"})">お気に入り</a>
+        </li>
+        <li class="menu-item @when(controller=="Member" && action=="Notices", "active")">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices"})">次回入荷予約</a>
+        </li>
+        @if (Page.Template.UserIsInRole("Preview")) {
+            <li class="menu-item"><a href="@Href("~/preview/")">プレビュー</a></li>
+        }
+    </ul>
 </nav>

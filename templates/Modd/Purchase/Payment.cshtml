@@ -10,189 +10,133 @@
 
     ViewBag.PageTitle = "カート - お支払い方法";
 }
-<ol class="stepNavigation">
-    <li class="stepNavigationItem"><span>配送情報</span></li>
-    <li class="stepNavigationItem active"><span>お支払い方法</span></li>
-    <li class="stepNavigationItem"><span>内容確認</span></li>
-    <li class="stepNavigationItem"><span>注文完了</span></li>
-</ol>
-
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Url.RouteUrl("ModdPurchase", new {cart=payment.CartId, action="Payment"})" method="post">
-                @Page.Html.Hidden("DeliveryOrder.WrappingType", 2)
-                <section class="formSection">
-                      <h2 id="delivery" class="formSectionTitle">お届け日時指定</h2>
-                      <dl class="formBlock optional">
-                        <dt class="formBlockTitle">お届け日</dt>
-                        <dd class="formBlockBody">
-                              <div class="formItem">
-                                @if (payment.Cart.CanSpecifyDeliveryDate) {
-                                    <span class="selectWrapper">
-                                        @Page.Html.DropDownList("DeliveryOrder.DeliveryDate", payment.Cart.SelectDeliveryDate(), "最短でお届け", new {
-                                        })
-                                    </span>
-                                }
-                                else {
-                                    <p class="inputContent">
-                                        @if (payment.Cart.DeliveryMethod == DeliveryMethod.Mail) {
-                                            <text>配送方法が「ゆうメール」のため、</text>
-                                        }
-                                        else {
-                                            var items = payment.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryDate).Select(item => item.Product.Name).ToArray();
-                                            if (items.Length > 0) {
-                                                <text>@string.Join("、",items)が含まれているため、</text>
-                                            }
-                                        }
-                                        お届け日を指定できません。
-                                    </p>
-                                }
-                            </div>
-                            @ValidationMessageFor("DeliveryOrder.DeliveryDate")
-                        </dd>
-                      </dl>
-                      @if (payment.Cart.LastReleaseDate > DateTime.Now) {
-                        <div class="inputNote">
-                            <p>
-                                ※発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br />
-                            &nbsp;発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
-                            </p>
-                        </div>
-                      }
-                    <dl class="formBlock optional">
-                        <dt class="formBlockTitle">お届け時間</dt>
-                        <dd class="formBlockBody">
-                              <div class="formItem">
-                                @if (payment.Cart.CanSpecifyDeliveryTime) {
-                                    <span class="selectWrapper">
-                                        @Page.Html.DropDownList("DeliveryOrder.HourRange", payment.Cart.SelectHourRange(), new {})
-                                    </span>
-                                }
-                                else {
-                                    <p class="inputContent">
-                                        @if (payment.Cart.DeliveryMethod == DeliveryMethod.Mail) {
-                                            <text>配送方法が「ゆうメール」のため、</text>
-                                        }
-                                        else {
-                                            var items = payment.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryHour).Select(item => item.Product.Name).ToArray();
-                                            if (items.Length > 0) {
-                                                <text>@string.Join("、",items)が含まれているため、</text>
-                                            }
-                                        }
-                                        お届け時間を指定できません。
-                                    </p>
-                                }
-                            </div>
-                            @ValidationMessageFor("DeliveryOrder.HourRange")
-                        </dd>
-                      </dl>
-                </section>
-                <section class="formSection">
-                      <h2 id="payment" class="formSectionTitle">お支払い方法</h2>
-                      <dl class="formBlock required">
-                        <dt class="formBlockTitle">決済方法</dt>
-                        <dd class="formBlockBody">
-                              <div class="formItem">
-                                <span class="selectWrapper">
-                                    @Page.Html.DropDownList("PaymentMethod", paymentMethods, "--選択してください--", new {
-                                        ic_action="changePaymentDetail;openAccordion;",
-                                        data_val = "true",
-                                        data_val_required = "決済方法は必須項目です。",
-                                    })
-                                    @Page.Html.Hidden("OrderCustomer.PaymentDetail", payment.OrderCustomer.PaymentDetail, new {
-                                        data_cashondelivery = "",
-                                        data_offsite = "",
-                                        data_external = "gmopg",
-                                    })
-                                </span>
-                            </div>
-                            @ValidationMessageFor("PaymentMethod")
-                        </dd>
-                      </dl>
-                    <div style="margin-top:12px;" class="accordionFormBlock" data-accordion="CashOnDelivery">
-                        <div class="inputNote">
-                            <p>商品到着時に『商品代金』 ＋ 『荷造り送料』をお支払いください。<br>代金引換でのご注文の場合は、手数料一律330円(税込)がかかります。</p>
-                        </div>
-                    </div>
-                    <div style="margin-top:12px;" class="accordionFormBlock" data-accordion="Offsite">
-                        <div class="inputNote">
-                            <p>振込先銀行口座は注文確定メールにてお知らせいたします。</p>
-                        </div>
-                    </div>
-                    <div style="margin-top:12px;" class="accordionFormBlock" data-accordion="External">
-                        <div class="inputNote">
-                            <p>外部決済ページにて、クレジットカード、コンビニ前払い、コンビニ後払い、キャリア決済のいずれかの決済方法でお支払いください。</p>
-                        </div>
-                    </div>
-                </section>
-                @if (!payment.IsAnonymous) {
-                <section class="formSection">
-                    <h2 class="formSectionTitle">ポイントのご利用</h2>
-                    <div class="formBlock">
-                        <p class="availablePointInfo">現在の所持ポイントは<em>@(payment.Cart.Point)&nbsp;pt</em>です。<br>今回のご購入金額は<em>@(payment.Cart.TotalPayment.ToString("N0"))&nbsp;円</em>です。</p>
-                    </div>
-                    <dl class="formBlock optional usePointNumBlock">
-                        <dt class="formBlockTitle">ご利用ポイント数</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("InputUsagePoint", 0, new {
-                                    type = "number",
-                                    min = 0,
-                                    max = payment.Cart.Point,
-                                    data_val = "true",
-                                    data_val_range = $"ご利用ポイント数は0-{payment.Cart.Point}まで指定できます。",
-                                    data_val_range_min = 0,
-                                    data_val_range_max = payment.Cart.Point
-                                })
-                                <span>ポイント</span>
-                            </div>
-                            @ValidationMessageFor("InputUsagePoint")
-                        </dd>
-                    </dl>
-                </section>
-                <section class="formSection">
-                    <h2 class="formSectionTitle"><span class="hasSub">クーポンのご利用</span><span class="sub">クーポンをお持ちの方は、コードをご入力ください</span></h2>
-                    <dl class="formBlock optional" data-role="clickAccordionTarget">
-                        <dt class="formBlockTitle">クーポンコード</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("ServiceValues[CampaignCode]", payment.ServiceValues.ContainsKey("CampaignCode") ? payment.ServiceValues["CampaignCode"] : null, new {
-                                })
-                            </div>
-                            @ValidationMessageFor("ServiceValues[CampaignCode]")
-                        </dd>
-                    </dl>
-                </section>
+<main class="section content">
+    <h1 class="h-underline">購入</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@Page.Url.RouteUrl("ModdPurchase", new {cart=payment.CartId, action="Payment"})" method="post">
+        @Page.Html.Hidden("DeliveryOrder.WrappingType", 2)
+        <h2 class="h-title">お届け日時</h2>
+        <dl class="field optional">
+            <dt class="field-title">お届け日</dt>
+            <dd class="field-body">
+                @if (payment.Cart.CanSpecifyDeliveryDate) {
+                    @Page.Html.DropDownList("DeliveryOrder.DeliveryDate", payment.Cart.SelectDeliveryDate(), "最短でお届け", new {
+                    })
                 }
-                <section class="formSection">
-                    <h2 id="remarks" class="formSectionTitle"><span class="hasSub">備考</span><span class="sub">ご注文内容に関する補足がありましたら、ご記入ください</span></h2>
-                    <dl class="formBlock optional">
-                        <dt class="formBlockTitle">備考内容</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextArea("ServiceValues[Remarks]", new {
-                                    @class = "fullWidth",
-                                    data_val = "true",
-                                    data_val_regex = "備考内容に半角の「<」「>」「&#」を含めることはできません。",
-                                    data_val_regex_pattern = "^(?!(.|\n|\r)*(&#|[<>]))(.|\n|\r)*$"
-                                })
-                            </div>
-                        </dd>
-                    </dl>
-                </section>
-                <div class="buttonContainer">
-                    <button type="submit" class="btCallToAction btLargeSize btNext">内容の確認に進む</button>
-                </div>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=payment.CartId, action="Shipping"} )" class="btPrimary btNormalSize btPrev">配送情報を変更する</a>
-                </div>
-            </form>
+                else {
+                    <p class="field-text">
+                        @if (payment.Cart.DeliveryMethod == DeliveryMethod.Mail) {
+                            <text>配送方法が「メール便」のため、</text>
+                        }
+                        else {
+                            var items = payment.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryDate).Select(item => item.Product.Name).ToArray();
+                            if (items.Length > 0) {
+                                <text>@string.Join("、",items)が含まれているため、</text>
+                            }
+                        }
+                        お届け日を指定できません。
+                    </p>
+                }
+                @ValidationMessageFor("DeliveryOrder.DeliveryDate")
+                @if (payment.Cart.LastReleaseDate > DateTime.Now) {
+                    <p class="field-note">
+                        ※発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br />
+                    &nbsp;発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
+                    </p>
+                }
+            </dd>
+        </dl>
+        <dl class="field optional">
+            <dt class="field-title">お届け時間</dt>
+            <dd class="field-body">
+                @if (payment.Cart.CanSpecifyDeliveryTime) {
+                    @Page.Html.DropDownList("DeliveryOrder.HourRange", payment.Cart.SelectHourRange(), new {})
+                }
+                else {
+                    <p class="field-text">
+                        @if (payment.Cart.DeliveryMethod == DeliveryMethod.Mail) {
+                            <text>配送方法が「ゆうメール」のため、</text>
+                        }
+                        else {
+                            var items = payment.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryHour).Select(item => item.Product.Name).ToArray();
+                            if (items.Length > 0) {
+                                <text>@string.Join("、",items)が含まれているため、</text>
+                            }
+                        }
+                        お届け時間を指定できません。
+                    </p>
+                }
+                @ValidationMessageFor("DeliveryOrder.HourRange")
+            </dd>
+        </dl>
+        <h2 class="h-title">お支払方法</h2>
+        <dl class="field required">
+            <dt class="field-title">決済方法</dt>
+            <dd class="field-body">
+                @Page.Html.DropDownList("PaymentMethod", paymentMethods, "--選択してください--", new {
+                    ic_action="changePaymentDetail;openAccordion;",
+                    data_val = "true",
+                    data_val_required = "決済方法は必須項目です。",
+                })
+                @Page.Html.Hidden("OrderCustomer.PaymentDetail", payment.OrderCustomer.PaymentDetail, new {
+                    data_cashondelivery = "",
+                    data_offsite = "",
+                    data_external = "gmopg",
+                })
+                @ValidationMessageFor("PaymentMethod")
+                <p class="field-note" data-accordion="CashOnDelivery">商品到着時に『商品代金』 ＋ 『荷造り送料』をお支払いください。<br>代金引換でのご注文の場合は、手数料一律330円(税込)がかかります。</p>
+                <p class="field-note" data-accordion="Offsite">振込先銀行口座は注文確定メールにてお知らせいたします。</p>
+                <p class="field-note" data-accordion="External">外部決済ページにて、クレジットカード、コンビニ前払い、コンビニ後払い、キャリア決済のいずれかの決済方法でお支払いください。</p>
+            </dd>
+        </dl>
+        @if (!payment.IsAnonymous) {
+        <h2 class="h-title">ポイント</h2>
+        <p class="field-desc">現在の所持ポイントは<em>@(payment.Cart.Point)&nbsp;pt</em>です。<br>今回のご購入金額は<em>@(payment.Cart.TotalPayment.ToString("N0"))&nbsp;円</em>です。</p>
+        <dl class="field optional">
+            <dt class="field-title">ご利用ポイント</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("InputUsagePoint", 0, new {
+                    type = "number",
+                    min = 0,
+                    max = Math.Min(payment.Cart.Point, payment.Cart.TotalPayment),
+                    size = 5,
+                    data_val = "true",
+                    data_val_range = $"ご利用ポイント数は0-{Math.Min(payment.Cart.Point, payment.Cart.TotalPayment)}まで指定できます。",
+                    data_val_range_min = 0,
+                    data_val_range_max = Math.Min(payment.Cart.Point, payment.Cart.TotalPayment),
+                })
+                @ValidationMessageFor("InputUsagePoint")
+            </dd>
+        </dl>
+        }
+        <h2 class="h-title">クーポンのご利用</h2>
+        <p class="field-desc">クーポンをお持ちの方は、コードをご入力ください。</p>
+        <dl class="field optional">
+            <dt class="field-title">クーポンコード</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("ServiceValues[CampaignCode]", payment.ServiceValues.ContainsKey("CampaignCode") ? payment.ServiceValues["CampaignCode"] : null, new {
+                })
+                @ValidationMessageFor("ServiceValues[CampaignCode]")
+            </dd>
+        </dl>
+        <h2 class="h-title">備考</h2>
+        <p class="field-desc">ご注文内容に関する補足がありましたら、ご記入ください</p>
+        <dl class="field optional">
+            <dt class="field-title">備考内容</dt>
+            <dd class="field-body">
+                @Page.Html.TextArea("ServiceValues[Remarks]", new {
+                    data_val = "true",
+                    data_val_regex = "備考内容に半角の「<」「>」「&#」を含めることはできません。",
+                    data_val_regex_pattern = "^(?!(.|\n|\r)*(&#|[<>]))(.|\n|\r)*$"
+                })
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-large">内容の確認に進む</button>
+            <a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=payment.CartId, action="Shipping"} )" class="btn btn-primary btn-text btn-prev">配送情報を変更する</a>
         </div>
-    </div>
-</div>
+    </form>
+</main>
 
 @section ScriptBlock {
     <script>

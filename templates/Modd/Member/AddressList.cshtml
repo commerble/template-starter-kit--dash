@@ -2,60 +2,45 @@
     var addresses = Page.ViewData.Model as IEnumerable<UserAddress>;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
 
-    int page, eachPage = 10;
-    if( !Int32.TryParse((Page.Request.QueryString["page"] ?? "0"), out page)){
-        page = 0;
-    }
-    var itemCount = addresses.Count();
-      var itemList = addresses.Skip(page*eachPage);
-
     ViewBag.PageTitle = "お届け先";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="mypageContent">
-            <div class="main">
-                <div class="formSection">
-                    <h1 class="formSectionTitle">お届け先</h1>
-                    <p class="linkAnnex"><a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="CreateAddress"})">新規登録</a></p>
-                    @if (itemList.Any()) {
-                        <div class="formBlock">
-                            <p>お客様がご登録されたお届け先の一覧です。</p>
-                        </div>
-                        <div class="formBlock">
-                            <table class="orderHistoryTable">
-                                <thead>
-                                    <tr>
-                                        <th>登録名</th>
-                                        <th>お届け先</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var address in addresses) {
-                                        <tr>
-                                            <td class="date" data-title="登録名">@address.AddressName</td>
-                                            <td class="orderNumber" data-title="お届け先">
-                                                @(address.Address.Recipientlastname + address.Address.Recipientfirstname) / @(address.Address.Recipientlastnamekana + address.Address.Recipientfirstnamekana)<br>
-                                                @address.Address.ToString()<br>
-                                                @address.Address.Tel
-                                            </td>
-                                            <td class="status" data-title=""><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses", id=address.AddressId} )">編集</a></td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        @DisplayPager(page, itemCount, eachPage)
-                    } else {
-                        <p class="empty">登録されたお届け先はまだありません。</p>
-                    }
-                </div>
-            </div>
-
-            @Page.Html.PartialEx("ModdSharedMemberNav", null, new { })
+<main class="content-wide columns">
+    <div class="col-3 col-order-2 col-order-1-sp">
+        <h1 class="h-underline">お届け先</h1>
+        @DisplayViewMessages(viewData)
+        <div class="block block-horizontal block-right">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="CreateAddress"})" class="btn btn-primary btn-text btn-next">新規登録</a>
         </div>
+        @if (addresses.Any()) {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>登録名</th>
+                        <th>お届け先</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var address in addresses) {
+                        <tr>
+                            <td data-title="登録名">@address.AddressName</td>
+                            <td data-title="お届け先">
+                                @(address.Address.Recipientlastname + address.Address.Recipientfirstname) / @(address.Address.Recipientlastnamekana + address.Address.Recipientfirstnamekana)<br>
+                                @address.Address.ToString()<br>
+                                @address.Address.Tel
+                            </td>
+                            <td align="center"><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses", id=address.AddressId} )">編集</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        } else {
+            <div class="message-box">
+                <p class="message text-center lead">ご登録お届け先はまだありません。</p>
+            </div>
+        }
     </div>
-</div>
+    <div class="col-1 col-order-1 col-order-2-sp">
+        @Page.Html.Partial("ModdSharedMemberNav", null)
+    </div>
+</main>

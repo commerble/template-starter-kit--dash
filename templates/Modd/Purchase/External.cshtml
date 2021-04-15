@@ -49,27 +49,28 @@
     ViewBag.PageTitle = "お支払いのご案内";
 }
 
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form method="post" action="@postTo">
-                @foreach(var datum in payload) {
-                    @:@Page.Html.Hidden(datum.Key, datum.Value)
-                }
-                <section class="formSection">
-                    <h1 class="formSectionTitle center">お支払いのご案内</h1>
-                    <p class="formSectionLead">在庫の確保が完了致しました。GMOペイメントゲートウェイ社が提供するお支払ページよりお支払ください。<br>
-                    お支払有効期限は@(order.OrderCustomer.AutoCancelDate.Value.AddMinutes(-1).ToString("yyyy/MM/dd HH:mm:ss"))までとなります。<br>
-                    有効期限をすぎますと確保された在庫は自動的にキャンセルされます。</p>
-                    <div class="buttonContainer">
-                        <button type="submit" class="btCallToAction btLargeSize btNext">お支払いページへ進む</button>
-                    </div>
-                </section>
-            </form>
+<main class="section content">
+    <h1 class="h-underline">お支払いのご案内</h1>
+    <div class="message-box">
+        <p class="message text-center lead">
+            在庫の確保が完了致しました。<br>
+            GMOペイメントゲートウェイ社が提供するお支払ページよりお支払ください。
+        </p>
+        <div class="message block">
+            <ul class=" text-list-dot">
+                <li>お支払有効期限：@(order.OrderCustomer.AutoCancelDate.Value.AddMinutes(-1).ToString("yyyy/MM/dd HH:mm:ss"))</li>
+                <li>有効期限をすぎますと確保された在庫は自動的にキャンセルされます。</li>
+            </ul>
         </div>
+        <form method="post" action="@postTo" class="block">
+            @foreach(var datum in payload) {
+                @:@Page.Html.Hidden(datum.Key, datum.Value)
+            }
+            <button type="submit" class="btn btn-action btn-large btn-next">お支払いページへ進む</button>
+        </form>
     </div>
-</div>
+</main>
+
 @section ScriptBlock {
     <script>
     if (/iPhone|iPad|iPod|Android/.test(window.navigator.userAgent)) {

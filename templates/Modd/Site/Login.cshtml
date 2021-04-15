@@ -5,65 +5,48 @@
 
     ViewBag.PageTitle = "ログイン";
 }
-<div class="loginNotification">
-    <h2 class="loginNotificationTitle">サイトリニューアルに伴う<br>パスワード再設定のお願い</h2>
-    <div class="loginNotificationBody">
-    <p class="loginNotificationLead">当サイトのリニューアルに伴い、ログインシステムを刷新いたしました。<br> セキュリティ向上のため、たいへんお手数をおかけいたしますが、再設定がお済みでない方はパスワードの再設定をお願いいたします。</p>
-    <div class="buttonContainer">
-        <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="Recovery" })" class="btPrimary btLargeSize btNext">パスワードを再設定する</a>
-    </div>
-    </div>
-</div>
-
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="loginForm">
-            <section class="formSection">
-                <h2 class="formSectionTitle center">会員登録がお済みのお客様</h2>
-                <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Login"})" method="post">
-                    @Page.Html.Hidden("returnUrl")
-                    @Page.Html.SessionAntiForgeryToken()
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle short">メールアドレス</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                <input type="text" class="fullWidth" name="UserName" 
-                                    data-val="true"
-                                    data-val-required="メールアドレスは必須項目です。" 
-                                    data-val-email="メールアドレスをご入力ください。">
-                            </div>
-                            @ValidationMessageFor("UserName")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle short">パスワード</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                <input type="password" name="Password" 
-                                    data-val="true"
-                                    data-val-required="「パスワード」の入力は必須です。">
-                            </div>
-                            @ValidationMessageFor("Password")
-                        </dd>
-                    </dl>
-                    <div class="buttonContainer">
-                        <button type="submit" class="btCallToAction btLargeSize btNext">ログイン</button>
-                        <p class="link"><a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="Recovery"})">パスワードをお忘れの場合はこちら</a></p>
-                    </div>
-                </form>
-            </section>
-            <section class="formSection">
-                <h2 class="formSectionTitle center">まだ会員登録されていないお客様</h2>
-                <p class="registerLead">会員登録をすると便利なマイページをご利用いただけます。<br>また、ログインするだけで、毎回お名前や住所などを入力することなくスムーズにお買い物をお楽しみいただけます。</p>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="Account"})" class="btCallToAction btLargeSize btNext">会員登録をする（無料）</a>
-                    @if (showGuestLogin) {
-                        <p class="link"><a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="NewGuest", returnUrl})">登録せずにレジへ進む</a></p>
-                    }
-                </div>
-            </section>
+<aside class="section content">
+    <div class="message-box">
+        <h1 class="h-title text-center">サイトリニューアルに伴うパスワード再設定のお願い</h1>
+        <p class="lead">当サイトのリニューアルに伴い、ログインシステムを刷新いたしました。<br> セキュリティ向上のため、たいへんお手数をおかけいたしますが、再設定がお済みでない方はパスワードの再設定をお願いいたします。</p>
+        <div class="block">
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="Recovery" })" class="btn btn-primary btn-next">パスワードを再設定する</a>
         </div>
     </div>
-</div>
+</aside>
+<main class="section content">
+    <h1 class="h-underline">会員登録がお済みのお客様</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Login"})" method="post">
+        @Page.Html.Hidden("returnUrl")
+        @Page.Html.SessionAntiForgeryToken()
+        <dl class="field">
+            <dt class="field-title"> メールアドレス</dt>
+            <dd class="field-body">
+                <input type="email" name="UserName">
+                @ValidationMessageFor("UserName")
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title"> パスワード</dt>
+            <dd class="field-body">
+                <input type="password" name="Password">
+                @ValidationMessageFor("Password")
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-large">ログイン</button>
+            <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="Recovery"})" class="btn btn-primary btn-text btn-next">パスワードをお忘れの場合はこちら</a>
+        </div>
+    </form>
+</main>
+<aside class="section content">
+    <h1 class="h-underline">まだ会員登録されていないお客様</h1>
+    <p class="lead text">会員登録をすると便利なマイページをご利用いただけます。<br>また、ログインするだけで、毎回お名前や住所などを入力することなくスムーズにお買い物をお楽しみいただけます。</p>
+    <div class="block block-vertical mt">
+        <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="Account"})" class="btn btn-primary btn-next">会員登録をする（無料）</a>
+        @if (showGuestLogin) {
+            <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="NewGuest", returnUrl})" class="btn btn-primary btn-text">登録せずにレジへ進む</a>
+        }
+    </div>
+</aside>
