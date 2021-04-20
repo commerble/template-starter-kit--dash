@@ -4,84 +4,69 @@
     ViewBag.PageTitle = "お問い合わせ";
     ViewBag.PageDescription = "商品に関する質問などお問い合わせページ。";
 }
-@DisplayViewMessages(viewData)
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="Inquiry", id="contact"})" method="post">
-                <section class="formSection">
-                    <h2 class="formSectionTitle center">お問い合わせ</h2>
-                    <p class="formSectionLead">お問い合わせ内容を入力のうえ、下にある「お問い合わせ内容を確認する」ボタンを押してください。</p>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">メールアドレス</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("contact.CustomerEmail", general?.CustomerEmail, new {
-                                    placeholder = "例）xxxxxx@commerble.com",
-                                    data_val = "true",
-                                    data_val_required="メールアドレスは必須項目です。",
-                                    data_val_email="メールアドレスをご入力ください。"
-                                })
-                            </div>
-                            @ValidationMessageFor("contact.CustomerEmail")
-                            <p class="inputNote">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
-                        </dd>
-                    </dl>
-                    <div class="formBlock required">
-                        <dt class="formBlockTitle">氏名</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem name">
-                                @Page.Html.TextBox("contact.LastName", general?.LastName, new {
-                                    placeholder = "例）山田",
-                                    data_val = "true",
-                                    data_val_required = "氏名（姓）は必須項目です。",
-                                    data_val_length = "氏名（姓）は64文字以内でご入力ください。",
-                                    data_val_length_maxlength = "64",
-                                })
-                                @Page.Html.TextBox("contact.FirstName", general?.FirstName, new {
-                                    placeholder = "例）太郎",
-                                    data_val = "true",
-                                    data_val_required = "氏名（名）は必須項目です。",
-                                    data_val_length = "氏名（名）は64文字以内でご入力ください。",
-                                    data_val_length_maxlength = "64",
-                                })
-                            </div>
-                            @ValidationMessageFor("contact.LastName")
-                            @ValidationMessageFor("contact.FirstName")
-                        </dt>
-                    </div>
-                    <dl class="formBlock optional">
-                        <dt class="formBlockTitle">注文番号</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("contact.OrderId", general?.OrderId, new {
-                                    placeholder = "例）10000000"
-                                })
-                            </div>
-                            @ValidationMessageFor("contact.OrderId")
-                            <p class="inputNote">注文に対するお問い合わせの場合はご記入ください。</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">お問い合わせ内容</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextArea("contact.Text", general?.Text, new {
-                                    @class = "fullWidth",
-                                    data_val = "true",
-                                    data_val_required = "お問い合わせ内容は必須項目です。",
-                                    data_val_regex = "お問い合わせ内容に半角の「<」「>」「&#」を含めることはできません。",
-                                    data_val_regex_pattern = "^(?!(.|\n|\r)*(&#|[<>]))(.|\n|\r)*$"
-                                })
-                            </div>
-                            @ValidationMessageFor("contact.Text")
-                        </dd>
-                    </dl>
-                    <div class="buttonContainer">
-                        <button type="submit" name="confirm" value="post" class="btCallToAction btNext">お問い合わせ内容を確認する</button>
-                    </div>
-                </section>
-            </form>
+<main class="section content">
+    <h1 class="h-underline">お問い合わせ</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="Inquiry", id="contact"})" method="post">
+        <dl class="field required">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("contact.CustomerEmail", general?.CustomerEmail, new {
+                    placeholder = "例）xxxxxx@commerble.com",
+                    data_val = "true",
+                    data_val_required="メールアドレスは必須項目です。",
+                    data_val_email="メールアドレスをご入力ください。"
+                })
+                @ValidationMessageFor("contact.CustomerEmail")
+                <p class="field-note">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
+            </dd>
+        </dl>
+        <dl class="field required">
+            <dt class="field-title">氏名</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("contact.LastName", general?.LastName, new {
+                    placeholder = "例）山田",
+                    data_val = "true",
+                    data_val_required = "氏名（姓）は必須項目です。",
+                    data_val_length = "氏名（姓）は64文字以内でご入力ください。",
+                    data_val_length_maxlength = "64",
+                })
+                @Page.Html.TextBox("contact.FirstName", general?.FirstName, new {
+                    placeholder = "例）太郎",
+                    data_val = "true",
+                    data_val_required = "氏名（名）は必須項目です。",
+                    data_val_length = "氏名（名）は64文字以内でご入力ください。",
+                    data_val_length_maxlength = "64",
+                })
+                @ValidationMessageFor("contact.LastName")
+                @ValidationMessageFor("contact.FirstName")
+            </dt>
+        </dl>
+        <dl class="field optional">
+            <dt class="field-title">注文番号</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("contact.OrderId", general?.OrderId, new {
+                    placeholder = "例）10000000"
+                })
+                @ValidationMessageFor("contact.OrderId")
+                <p class="field-note">注文に対するお問い合わせの場合はご記入ください。</p>
+            </dd>
+        </dl>
+        <dl class="field required">
+            <dt class="field-title">お問い合わせ内容</dt>
+            <dd class="field-body">
+                @Page.Html.TextArea("contact.Text", general?.Text, new {
+                    rows="10",
+                    data_val = "true",
+                    data_val_required = "お問い合わせ内容は必須項目です。",
+                    data_val_regex = "お問い合わせ内容に半角の「<」「>」「&#」を含めることはできません。",
+                    data_val_regex_pattern = "^(?!(.|\n|\r)*(&#|[<>]))(.|\n|\r)*$"
+                })
+                @ValidationMessageFor("contact.Text")
+            </dd>
+        </dl>
+        <div class="block">
+            <button type="submit" name="confirm" value="post" class="btn btn-primary btn-next">お問い合わせ内容を確認する</button>
         </div>
-    </div>
-</div>
+    </form>
+</main>

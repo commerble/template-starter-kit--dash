@@ -5,51 +5,31 @@
     var isGuest = cart.OrderCustomer.IsGuest;
       var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
 
-    ViewBag.PageTitle = "注文編集 - キャンセル";
+    ViewBag.PageTitle = "注文キャンセル";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="section orderHistory">
-            <div class="section orderInfoList">
-                <p class="orderInfoListTitle"><span class="orderInfoListTitleText">ご注文概要</span></p>
-                <div class="orderInfo">
-                    <p class="orderSummary"><span class="title">ご注文日時</span>@cart.OrderDate.ToString("yyyy/MM/dd HH:mm")</p>
-                    <p class="orderSummary"><span class="title">ご注文番号</span>@cart.OrderId</p>
-                    <p class="orderSummary"><span class="title">受注状態</span>@OrderStatusText[cart.OrderStatus]</p>
-                    <p class="orderSummary"><span class="title">クーポンコード</span>@cart.ServiceValues["CampaignCode"]</p>
-                </div>
+<main class="section content">
+    <h1 class="h-underline">注文キャンセル</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" method="post">
+        @Page.Html.HttpMethodOverride("delete")
+        @Page.Html.SessionAntiForgeryToken()
+        @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
+        @if(cart.CanCancel) {
+            <div class="message-box text-center">
+                @if(!isGuest){
+                    <p class="message">還元ポイントの @FormatPoint(cart.ChargePointSummary) ポイントを無効にします。</p>
+                }
+                <p class="message">よろしければ「キャンセルする」ボタンを押してください。注文のキャンセルが完了します。</p>
             </div>
+        }
+        <div class="block block-vertical">
+            @if(cart.CanCancel){
+                <button type="submit" name="commit" value="commit" class="btn btn-danger btn-text">キャンセルする</button>
+            }
+            else {
+                <button type="button" class="btn btn-danger btn-text" disabled>この注文はキャンセル出来ません</button>
+            }
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" class="btn btn-default btn-prev">注文詳細へもどる</a>
         </div>
-        <div class="section orderInfoList">
-            <div class="formWrapper">
-                <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" method="post">
-                    @Page.Html.HttpMethodOverride("delete")
-                    @Page.Html.SessionAntiForgeryToken()
-
-                    @if(cart.CanCancel) {
-                        <div class="inputNote">
-                            @if(!isGuest){
-                                <p>還元ポイントの @FormatPoint(cart.ChargePointSummary) ポイントを無効にします。</p>
-                            }
-                            <p>よろしければ「キャンセルする」ボタンを押してください。注文のキャンセルが完了します。</p>
-                        </div>
-                    }
-                    
-                    <div class="buttonContainer">
-                        @if(cart.CanCancel){
-                            <button type="submit" name="commit" value="commit" class="btCallToAction btLargeSize btNext">キャンセル</button>
-                        }
-                        else {
-                            <button type="button" class="btCallToAction btLargeSize btNext btDisabled" disabled>この注文はキャンセル出来ません</button>
-                        }
-                    </div>
-                    <div class="buttonContainer">
-                        <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" class="btPrimary btNormalSize btPrev">注文詳細へもどる</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+    </form>
+</main>

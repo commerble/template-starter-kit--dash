@@ -3,7 +3,7 @@
     align-items: flex-start;
     margin: $unit * 4 $unit;
     .field-title {
-        width: 14em;
+        width: 15em;
         text-align: left;
         box-sizing: border-box;
         font-family: $font-family-title;
@@ -23,8 +23,7 @@
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
-        input:not([size]),
-        select:not([size]) {
+        input:not([size]){
             flex: 1 0 0%;
         }
         & > div,

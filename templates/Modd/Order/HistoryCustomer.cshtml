@@ -4,42 +4,28 @@
 
   ViewBag.PageTitle = "注文編集 - お客様情報";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=customer.Cart.OrderId})" method="post">
-                @Page.Html.HttpMethodOverride("put")
-                <section class="formSection">
-                    <h2 id="customer" class="formSectionTitle">お客様情報</h2>
-
-                    @Page.Html.Partial("ModdSharedAddressDisplay", customer.OrderCustomer.OrderedAddress )
-                    
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">メールアドレス</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("OrderCustomer.EmailAddr", customer.OrderCustomer.EmailAddr, new {
-                                    placeholder = "例）xxxxxx@commerble.com",
-                                    data_val = "true",
-                                    data_val_required="メールアドレスは必須項目です。",
-                                    data_val_email="メールアドレスをご入力ください。"
-                                })
-                            </div>
-                            @ValidationMessageFor("OrderCustomer.EmailAddr")
-                            <p class="inputNote">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
-                        </dd>
-                    </dl>
-                </section>
-                <div class="buttonContainer">
-                    <button type="submit" class="btCallToAction btLargeSize btNext" name="customer" value="put">メールアドレスを変更</button>
-                </div>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=customer.Cart.OrderId})" class="btPrimary btNormalSize btPrev">注文詳細へもどる</a>
-                </div>
-            </form>
+<main class="section content">
+    <h1 class="h-underline">注文編集 - お客様情報</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=customer.Cart.OrderId})" method="post">
+        @Page.Html.HttpMethodOverride("put")
+        @Page.Html.Partial("ModdSharedAddressDisplay", customer.OrderCustomer.OrderedAddress )
+        <dl class="field required">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("OrderCustomer.EmailAddr", customer.OrderCustomer.EmailAddr, new {
+                    placeholder = "例）xxxxxx@commerble.com",
+                    data_val = "true",
+                    data_val_required="メールアドレスは必須項目です。",
+                    data_val_email="メールアドレスをご入力ください。"
+                })
+                @ValidationMessageFor("OrderCustomer.EmailAddr")
+                <p class="field-note">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action" name="customer" value="put">メールアドレスを変更する</button>
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=customer.Cart.OrderId})" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
         </div>
-    </div>
-</div>
-
+    </form>
+</main>

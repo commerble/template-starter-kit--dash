@@ -1,11 +1,21 @@
 ﻿@{
     var address = (Page.ViewData.Model as Address) ?? new Address();
+    if (Page.ViewData.Model is VM.AccountAddress accountAddress) {
+        address.ZipCode = accountAddress.ZipCode;
+        address.Pref = accountAddress.Pref;
+        address.City = accountAddress.City;
+        address.Street = accountAddress.Street;
+        address.Building = accountAddress.Building;
+        address.Tel = accountAddress.Tel;
+    }
     var target = string.Format("{0}.", Page.ViewData["target"]);
     var prefix = string.Format("{0}_", Page.ViewData["target"]);
     var command = string.Format("{0}", Page.ViewData["command"]);
     var commandUrl = Page.ViewData["commandUrl"];
     var commandMethod = "ic-" + (Page.ViewData["commandMethod"] as string ?? "post") + "-to";
+    var hideName = Page.ViewData["hideName"] as bool?  == true;
 }
+@if (!hideName) {
 <dl class="field required">
     <dt class="field-title">氏名</dt>
     <dd class="field-body">
@@ -18,6 +28,7 @@
         <p class="field-text">@address.Recipientlastnamekana @address.Recipientfirstnamekana</p>
     </dd>
 </dl>
+}
 <dl class="field required">
     <dt class="field-title">郵便番号</dt>
     <dd class="field-body">

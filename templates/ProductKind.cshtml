@@ -76,7 +76,9 @@
         @PrintTitleOrName(vm.Title, vm.Name)
     </h1>
     @if (Page.Request.QueryString["page"] == null && !string.IsNullOrEmpty(vm.Body)) {
-        @Raw(vm.Body)
+        <div class="article">
+            @Raw(vm.Body)
+        </div>
         <hr>
     }
     @Include("ProductList", new Dictionary<string, object> {

@@ -8,7 +8,7 @@
 } else {
     foreach(var zip in zipList ) {
         <form id="history" action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="ZipSelect", id=orderId})" method="post">
-            <input type="submit" name="shipping" value="選択" />
+            <input type="submit" name="shipping" value="選択" class="btn btn-primary btn-ghost"/>
             〒 @zip.ZipCode @zip.Prefecture @zip.City @zip.Street
             @(Page.Html.Hidden("ZipCode", zip.ZipCode))
             @(Page.Html.Hidden("Pref", zip.Prefecture))

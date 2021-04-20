@@ -1,14 +1,21 @@
 ﻿@{
-  var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+    ViewBag.PageTitle = "ゲスト注文詳細";
 }
-@DisplayViewMessages(viewData)
-
-<h2>ゲスト注文詳細 閲覧</h2>
-
-<div>注文時のお客様情報電話番号下4桁を入力してください。<br>
-<div>
-  <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="GuestOrder", id=Page.ViewData["id"]} )" method="post">
-      <input type="text" name="authCode" maxlength="4" />
-      <input type="submit" value="表示" class="btn btn-primary"/>
-  </form>
-</div>
+<main class="section content">
+    <h1 class="h-underline">ゲスト注文詳細</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="GuestOrder", id=Page.ViewData["id"]} )" method="post">
+        @Page.Html.SessionAntiForgeryToken()
+        <dl class="field">
+            <dt class="field-title">電話番号下4桁</dt>
+            <dd class="field-body">
+                <input type="tel" name="authCode">
+                @ValidationMessageFor("authCode")
+            </dd>
+        </dl>
+        <div class="block">
+            <button type="submit" class="btn btn-primary">表示する</button>
+        </div>
+    </form>
+</main>

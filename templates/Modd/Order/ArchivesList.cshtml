@@ -1,0 +1,60 @@
+@{
+     var orders = (Page.ViewData.Model as IEnumerable<HistoryCart>).ToList();
+
+    int page, eachPage = 10;
+    if( !Int32.TryParse((Page.Request.QueryString["page"] ?? "0"), out page)){
+        page = 0;
+    }
+    var itemList = orders.Skip(page*eachPage).Take(eachPage);
+
+    var total = orders.Count();
+    var pageCount = total / eachPage + ((total % eachPage == 0) ? 0 : 1);
+    var pageLast = pageCount == 0 ? true : ( ((page+1) == pageCount) ? true : false);
+
+    int PageOf(HistoryCart order) => orders.IndexOf(order) / eachPage;
+
+    ViewBag.PageTitle = "購入履歴";
+}
+<main class="content-wide columns">
+    <div class="col-3 col-order-2 col-order-1-sp">
+        <h1 class="h-underline">購入履歴</h1>
+        @if (itemList.Any()) {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ご注文日時</th>
+                        <th>ご注文番号</th>
+                        <th>ご注文状況</th>
+                        <th>お支払方法</th>
+                        <th>合計金額</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var order in itemList) {
+                        <tr>
+                            <td data-title="ご注文日時">@order.OrderDate.ToString("yyyy/MM/dd HH:mm")</td>
+                            <td data-title="ご注文番号">@order.OrderId</td>
+                            <td data-title="ご注文状況">@OrderStatusText[order.OrderStatus]</td>
+                            <td data-title="お支払方法">@Raw(string.Join("<br>",PaymentMethodText[order.PaymentMethod].Split(' ')))</td>
+                            <td data-title="合計金額">@PrintPrice(order.TotalPayment)</td>
+                            <td align="center"><a class="btn btn-primary btn-text" href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=order.OrderId} )">詳細を見る</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            if (!pageLast) {
+                <div class="block block-vertical">
+                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Archives"})?page=@(page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
+                </div>
+            }
+        } else {
+            <div class="message-box">
+                <p class="message text-center lead">アーカイブされたご注文はまだありません。</p>
+            </div>
+        }
+    </div>
+    <div class="col-1 col-order-1 col-order-2-sp">
+        @Page.Html.Partial("ModdSharedMemberNav", null)
+    </div>
+</main>

@@ -83,9 +83,6 @@
                     } else {
                         <text>最短でお届け</text>
                     }
-                    @if (!string.IsNullOrEmpty(cart.DeliveryOrder.HourRange)) {
-                        <text>（時間帯：@ViewExtensions.HourRanges[cart.DeliveryOrder.HourRange]）</text>
-                    }
                 </p>
             </dd>
         </dl>
@@ -94,7 +91,7 @@
             <dd class="field-body">
                 <p class="field-text">
                     @if (!string.IsNullOrEmpty(cart.DeliveryOrder.HourRange)) {
-                        <text>（時間帯：@ViewExtensions.HourRanges[cart.DeliveryOrder.HourRange]）</text>
+                        @ViewExtensions.HourRanges[cart.DeliveryOrder.HourRange]
                     } else {
                         <text>指定なし</text>
                     }

@@ -1,0 +1,102 @@
+@{
+    var cart = Page.ViewData.Model as HistoryCart;
+
+    ViewBag.PageTitle = "購入履歴 - 詳細";
+}
+
+<main class="section content">
+    <h1 class="h-underline">購入履歴</h1>
+    @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
+    <h2 class="h-title">お客様情報</h3>
+    <dl class="field">
+        <dt class="field-title">氏名（フリガナ）</dt>
+        <dd class="field-body">
+            <p class="field-text">@(cart.OrderCustomer.LastName + cart.OrderCustomer.FirstName) / @(cart.OrderCustomer.LastNameKana + @cart.OrderCustomer.FirstNameKana)</p>
+        </dd>
+    </dl>
+    <dl class="field">
+        <dt class="field-title">住所</dt>
+        <dd class="field-body">
+            <p class="field-text">@cart.OrderCustomerOrderedAddress.ToString()</p>
+        </dd>
+    </dl>
+    <dl class="field">
+        <dt class="field-title">電話番号</dt>
+        <dd class="field-body">
+            <p class="field-text">@cart.OrderCustomerOrderedAddress.Tel</p>
+        </dd>
+    </dl>
+    <dl class="field">
+        <dt class="field-title">メールアドレス</dt>
+        <dd class="field-body">
+            <p class="field-text">@cart.OrderCustomer.EmailAddr</p>
+        </dd>
+    </dl>
+    <h2 class="h-title">お届け先</h3>
+    <dl class="field">
+        <dt class="field-title">氏名 / フリガナ</dt>
+        <dd class="field-body">
+            <p class="field-text"> @(cart.DeliveryOrderAddress.Recipientlastname + cart.DeliveryOrderAddress.Recipientfirstname) / @(cart.DeliveryOrderAddress.Recipientlastnamekana + @cart.DeliveryOrderAddress.Recipientfirstnamekana)</p>
+        </dd>
+    </dl>
+    <dl class="field">
+        <dt class="field-title">住所</dt>
+        <dd class="field-body">
+            <p class="field-text">@cart.DeliveryOrderAddress.ToString()</p>
+        </dd>
+    </dl>
+    <dl class="field">
+        <dt class="field-title">電話番号</dt>
+        <dd class="field-body">
+            <p class="field-text">@cart.DeliveryOrderAddress.Tel</p>
+        </dd>
+    </dl>
+    <h2 class="h-title">お届け日時</h3>
+    <dl class="field">
+        <dt class="field-title">お届け日</dt>
+        <dd class="field-body">
+            <p class="field-text">
+                @if (cart.DeliveryOrder.DeliveryDate.HasValue) {
+                    <text>@PrintDate(cart.DeliveryOrder.DeliveryDate.Value)</text>
+                } 
+                else if (cart.LastReleaseDate > DateTime.Now) {
+                    <text>
+                        発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br/>
+                        発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
+                    </text>
+                } else {
+                    <text>最短でお届け</text>
+                }
+            </p>
+        </dd>
+    </dl>
+    <dl class="field">
+        <dt class="field-title">お届け時間</dt>
+        <dd class="field-body">
+            <p class="field-text">
+                @if (!string.IsNullOrEmpty(cart.DeliveryOrder.HourRange)) {
+                    @ViewExtensions.HourRanges[cart.DeliveryOrder.HourRange]
+                } else {
+                    <text>指定なし</text>
+                }
+            </p>
+        </dd>
+    </dl>
+    <h2 class="h-title">お支払方法</h3>
+    <dl class="field">
+        <dt class="field-title">決済方法</dt>
+        <dd class="field-body">
+            <p class="field-text">@PaymentMethodText[cart.PaymentMethod]</p>
+        </dd>
+    </dl>
+    <h2 class="h-title">備考</h3>
+    <dl class="field">
+        <dt class="field-title">備考内容</dt>
+        <dd class="field-body">
+            <p class="field-text">@(cart.ServiceValues.ContainsKey("Remarks") && !string.IsNullOrEmpty(cart.ServiceValues["Remarks"]) ? cart.ServiceValues["Remarks"] : "なし")</p>
+        </dd>
+    </dl>
+    <div class="block block-vertical">
+        <a href="@Page.Url.RouteUrl("ModdDefault", new {  controller="Order", action="Archives", id=(long?)null })" class="btn btn-primary btn-text btn-prev">購入履歴一覧へもどる</a>
+    </div>
+</main>

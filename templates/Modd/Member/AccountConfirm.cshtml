@@ -4,54 +4,45 @@
 
     ViewBag.PageTitle = "会員情報編集 - 確認";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="Account"})" method="post">
-                @Raw(Page.Html.ModelToObjectState("model",account))
-                @Page.Html.SessionAntiForgeryToken()
-                <section class="formSection">
-                    <h2 id="customer" class="formSectionTitle">会員情報</h2>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">氏名</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@(account.LastName + account.FirstName)</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">フリガナ</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@(account.LastNameKana + account.FirstNameKana)</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">生年月日</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@account.Birthday.Value.ToString("yyyy年MM月dd日")</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">性別</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@HumanSexesText[account.Sex]</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">メルマガ配信</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@SubscribeText[account.Subscribe]</p>
-                        </dd>
-                    </dl>
-                </section>
-                <div class="buttonContainer">
-                    <button type="submit" class="btCallToAction btLargeSize btNext" name="update" value="post">会員情報を変更</button>
-                </div>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Account" })" class="btPrimary btNormalSize btPrev">会員情報へ戻る</a>
-                </div>
-            </form>
+<main class="section content">
+    <h1 class="h-underline">会員情報編集</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="Account"})" method="post">
+        @Raw(Page.Html.ModelToObjectState("model",account))
+        @Page.Html.SessionAntiForgeryToken()
+        <dl class="field">
+            <dt class="field-title">氏名</dt>
+            <dd class="field-body">
+                <p class="field-text">@(account.LastName + account.FirstName)</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">フリガナ</dt>
+            <dd class="field-body">
+                <p class="field-text">@(account.LastNameKana + account.FirstNameKana)</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">生年月日</dt>
+            <dd class="field-body">
+                <p class="field-text">@account.Birthday.Value.ToString("yyyy年MM月dd日")</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">性別</dt>
+            <dd class="field-body">
+                <p class="field-text">@HumanSexesText[account.Sex]</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">メルマガ配信</dt>
+            <dd class="field-body">
+                <p class="field-text">@SubscribeText[account.Subscribe]</p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-next" name="update" value="post">会員情報を変更する</button>
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Account" })#customer" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
         </div>
-    </div>
-</div>
+    </form>
+</main>

@@ -5,50 +5,36 @@
 
     ViewBag.PageTitle = "お届け先登録";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@action" method="post">
-                @Page.Html.SessionAntiForgeryToken()
-                <section class="formSection">
-                    <h2 id="destination" class="formSectionTitle">お届け先</h2>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">お届け先名</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("AddressName",address.AddressName ?? "", new {
-                                    data_val = "true",
-                                    data_val_length = "お届け先名は10文字以内で入力してください。",
-                                    data_val_length_maxlength = "10"})
-                            </div>
-                            @ValidationMessageFor("AddressName")
-                        </dd>
-                    </dl>
-                    @Page.Html.PartialEx("ModdSharedAddressEditor", address.Address, new {
-                        target = "Address", 
-                        command = "zipsearch", 
-                        commandUrl = action
-                    })
-                </section>
-                @if (address.AddressId == 0) {
-                    <div class="buttonContainer">
-                        <button type="submit" class="btCallToAction btLargeSize btNext" name="create" value="post">登録する</button>
-                    </div>
-                }
-                else {
-                    <div class="buttonContainer">
-                        <button type="submit" class="btCallToAction btLargeSize btNext" name="update" value="post">変更する</button>
-                    </div>
-                    <div class="buttonContainer">
-                        <button type="submit" class="btPrimary btNext" name="delete" value="post">削除する</button>
-                    </div>
-                }
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses", id=(int?)null })" class="btPrimary btNormalSize btPrev">お届け先一覧へもどる</a>
-                </div>
-            </form>
+<main class="section content">
+    <h1 class="h-underline">お届け先</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@action" method="post">
+        @Page.Html.SessionAntiForgeryToken()
+        <dl class="field required">
+            <dt class="field-title">お届け先名</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("AddressName",address.AddressName ?? "", new {
+                    data_val = "true",
+                    data_val_length = "お届け先名は10文字以内で入力してください。",
+                    data_val_length_maxlength = "10"
+                })
+                @ValidationMessageFor("AddressName")
+            </dd>
+        </dl>
+        @Page.Html.PartialEx("ModdSharedAddressEditor", address.Address, new {
+            target = "Address", 
+            command = "zipsearch", 
+            commandUrl = action
+        })
+        <div class="block block-vertical">
+            @if (address.AddressId == 0) {
+                <button type="submit" class="btn btn-action" name="create" value="post">登録する</button>
+            }
+            else {
+                <button type="submit" class="btn btn-action" name="update" value="post">変更する</button>
+                <button type="submit" class="btn btn-danger btn-text" name="delete" value="post">削除する</button>
+            }
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses", id=(int?)null })" class="btn btn-primary btn-text btn-prev">お届け先一覧へもどる</a>
         </div>
-    </div>
-</div>
+    </form>
+</main>

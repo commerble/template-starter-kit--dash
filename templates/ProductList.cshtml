@@ -245,8 +245,8 @@
         }
         @if (vm.HasNextPage) {
             <div class="block block-vertical">
-                <a href="@(vm.SearchCondition(Page.Request.Url.AbsolutePath) + $"&page={(vm.Page+1)}")" class="btn btn-primary btn-text btn-next">次のページ</a>
-                <a href="@(vm.SearchCondition(Href("~/search/condition")))" class="btn btn-default pc-hide">🔍 検索条件を変更する</a>
+                <a href="@(vm.SearchCondition(Page.Request.Url.AbsolutePath) + $"&page={(vm.Page+1)}")" class="btn btn-default btn-next">次のページ</a>
+                <a href="@(vm.SearchCondition(Href("~/search/condition")))" class="btn btn-primary btn-text pc-hide">🔍 検索条件を変更する</a>
             </div>
         }
     </div>

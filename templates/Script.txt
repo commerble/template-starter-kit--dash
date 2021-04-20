@@ -1,41 +1,5 @@
-$.fn.replaceMainImage = function() {
-    const img = this.is('img') ? this : $('img', this);
-    const src = img.attr('data-src');
-    const alt = img.attr('alt');
-    $('.productImageMainItem img').attr({ src:src, alt:alt });
-    $('.productImageSubItem.active').removeClass('active');
-    $(this).closest('.productImageSubItem').addClass('active');
-}
-
-$.fn.prevMainImage = function() {
-    const mainImage = $('.productImageMainItem img');
-    const subImages = $('.productImageSubItem img');
-    const src = mainImage.attr('src');
-    for (var i = 0; i < subImages.length ; i++){
-        const img = subImages[i];
-        if (img.dataset.src == src || img.src == src) {
-            $(subImages[(subImages.length + i - 1) % subImages.length]).replaceMainImage();
-            break;
-        }
-    }
-}
-
-$.fn.nextMainImage = function() {
-    const mainImage = $('.productImageMainItem img');
-    const subImages = $('.productImageSubItem img');
-    const src = mainImage.attr('src');
-    for (var i = 0; i < subImages.length ; i++){
-        const img = subImages[i];
-        if (img.dataset.src == src || img.src == src) {
-            $(subImages[(i + 1) % subImages.length]).replaceMainImage();
-            break;
-        }
-    }
-}
-
 $.fn.showRecalc = function() {
-    $('.btNext').hide();
-    $('.btRecalc').show();
+    $('[name=recalc]').show().siblings().hide();
 }
 
 $.fn.toZenkaku = function() {
@@ -52,19 +16,26 @@ $.fn.validateForce = function() {
     $(this).closest('form').validate().element(this);
 }
 
+$.fn.changePaymentDetail = function() {
+    const value = $(this).val();
+    const $target = $('[name="OrderCustomer.PaymentDetail"]');
+    $target.val($target.attr('data-' + value.toLowerCase()));
+}
+$.fn.openAccordion = function() {
+    const value = $(this).val();
+    const $target = $('[data-accordion="' + value + '"]');
+    $target.siblings('.field-note').hide();
+    $target.show();
+}
+
 $.fn.togglePasswordMask = function () {
-    $(this).toggleClass('fa-eye');
-    $(this).toggleClass('fa-eye-slash');
+    const show = $(this).attr('data-show');
+    const hide = $(this).attr('data-hide');
+    $(this).text($(this).text() == show ? hide : show);
     $(this).siblings('input').each(function(i,input){
         input.type = input.type == 'password' ? 'text' : 'password';
     })
 }
-
-$.fn.toggleTab = function (tabBody) {
-    $(this).closest('.tabListItem').toggleClass('active').siblings().removeClass('active');
-    $(tabBody).toggleClass('active').siblings().removeClass('active');
-}
-
 $('body').on('click', 'a[data-gtm]', function(e) {
     if (window.google_tag_manager) {
         e.preventDefault();

@@ -6,86 +6,70 @@
 
     ViewBag.PageTitle = "注文編集 - お届け日時";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=delivery.Cart.OrderId})" method="post">
-                @Page.Html.HttpMethodOverride("put")
-                <section class="formSection">
-                      <h2 id="delivery" class="formSectionTitle">お届け日時指定</h2>
-                      <dl class="formBlock optional">
-                        <dt class="formBlockTitle">お届け日</dt>
-                        <dd class="formBlockBody">
-                              <div class="formItem">
-                                @if (delivery.Cart.CanSpecifyDeliveryDate) {
-                                    <span class="selectWrapper">
-                                        @Page.Html.DropDownList("DeliveryOrder.DeliveryDate", delivery.Cart.SelectDeliveryDate(), "最短でお届け", new {
-                                        })
-                                    </span>
+<main class="section content">
+    <h1 class="h-underline">注文編集 - お届け日時</h1>
+    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=delivery.Cart.OrderId})" method="post">
+        @Page.Html.HttpMethodOverride("put")
+        <dl class="field optional">
+            <dt class="field-title">お届け日</dt>
+            <dd class="field-body">
+                @if (delivery.Cart.CanSpecifyDeliveryDate) {
+                    @Page.Html.DropDownList("DeliveryOrder.DeliveryDate", delivery.Cart.SelectDeliveryDate(), "最短でお届け", new {
+                    })
+                }
+                else {
+                    <p class="field-text">
+                        @if (delivery.Cart.DeliveryMethod == DeliveryMethod.Mail) {
+                            <text>配送方法が「ゆうメール」のため、</text>
+                        }
+                        else {
+                            var items = delivery.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryDate).Select(item => item.Product.Name).ToArray();
+                            if (items.Length > 0) {
+                                <text>@string.Join("、",items)が含まれているため、</text>
+                            }
+                        }
+                        お届け日を指定できません。
+                    </p>
+                    if (delivery.Cart.LastReleaseDate > delivery.Cart.OrderDate) {
+                        <p class="field-note">
+                            ※発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br />
+                        &nbsp;発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
+                        </p>
+                    }
+                }
+                @ValidationMessageFor("DeliveryOrder.DeliveryDate")
+            </dd>
+        </dl>
+        <dl class="field optional">
+            <dt class="field-title">お届け時間</dt>
+            <dd class="field-body">
+                    <div class="formItem">
+                    @if (delivery.Cart.CanSpecifyDeliveryTime) {
+                        <span class="selectWrapper">
+                            @Page.Html.DropDownList("DeliveryOrder.HourRange", delivery.Cart.SelectHourRange(), new {})
+                        </span>
+                    }
+                    else {
+                        <p class="inputContent">
+                            @if (delivery.Cart.DeliveryMethod == DeliveryMethod.Mail) {
+                                <text>配送方法が「ゆうメール」のため、</text>
+                            }
+                            else {
+                                var items = delivery.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryHour).Select(item => item.Product.Name).ToArray();
+                                if (items.Length > 0) {
+                                    <text>@string.Join("、",items)が含まれているため、</text>
                                 }
-                                else {
-                                    <p class="inputContent">
-                                        @if (delivery.Cart.DeliveryMethod == DeliveryMethod.Mail) {
-                                            <text>配送方法が「ゆうメール」のため、</text>
-                                        }
-                                        else {
-                                            var items = delivery.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryDate).Select(item => item.Product.Name).ToArray();
-                                            if (items.Length > 0) {
-                                                <text>@string.Join("、",items)が含まれているため、</text>
-                                            }
-                                        }
-                                        お届け日を指定できません。
-                                    </p>
-                                }
-                            </div>
-                            @ValidationMessageFor("DeliveryOrder.DeliveryDate")
-                        </dd>
-                      </dl>
-                      @if (delivery.Cart.LastReleaseDate > DateTime.Now) {
-                        <div class="inputNote">
-                            <p>
-                                ※発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br />
-                            &nbsp;発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
-                            </p>
-                        </div>
-                      }
-                    <dl class="formBlock optional">
-                        <dt class="formBlockTitle">お届け時間</dt>
-                        <dd class="formBlockBody">
-                              <div class="formItem">
-                                @if (delivery.Cart.CanSpecifyDeliveryTime) {
-                                    <span class="selectWrapper">
-                                        @Page.Html.DropDownList("DeliveryOrder.HourRange", delivery.Cart.SelectHourRange(), new {})
-                                    </span>
-                                }
-                                else {
-                                    <p class="inputContent">
-                                        @if (delivery.Cart.DeliveryMethod == DeliveryMethod.Mail) {
-                                            <text>配送方法が「ゆうメール」のため、</text>
-                                        }
-                                        else {
-                                            var items = delivery.Cart.OrderItems.Where(item => !item.Product.SalesPattern.CansetDeliveryHour).Select(item => item.Product.Name).ToArray();
-                                            if (items.Length > 0) {
-                                                <text>@string.Join("、",items)が含まれているため、</text>
-                                            }
-                                        }
-                                        お届け時間を指定できません。
-                                    </p>
-                                }
-                            </div>
-                            @ValidationMessageFor("DeliveryOrder.HourRange")
-                        </dd>
-                      </dl>
-                </section>
-                <div class="buttonContainer">
-                    <button type="submit" class="btCallToAction btLargeSize btNext" name="delivery" value="put">お届け日時を変更</button>
+                            }
+                            お届け時間を指定できません。
+                        </p>
+                    }
                 </div>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=delivery.Cart.OrderId})" class="btPrimary btNormalSize btPrev">注文詳細へもどる</a>
-                </div>
-            </form>
+                @ValidationMessageFor("DeliveryOrder.HourRange")
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-next" name="delivery" value="put">お届け日時を変更</button>
+            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=delivery.Cart.OrderId})" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
         </div>
-    </div>
-</div>
+    </form>
+</main>
