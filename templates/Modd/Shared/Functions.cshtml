@@ -17,7 +17,6 @@
     bool? _isPreview = null;
     bool IsPreview { get { if (!_isPreview.HasValue) { _isPreview = Page.Request.Cookies.AllKeys.Contains(PREVIEW_KEY); } return _isPreview.Value; } }
 
-
     // -- プレビュー時間を加味した現在日時
     DateTime? _now = null;
     DateTime Now { get { if (!_now.HasValue) { _now = DateTime.TryParse(Page.Request.Cookies[PREVIEW_KEY]?.Value, out var datetime) ? datetime : TruncateDateTime(DateTime.Now, 300); } return _now.Value; } }

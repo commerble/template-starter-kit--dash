@@ -1,6 +1,7 @@
 ﻿@{
-  var orderId = (long)Page.ViewData["orderId"];
-  var zipList = Page.ViewData.Model as List<ZipCodeAddress>;
+    Layout = null;
+    var orderId = (long)Page.ViewData["orderId"];
+    var zipList = Page.ViewData.Model as List<ZipCodeAddress>;
 }
 
 @if(!zipList.Any()){
