@@ -1,16 +1,12 @@
 ﻿@{
     ViewBag.PageTitle = "不正な操作";
 }
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <section class="formSection">
-            <h1 class="formSectionTitle center">400 Bad Request : 不正な操作</h1>
-                <p class="formSectionLead">不正な操作をされました。先のページにすすむことは出来ません。</p>
-                <div class="buttonContainer">
-                    <a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">もどる</a>
-                </div>
-            </section>
+<main class="section content">
+    <h1 class="h-border text-center">400 Bad Request : 不正な操作</h1>
+    <div class="message-box">
+        <p class="message lead text-center">不正な操作をされました。先のページにすすむことは出来ません。</p>
+        <div class="block">
+            <a href="javascript:history.back();" class="btn btn-primary btn-text btn-prev">もどる</a>
         </div>
-    </div>
-</div>
+    </div>  
+</main>

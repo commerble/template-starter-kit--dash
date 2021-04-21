@@ -4,43 +4,32 @@
 
     ViewBag.PageTitle = "注文編集 - お届け先";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryShipping", id=shipping.Cart.OrderId})" method="post">
-                @Page.Html.HttpMethodOverride("put")
-                <section class="formSection">
-                    <h2 id="destination" class="formSectionTitle">お届け先</h2>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">お届け先選択</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @if(!shipping.IsAnonymous) {
-                                    @:@Page.Html.DropDownList("DeliveryOrderAddress.AddressId", shipping.MemberAddressList.ToSelectListItems(shipping.IsAnonymous, shipping.DeliveryOrderAddress.AddressId), new {
-                                        ic_action="selectAddress" 
-                                    })
-                                }
-                            </div>
-                        </dd>
-                    </dl>
-                    @Page.Html.PartialEx("ModdSharedAddressEditor", shipping.DeliveryOrderAddress, new {
-                        target = "DeliveryOrderAddress", 
-                        command = "zipsearch", 
-                        commandUrl = Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryShipping", id=shipping.Cart.OrderId })
+<main class="section content">
+    <h1 class="h-underline">お届け先</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@HistoryShippingUrl(shipping.Cart.OrderId)" method="post">
+        @Page.Html.HttpMethodOverride("put")
+        <dl class="field required">
+            <dt class="field-title">お届け先選択</dt>
+            <dd class="field-body">
+                @if(!shipping.IsAnonymous) {
+                    @:@Page.Html.DropDownList("DeliveryOrderAddress.AddressId", shipping.MemberAddressList.ToSelectListItems(shipping.IsAnonymous, shipping.DeliveryOrderAddress.AddressId), new {
+                        ic_action="selectAddress" 
                     })
-                </section>
-                <div class="buttonContainer">
-                    <button type="submit" class="btCallToAction btLargeSize btNext" name="shipping" value="put">お届け先を変更</button>
-                </div>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=shipping.Cart.OrderId})" class="btPrimary btNormalSize btPrev">注文詳細へもどる</a>
-                </div>
-            </form>
+                }
+            </dd>
+        </dl>
+        @Page.Html.PartialEx("ModdSharedAddressEditor", shipping.DeliveryOrderAddress, new {
+            target = "DeliveryOrderAddress", 
+            command = "zipsearch", 
+            commandUrl = HistoryShippingUrl(shipping.Cart.OrderId)
+        })
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-next" name="shipping" value="put">お届け先を変更</button>
+            <a href="@HistoryUrl(shipping.Cart.OrderId)" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
         </div>
-    </div>
-</div>
+    </form>
+</main>
 
 @section ScriptBlock {
 <script>

@@ -3,39 +3,44 @@
 @using System.Text;
 @using Commerble.Sandbox.CmsDb;
 @{
-    if (ViewBag.RouteName != "ModdDefault" && ViewBag.RouteName != "ModdPurchase") {
+    var isSystemRoute = ViewBag.RouteName == "ModdDefault" || ViewBag.RouteName == "ModdPurchase";
+    if (isSystemRoute) {
+        Page.Response.Headers.Add("X-Robots-Tag", "noindex");
+    }
+    else {
         Page.Response.Cache.SetExpires(Next);
     }
 }
 @functions {
-  
-    bool HasViewMessages(ViewMessages viewData){
-        return (viewData != null && (viewData.Errors.Count + viewData.Warnings.Count + viewData.Messages.Count > 0) );
-    }
-
-    bool IsIntercooler { get { return Page.Request.Headers.AllKeys.Any(key => key.ToLower() == "x-ic-request"); } }
-
+    // -- プレビュー
     static string PREVIEW_KEY = "G2OJzTlzsfin8QGMOSjgbgYMEuS68GX8";
     bool? _isPreview = null;
     bool IsPreview { get { if (!_isPreview.HasValue) { _isPreview = Page.Request.Cookies.AllKeys.Contains(PREVIEW_KEY); } return _isPreview.Value; } }
 
+
+    // -- プレビュー時間を加味した現在日時
     DateTime? _now = null;
     DateTime Now { get { if (!_now.HasValue) { _now = DateTime.TryParse(Page.Request.Cookies[PREVIEW_KEY]?.Value, out var datetime) ? datetime : TruncateDateTime(DateTime.Now, 300); } return _now.Value; } }
 
+    // -- 次の5分刻みの時間、プレビュー時には1秒後
     DateTime? _next = null;
     DateTime Next { get { if (!_next.HasValue) { _next =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(DateTime.Now, 300).AddSeconds(300); } return _next.Value; } }
 
+    // -- 次の30分刻みの時間、プレビュー時には1秒後
     DateTime? _nextLong = null;
     DateTime NextLong { get { if (!_nextLong.HasValue) { _nextLong =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(DateTime.Now, 1800).AddSeconds(1800); } return _nextLong.Value; } }
 
+    // -- 次の1日刻みの時間、プレビュー時には1秒後
     DateTime? _nextLongLong = null;
     DateTime NextLongLong { get { if (!_nextLong.HasValue) { _nextLongLong =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(DateTime.Now, 86400).AddSeconds(86400); } return _nextLongLong.Value; } }
 
+
+    // -- 時刻を指定秒で丸める
     DateTime TruncateDateTime(DateTime datetime, int seconds) {
         return new DateTime((long) (Math.Truncate((double)datetime.Ticks / 10000000 / seconds)) * 10000000 * seconds);
     }
 
-    /// Configs
+    // -- サイトコンフィグ全てをランタイムキャッシュで保持する。更新サイクルは1日（NextLongLong）
     Dictionary<string, string> _configs = null;
     Dictionary<string, string> Configs {
         get {
@@ -55,6 +60,7 @@
     }
     string GetConfigValue(string configKey, string defaultValue = null) => Configs.ContainsKey(configKey) ? Configs[configKey] : defaultValue;
 
+    // -- サイトページのルーティング規則をランタイムキャッシュで保持する。更新サイクルは1日（NextLongLong）
     Dictionary<string, string> _sitePageKindRoutes = null;
     Dictionary<string, string> SitePageKindRoutes {
         get {
@@ -73,42 +79,21 @@
         }
     }
 
-    /// URL factories
-    string FavoriteUrl(int item) {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Member", action = "CreateFavorite", item});
-    }
-    string CartInUrl(int item, int? qty = null) {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart", item, qty});
-    }
-    string CartInUrl(int item, string desc, int? qty = null) {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart", item, desc, qty});    
-    }
-    string CartInUrl(int item, long reserve, int? qty = null) {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart", item, reserve, qty});    
-    }
-    string CartInUrl(int item, long reserve, string desc, int? qty = null) {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart", item, reserve, desc, qty});    
-    }
-    string CartOutUrl(int item) {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "CartItemDelete", item});
-    }
-    string ReserveUrl(int item, int? requestAmount = null) {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Member", action = "CreateNotice", item, requestAmount});
-    }
-    string LoginUrl(string returnUrl = null) {
-        return returnUrl == null ? Page.Template.GetLoginUrl() : Page.Url.RouteUrl("ModdDefault", new {controller = "Site", action = "Login", returnUrl});    
-    }
-    string LogoutUrl() {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Site", action = "Logout", returnUrl = Href("~/")});    
-    }
+    // -- URLヘルパー
     string ItemUrl(string code) {
         return Href($"~/item/{(code?.ToLower())}");
     }
-    string CategoryUrl(string code, string sort = "new") {
+    string EmbedUrl(string code) {
+        return Page.Template.SecuredLink("ItemEmbed", new { Code = code }).Replace("http:","https:");
+    }
+    string KindUrl(string code, string sort = "new") {
         return Href($"~/category/{(code?.ToLower())}?sort={sort}");
     }
     string TagUrl(string code, string sort = "new") {
         return Href($"~/tag/{(code?.ToLower())}?sort={sort}");
+    }
+    string SearchUrl() {
+        return Href($"~/search/");
     }
     string ImageUrl(string url, string noimg = "") {
         if (string.IsNullOrEmpty(url)) {
@@ -132,46 +117,172 @@
     string PageUrl(string code, string kind) {
         return Page.Url.RouteUrl(SitePageKindRoutes[kind], new { Code = code?.ToLower() });
     }
+    string CallbacksGMOPGUrl() {
+        return Page.Template.SecuredLink("CallbacksGMOPG", new {}).Replace("http://", "https://");
+    }
+    string CartUrl() {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart"});
+    }
+    string CartInUrl(int item, int? qty = null) {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart", item, qty});
+    }
+    string CartInUrl(int item, string desc, int? qty = null) {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart", item, desc, qty});    
+    }
+    string CartInUrl(int item, long reserve, int? qty = null) {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart", item, reserve, qty});    
+    }
+    string CartInUrl(int item, long reserve, string desc, int? qty = null) {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart", item, reserve, desc, qty});    
+    }
+    string CartOutUrl(int item) {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "CartItemDelete", item});
+    }
+    string FavoriteUrl(int? id = null, int? item = null) {
+        if (item != null) {
+            return Page.Url.RouteUrl("ModdDefault", new {controller = "Member", action = "Favorites", item});
+        }
+        if (id != null) {
+            return Page.Url.RouteUrl("ModdDefault", new {controller = "Member", action = "Favorites", id});
+        }
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Member", action = "Favorites"});
+    }
+    string FavoriteCreateUrl(int item) {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Member", action = "CreateFavorite", item});
+    }
+    string ReserveUrl(long? id = null) {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Member", action = "Notices", id});
+    }
+    string ReserveCreateUrl(int item, int? requestAmount = null) {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Member", action = "CreateNotice", item, requestAmount});
+    }
+    string LoginUrl(string returnUrl = null) {
+        return returnUrl == null ? Page.Template.GetLoginUrl() : Page.Url.RouteUrl("ModdDefault", new {controller = "Site", action = "Login", returnUrl});    
+    }
+    string LoginChallengeUrl() {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Site", action = "Login"});    
+    }
+    string LogoutUrl() {
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Site", action = "Logout", returnUrl = Href("~/")});    
+    }
+    string NewGuestUrl(string returnUrl){
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="NewGuest", returnUrl });
+    }
+    string RegisterUrl(){
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="Account" });
+    }
+    string RecoveryUrl(string token = null) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="Recovery", id=token});
+    }
+    string InquiryUrl(string id) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="Inquiry", id});
+    }
+    string MyPageUrl() {
+        return Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index" });
+    }
+    string PointUrl() {
+        return Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Point" });
+    }
+    string AccountUrl() {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Account" });
+    }
+    string AccountAddressUrl() {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="AccountAddress" });
+    }
+    string AddressUrl(long? id = null) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Addresses", id });
+    }
+    string AddressCreateUrl() {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="CreateAddress" });
+    }
+    string UserNameChangeUrl() {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Password" });
+    }
+    string PasswordChangeUrl() {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Password" });
+    }
+    string QuitUrl() {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Quit" });
+    }
+    string MemberZipSearch(long? id = null) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="ZipSearch", id });
+    }
+    string ArchiveUrl(long? id = null) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="Archives", id });
+    }
+    string HistoryUrl(long? id = null) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="History", id });
+    }
+    string HistoryShippingUrl(long id) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="HistoryShipping", id });
+    }
+    string HistoryZipSelect(long id) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="ZipSelect", id });
+    }
+    string CancelUrl(long id) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="HistoryCancel", id });
+    }
+    string GuestOrderUrl(string accessKey) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="GuestOrder", id=accessKey });
+    }
+    string PurchaseUrl(int cart, bool? direct = null) {
+        return Page.Template.SecuredLink("ModdPurchase", new { cart, action="Index", direct });
+    }
+    string PurchaseShippingUrl(int cart) {
+        return Page.Template.SecuredLink("ModdPurchase", new { cart, action="Shipping" });
+    }
+    string PurchaseZipSelect(int cart) {
+        return Page.Template.SecuredLink("ModdPurchase", new { cart, action="ZipSelect" });
+    }
+    string PurchasePaymentUrl(int cart) {
+        return Page.Template.SecuredLink("ModdPurchase", new { cart, action="Payment" });
+    }
+    string PurchaseExternalUrl(int cart, long id) {
+        return Page.Template.SecuredLink("ModdPurchase", new { cart, action="External", id });
+    }
+    string PurchaseCompleteUrl(int cart, long id) {
+        return Page.Template.SecuredLink("ModdPurchase", new { cart, action="Complete", id });
+    }
 
-    /// Helpers
+    /// -- Helpers
     string when(bool condition, string then, string @else = "") => condition ? then : @else;
     string globalCacheKey(string name) => $"GlobalData:{name}:{Page.Template.RestartCounter}{(IsPreview ? TruncateDateTime(DateTime.Now, 1).Ticks.ToString() : string.Empty)}";
     Dictionary<PaymentMethod,string> PaymentMethodText = new Dictionary<PaymentMethod,string>{
-        { PaymentMethod.CashOnDelivery, "代引き" },
-        { PaymentMethod.Cvs, "コンビニ" },
-        { PaymentMethod.Offsite, "銀行振込" },
-        { PaymentMethod.Offline, "オフライン" },
-        { PaymentMethod.Token, "クレジットカード" },
-        { PaymentMethod.PointOnly, "全額ポイント" },
-        { PaymentMethod.External, "外部決済（カード・コンビニ・キャリア）" },
-        { PaymentMethod.None, "決済方法なし"},
+        [PaymentMethod.CashOnDelivery] = "代引き",
+        [PaymentMethod.Cvs]            = "コンビニ",
+        [PaymentMethod.Offsite]        = "銀行振込",
+        [PaymentMethod.Offline]        = "オフライン",
+        [PaymentMethod.Token]          = "クレジットカード",
+        [PaymentMethod.PointOnly]      = "全額ポイント",
+        [PaymentMethod.External]       = "外部決済 （カード・コンビニ・キャリア）",
+        [PaymentMethod.None]           = "決済方法なし",
     };
     Dictionary<HumanSexes, string> HumanSexesText = new Dictionary<HumanSexes, string> {
         [HumanSexes.NotKnown] = "未選択",
-        [HumanSexes.Male] = "男性",
-        [HumanSexes.Female] = "女性",
+        [HumanSexes.Male]     = "男性",
+        [HumanSexes.Female]   = "女性",
     };
     Dictionary<bool, string> SubscribeText = new Dictionary<bool, string> {
-        [true] = "希望する",
-        [false] = "希望しない"
+        [true]  = "希望する",
+        [false] = "希望しない",
     };
     Dictionary<OrderStatus,string> OrderStatusText = new Dictionary<OrderStatus,string>{
-        {OrderStatus.Accept,       "注文完了"},
-        {OrderStatus.UnAllocate,   "注文完了"},
-        {OrderStatus.PartAllocate, "出荷準備中"},
-        {OrderStatus.Allocated,    "出荷準備中"},
-        {OrderStatus.ShipIndicate, "出荷準備中"},
-        {OrderStatus.Ship,         "出荷完了"},
-        {OrderStatus.Arrival,      "お届け完了"},
-        {OrderStatus.Booked,       "お届け完了"},
-        {OrderStatus.Cancel,       "キャンセル"},
-        {OrderStatus.ShipSuspend,  "出荷準備中"}
+        [OrderStatus.Accept]       = "注文完了",
+        [OrderStatus.UnAllocate]   = "注文完了",
+        [OrderStatus.PartAllocate] = "出荷準備中",
+        [OrderStatus.Allocated]    = "出荷準備中",
+        [OrderStatus.ShipIndicate] = "出荷準備中",
+        [OrderStatus.Ship]         = "出荷完了",
+        [OrderStatus.Arrival]      = "お届け完了",
+        [OrderStatus.Booked]       = "お届け完了",
+        [OrderStatus.Cancel]       = "キャンセル",
+        [OrderStatus.ShipSuspend]  = "出荷準備中",
     };
     Dictionary<ReserveRequestStatus,string> ReserveRequestStatusText = new Dictionary<ReserveRequestStatus,string>{
-        {ReserveRequestStatus.Accept, "未入荷"},
-        {ReserveRequestStatus.Allocated, "入荷"},
-        {ReserveRequestStatus.Purchased, "購入済"},
-        {ReserveRequestStatus.Cancel, "キャンセル"}
+        [ReserveRequestStatus.Accept]    = "未入荷",
+        [ReserveRequestStatus.Allocated] = "入荷",
+        [ReserveRequestStatus.Purchased] = "購入済",
+        [ReserveRequestStatus.Cancel]    = "キャンセル",
     };
 
     List<(string GroupCode, string Code, string Name, string Icon)> _kinds = null;
@@ -219,13 +330,12 @@
             return _tags;
         }
     }
-}
 
-@helper RenderPreviewFooter() {
-    if (IsPreview) {
-        <a href="@Href("~/preview")" style="background: red; color: white; padding: 0 1rem; width: 100%; height: 48px; line-height: 48px; position: fixed; text-align: right; bottom:0; z-index:9999;">
-            プレビュー中 &nbsp;&nbsp;&nbsp;&nbsp; プレビュー時間 @Now
-        </a>
+    string SkuName(string name, string displayName, string color, string size) {
+        if (string.IsNullOrEmpty(displayName)) {
+            return name;
+        }
+        return $"{displayName} {$"{color}／{size}".Trim(new[]{'／'})}".Trim();
     }
 }
 
@@ -244,6 +354,88 @@
     var parts = siteParts.Where(kv => kv.Key.Match(path).Success && kv.Value.Position == position).OrderBy(kv => kv.Value.DisplayOrder).Select(kv => kv.Value.Html);
 
     @:@Raw(string.Join("\n", parts))
+}
+
+@helper RenderJsonLD() {
+    if (ViewBag.JsonLd != null) {
+    <script type="application/ld+json">@Raw(Jil.JSON.SerializeDynamic(ViewBag.JsonLd))</script>
+    }
+}
+
+@helper RenderDataLayer() {
+    <script>
+        (function() {
+            var data = @Raw(Jil.JSON.SerializeDynamic(ViewBag.DataLayer));
+            window.dataLayer = window.dataLayer || [];
+            if (!Array.isArray(data)) { data = [data]; }
+            for (var i = 0; i < data.length; i++) { window.dataLayer.push(data[i]); }
+        }())
+    </script>
+}
+
+@helper RenderPreviewFooter() {
+    if (IsPreview) {
+        <a href="@Href("~/preview")" style="background: red; color: white; padding: 0 1rem; width: 100%; height: 48px; line-height: 48px; position: fixed; text-align: right; bottom:0; z-index:9999;">
+            プレビュー中 &nbsp;&nbsp;&nbsp;&nbsp; プレビュー時間 @Now
+        </a>
+    }
+}
+
+@helper RenderHeader() {
+    <header class="gheader content-wide">
+        <h1 class="logo"><a href="@Href("~/")" class="image image-base"><img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22"></a></h1>
+        <a href="@Href("~/Member/Favorite")" class="gheader-link"><i class="icon-dash-heart"></i><span class="sp-hide">お気に入り</span></a>
+        <a href="@Href("~/Member/Index")" class="gheader-link"><i class="icon-dash-user"></i><span class="sp-hide">マイページ</span></a>
+        <a href="@Href("~/Order/Cart")" class="gheader-link"><i class="icon-dash-cart"></i><span class="sp-hide">カート</span></a>
+    </header>
+}
+
+@helper RenderGlobalNav() {
+    var cacheKey = globalCacheKey("GlobalNav");
+    var groups = GetConfigValue("GNAV_KIND_GROUPS", string.Empty).Split(',').Select(text => text.Trim()).ToArray();
+    var groupedKinds = 
+        Page.Template.Cache(cacheKey, Next, () =>
+            Database.Query(new { Now, Next, IsPreview }, (db, args) => 
+                from k in db.ProductKinds
+                where groups.Contains(k.GroupCode)
+                  && (k.IsPublished == true || args.IsPreview)
+                select new { 
+                    k.GroupCode,
+                    k.Code,
+                    k.Icon,
+                    k.DisplayOrder,
+                    Name = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName
+                }
+            ).GroupBy(k => k.GroupCode));
+    <nav class="gnav">
+        <ul>
+            @foreach(var kinds in groupedKinds) {
+                <li>
+                    <button>
+                        @kinds.Key
+                        <ul>
+                            @foreach(var kind in kinds.OrderBy(k => k.DisplayOrder)) {
+                                <li>
+                                    <a href="@KindUrl(kind.Code)" rel="bookmark" title="@kind.Name" class="gnav-link">
+                                        @if (!string.IsNullOrEmpty(kind.Icon)) {
+                                            <div class="gnav-link-icon">
+                                                @if (kind.Icon.StartsWith("https://")) {
+                                                    <div class="image image-square"><img src="https://httpstat.us/404"></div>
+                                                } else {
+                                                    <i class="@kind.Icon"></i>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="gnav-link-text">@kind.Name</div>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </button>
+                </li>
+            }
+        </ul>
+    </nav>
 }
 
 @helper RenderHeaderBanner() {
@@ -278,122 +470,18 @@
     }
 }
 
-@helper RenderGlobalNav() {
-    var cacheKey = globalCacheKey("GlobalNav");
-    var groups = GetConfigValue("GNAV_KIND_GROUPS", string.Empty).Split(',').Select(text => text.Trim()).ToArray();
-    var groupedKinds = 
-        Page.Template.Cache(cacheKey, Next, () =>
-            Database.Query(new { Now, Next, IsPreview }, (db, args) => 
-                from k in db.ProductKinds
-                where groups.Contains(k.GroupCode)
-                  && (k.IsPublished == true || args.IsPreview)
-                select new { 
-                    k.GroupCode,
-                    k.Code,
-                    k.Icon,
-                    k.DisplayOrder,
-                    Name = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName
-                }
-            ).GroupBy(k => k.GroupCode));
-    <nav class="gnav">
-        <div class="tabNavigation">
-            <ul class="tabList">
-                @foreach(var kinds in groupedKinds) {
-                    <li class="tabListItem jp">
-                        <a href="#" ic-action="toggleTab:'#@(kinds.Key)-tab'">@kinds.Key</a>
-                    </li>
-                }
-            </ul>
-            @foreach(var kinds in groupedKinds) {
-                <div class="tabBody" id="@(kinds.Key)-tab">
-                    <ul class="gnavList">
-                        @foreach(var kind in kinds.OrderBy(k => k.DisplayOrder)) {
-                            <li class="gnavListItem">
-                                <a href="@CategoryUrl(kind.Code)" title="@kind.Name">@if (!string.IsNullOrEmpty(kind.Icon)) { <i class="@kind.Icon"></i> }@kind.Name</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            }
-        </div>
-    </nav>
-}
-
-@helper RenderHeader() {
-    <header>
-        <div class="inner">
-            <p class="logo">
-                <a href="@Href("~/")">
-                    <img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22">
-                </a>
-            </p>
-            <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=(int?)null })" title="お気に入り">
-                    <span class="headerLinkItemText"><i class="fa fa-heart"></i><span class="showOnPCInline">&nbsp;お気に入り</span></span>
-                </a>
-            </div>
-            <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index" })" title="マイページ">
-                    <span class="headerLinkItemText"><i class="fa fa-user"></i><span class="showOnPCInline">&nbsp;マイページ</span></span>
-                </a>
-            </div>
-            <div class="headerLinkItem">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart" })" title="カート">
-                    <span class="headerLinkItemText"><i class="fa fa-shopping-cart"></i><span class="showOnPCInline">&nbsp;カート</span></span>
-                </a>
-            </div>
-        </div>
-    </header>
-}
-
 @helper RenderFooter() {
-    <footer>
+    <footer class="gfooter">
         @RenderParts("Footer")
-        <div class="footerBottomSection">
-            <p class="copyright">@GetConfigValue("BRAND_COPY_RIGHT")</p>
-        </div>
+        <p class="text-center text-small">@GetConfigValue("BRAND_COPY_RIGHT")</p>
     </footer>
 }
 
-@helper RenderJsonLD() {
-    if (ViewBag.JsonLd != null) {
-    <script type="application/ld+json">@Raw(Jil.JSON.SerializeDynamic(ViewBag.JsonLd))</script>
+@helper RenderCheckPoint() {
+    var routes = new [] { "Top", "Search", "Tag", "Category", "Landing", "Notice" };
+    if (routes.Contains((string)ViewBag.RouteName)) {
+        <script>updateCheckPoint();</script>
     }
-}
-
-@helper RenderDataLayer() {
-    <script>
-        (function() {
-            var data = @Raw(Jil.JSON.SerializeDynamic(ViewBag.DataLayer));
-            window.dataLayer = window.dataLayer || [];
-            if (!Array.isArray(data)) { data = [data]; }
-            for (var i = 0; i < data.length; i++) { window.dataLayer.push(data[i]); }
-        }())
-    </script>
-}
-
-@helper DisplayPager(int currentPage,int itemCount,int itemPerPage){
-
-    int itemCountFrom, itemCountTo;
-    IEnumerable<int> listNum;
-    int pageCount;
-    bool pageFirst, pageLast;
-    
-    
-    pageCount = itemCount / itemPerPage + ((itemCount % itemPerPage == 0) ? 0 : 1);
-    itemCountFrom = currentPage* itemPerPage +1 ;
-    itemCountTo = ((currentPage+1) == pageCount) ? itemCount : (currentPage+1) * itemPerPage;
-    
-    pageFirst = (currentPage== 0) ? true : false;
-    pageLast = pageCount == 0 ? true : ( ((currentPage+1) == pageCount) ? true : false);
-    
-    listNum = Enumerable.Range(0,pageCount);
-
-    <div class="paging">
-        @if (pageFirst) { <a class="prev disabled"><span class="text">前</span></a> } else { <a class="prev" href="?page=@(currentPage-1)"><span class="text">前</span></a> }
-        <span class="current">@(currentPage+1) / @pageCount</span>
-        @if (pageLast) { <a class="next disabled"><span class="text">次</span></a> } else { <a class="next" href="?page=@(currentPage+1)"><span class="text">次</span></a> }
-    </div>
 }
 
 @helper FormatPrice(decimal? price) {
@@ -411,39 +499,17 @@
     }
 }
 
-@helper PrintPrice(decimal? price, string label = null, bool? hasMultiplePrice = false) {
-    <p class="salePrice">
-    @if (price.HasValue) {
-        <text>@label<span class="num">&yen;@price.Value.ToString("N0")</span><span class="tax">（税込）</span></text>
+@helper PrintPrice(decimal? price, bool? hasMultiplePrice = false, bool del = false, bool attention = false, bool strong = false) {
+    if (price.HasValue) {
+        <span class="price @when(del,"text-del") @when(attention,"price-attention")  @when(strong,"price-strong")"><span class="price-value">&yen;@price.Value.ToString("N0")</span>@when(hasMultiplePrice == true, "～")<span class="price-tax">(税込)</span></span>
+    } else {
+        <span class="price">価格未決定</span>
     }
-    else {
-        <text>価格未決定</text>
-    }
-    </p>
-}
-@helper PrintNormalPrice(decimal? price, bool? hasMultiplePrice = false) {
-    <p class="normalPrice">
-        @if (price.HasValue) {
-            <text>&yen;@price.Value.ToString("N0")</text>
-            if (hasMultiplePrice == true) {
-                <text>～</text>
-            }
-            <span class="tax">（税込）</span>
-        }
-        else {
-            <text>価格未決定</text>
-        }
-    </p>
 }
 
-@helper PrintPoint(decimal? point, string label = null, string klass="getPoint", bool? hasMultiplePrice = false) {
+@helper PrintPoint(decimal? point, bool? hasMultiplePrice = false) {
     if (point.HasValue) {
-        <p class="@klass">
-            @label<span class="num">@point.Value.ToString("N0")</span>&nbsp;pt 
-            @if (hasMultiplePrice == true) {
-                <text>～</text>
-            }
-        </p>
+        <span class="price"><span class="price-value">@point.Value.ToString("N0")</span>@when(hasMultiplePrice == true, "～") pt</span>
     }
 }
 
@@ -452,129 +518,55 @@
     <text>@($"{date:yyyy年MM月dd日}({dayOfWeek})")</text>
 }
 
-@helper ValidationMessageFor(string name) {
-    <p class="inputError" data-valmsg-for="@name" data-valmsg-replace="true" style="display:none;"></p>
-}
-
-@helper ProductTile(string code, string name, string kindName, string kindIcon, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
-    <li class="productTile">
-        <a href="@ItemUrl(code)" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
-            <div class="productTileImage">
-                <img src="@ThumbnailUrl(thumbnail)" alt="@name">
-                @if (!string.IsNullOrEmpty(kindIcon)) {
-                    <i class="@kindIcon"></i>
-                }
-            </div>
-            <div class="productTileText">
-                <p class="productName" style="height: 21.6px;">@name</p>
-                <p class="productCategory">@kindName</p>
-                <div class="price">
-                    @PrintNormalPrice(unitPriceWithTax, hasMultiplePrice)
-                </div>
-            </div>
-        </a>
-    </li>
-}
-
-@helper TopicTile(string code, string kind, string name, string thumbnail, DateTime? publishDate) {
-    <li class="topicTile">
-        <a href="@PageUrl(code, kind)">
-            <div class="topicTileImage">
-                <img src="@ThumbnailUrl(thumbnail)" loading="lazy" alt="@name">
-            </div>
-            <div class="topicTileText">
-                @if (publishDate.HasValue) {
-                    <time datetime="@publishDate.Value.ToString("o")">@publishDate.Value.ToString("yyyy-MM-dd")</time>
-                } else {
-                    <time></time>
-                }
-                <h2 class="title">@name</h2>
-            </div>
-        </a>
-    </li>
-}
-
-@helper ProductTileList(IEnumerable<dynamic> items, Func<dynamic, int, RazorEngine.Templating.TemplateWriter> slot, string klass = "grid-pc-x4 grid-tb-x2 grid-sp-x2", string id = null) {
-    <ul @when(id != null, $"id={id}") class="productTileList grid @klass">
-        @foreach(var (item, index) in items.Select((item, index) => (item, index))) {
-            @:@slot(item, index)
-        }
-    </ul>
-}
-
-@helper TopicTileList(IEnumerable<dynamic> items, Func<dynamic, int, RazorEngine.Templating.TemplateWriter> slot, string klass = "grid-pc-x3 grid-tb-x2 grid-sp-x1", string id = null) {
-    <ul @when(id != null, $"id={id}") class="topicTileList grid @klass">
-        @foreach(var (item, index) in items.Select((item, index) => (item, index))) {
-            @:@slot(item, index)
-        }
-    </ul>
-}
-
-@helper SectionBlock(string title, Func<RazorEngine.Templating.TemplateWriter> slot) {
-    <section class="section">
-        <div class="inner">
-            <h2 class="sectionTitle bordered">@title</h2>
-            @slot()
-        </div>
-    </section>
-}
-
-@helper Concat(params Func<RazorEngine.Templating.TemplateWriter>[] slots) {
-    foreach(var slot in slots) {
-        @:@slot()
+@helper PrintTitleOrName(string title, string name) {
+    if (!string.IsNullOrEmpty(title)) {
+        <text>@Raw(title)</text>
+    } else {
+        <text>@name</text>
     }
 }
 
-@helper ButtonBlock(
-    string text, 
-    string href = null, 
-    string name = null,
-    string value = null,
-    string icon = null,
-    bool submit = false,
-    bool btNext = false, 
-    bool btPrev = false, 
-    bool btAccent = false, 
-    bool btPrimary = false,
-    bool btCallToAction = false,
-    bool btNormalSize = false,
-    bool btLargeSize = false,
-    bool showOnTB = false,
-    IDictionary<string, string> attr = null) {
-    var klass = string.Join(" ", (new []{
-        btNext ? "btNext" : null,
-        btPrev ? "btPrev" : null,
-        btAccent ? "btAccent" : null,
-        btPrimary ? "btPrimary" : null,
-        btCallToAction ? "btCallToAction" : null,
-        btNormalSize ? "btNormalSize" : null,
-        btLargeSize ? "btLargeSize" : null,
-    }).Where(k => k != null));
-    var attrText = string.Join(" ", attr?.Select(kv => kv.Key + "=" + kv.Value) ?? new string[0]);
-    <div class="buttonContainer @when(showOnTB, "showOnTB")">
-        @if (string.IsNullOrEmpty(href)) {
-            <button 
-                type="@(submit?"submit":"button")"
-                @when(!string.IsNullOrEmpty(name), $"name={name} value={(value??name)}") class="@klass" @attrText>
-                @if(!string.IsNullOrEmpty(icon)) {
-                    <i class="@icon"></i>
-                }
-                @text
-            </button>
-        }
-        else {
-            <a @when(!string.IsNullOrEmpty(href), $"href={href}") class="@klass" @attrText>
-                @if(!string.IsNullOrEmpty(icon)) {
-                    <i class="@icon"></i>
-                }
-                @text
-            </a>
-        }
-    </div>
+@helper ValidationMessageFor(string name) {
+    <p class="field-error" data-valmsg-for="@name" data-valmsg-replace="true"></p>
 }
 
-@helper LinkAnnex(string text, string href) {
-    <p class="linkAnnex"><a href="@href">@text</a></p>
+@helper ProductTile(string code, string name, string kindName, string kindIcon, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
+    <article class="tile">
+        <a href="@ItemUrl(code)" rel="bookmark" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
+            <h1>@name</h1>
+            <figure class="image image-square">
+                <img src="@ThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
+            </figure>
+            <div class="tile-info text-right">
+                @PrintPrice(unitPriceWithTax, hasMultiplePrice)
+            </div>
+        </a>
+    </article>
+}
+
+@helper TopicTile(string code, string kind, string name, string thumbnail, DateTime? publishDate) {
+    <article class="tile">
+        <a href="@PageUrl(code, kind)" rel="bookmark" title="@name">
+            <h1>@name</h1>
+            @if (publishDate.HasValue) {
+                <time datetime="@publishDate.Value.ToString("o")">@publishDate.Value.ToString("yyyy.MM.dd")</time>
+            } else {
+                <time></time>
+            }
+            <figure class="image image-2x1">
+                <img src="@ThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
+            </figure>
+        </a>
+    </article>
+}
+
+@helper TileList(IEnumerable<dynamic> items, Func<dynamic, int, RazorEngine.Templating.TemplateWriter> slot, int columns = 4, string klass = null, string id = null) {
+    if (columns < 2 || columns > 5) { throw new ArgumentException("columns"); }
+    <div class="tiles @($"tiles-x{columns}") @klass">
+        @foreach(var (item, index) in items.Select((item, index) => (item, index))) {
+            @:@slot(item, index)
+        }
+    </div>
 }
 
 @helper DisplayViewMessages(ViewMessages viewData){
@@ -590,20 +582,20 @@
         var errors = viewData.Errors.Distinct().Where(m => !exceptErrors.Any(e=>m.StartsWith(e)));
 
         if (errors.Any()) {
-            <div class="errorOnSubmit">
+            <div class="alert alert-error">
                 @foreach(var msg in errors ) {
                     var msgParts = msg.Split('\t').Concat(new []{"",""}).ToArray();
                     var msgKey = msgParts[0].Trim();
                     var msgFormat = messageError.ContainsKey(msgKey) ? messageError[msgKey] : msg;
                     var errorMessage = string.Format(msgFormat, msgParts[1], msgParts[2]);
 
-                    <p class="errorOnSubmitText">@errorMessage</p>
+                    <p>@errorMessage</p>
                 }
             </div>
         }
 
         if (viewData.Warnings.Any()) {
-            <div class="warningOnSubmit">
+            <div class="alert alert-warning">
                 @foreach( var msg in viewData.Warnings ) {
                     <p class="warningOnSubmitText">@(messageError.ContainsKey(msg.Trim()) ? messageError[msg.Trim()] : msg)</p>
                 }
@@ -611,7 +603,7 @@
         }
 
         if (viewData.Messages.Any()) {
-            <div class="successOnSubmit">
+            <div class="alert alert-success">
                 @foreach(var msg in viewData.Messages ){
                     <p class="successOnSubmitText">@(messageError.ContainsKey(msg.Trim()) ? messageError[msg.Trim()] : msg)</p>
                 }

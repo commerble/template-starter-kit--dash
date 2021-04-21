@@ -1,4 +1,46 @@
-@{
-    Message.Subject = "purchase";
+@functions {
+    string FormatPrice(decimal price) => price.ToString("N0");
+    Dictionary<int,string> PaymentMethodText = new Dictionary<int,string>{
+        [0] = "代引き",
+        [2] = "全額ポイント",
+        [3] = "コンビニ",
+        [4] = "銀行振込",
+        [5] = "オフライン",
+        [6] = "クレジットカード",
+        [100] = "外部決済 （カード・コンビニ・キャリア）",
+        [-1] = "決済方法なし",
+    };
 }
-purchase
+@{
+    var orderId = long.Parse((string)ViewBag.Parameters["orderId"]);
+    var order= Database.EC.Single(
+            db => db.PurchaseOrders
+                .Include("OrderLines")
+                .Include("OrderLines.Product")
+                .Include("OrderCustomer")
+                .Single(x => x.Id == orderId));
+
+    Message.Subject = "注文キャンセルのお知らせ";
+}@order.OrderCustomer.LastName @order.OrderCustomer.FirstName 様
+
+下記注文のキャンセルを承りましたのでご確認ください。
+
+[注文番号] @orderId
+■ ご注文内容
+
+@foreach (var x in order.OrderLines)
+{
+<text>・@(x.Product.Name) x @(x.OrderAmount) @(FormatPrice(x.LinePrice))</text>
+}
+
+● 小計 (税込) : ¥@FormatPrice(order.OrderLines.Sum(x => x.LinePrice))
+● 送料 : ¥@FormatPrice(order.DeliveryCharge)
+● 代引手数料 : ¥@(FormatPrice(order.CashOnDeliveryCharge))
+● 利用ポイント : @FormatPrice(order.TotalUsagePoint)
+● 合計 : ¥@FormatPrice(order.TotalPayment)
+● 付与ポイント : @FormatPrice(order.ChargePointSummary ?? 0)
+
+注文受付日時 : @order.OrderDate.ToString("yyyy/MM/dd HH:mm:ss")
+決済方法 : @PaymentMethodText[order.PaymentMethod]
+
+またのご利用をお待ちしております。

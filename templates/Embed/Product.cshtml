@@ -80,7 +80,7 @@
             display: flex;
             align-items: center;
         }
-        .normalPrice {
+        .price {
             grid-column: 2/3;
             grid-row: 2/3;
             display: flex;
@@ -98,7 +98,7 @@
         <img src="@ThumbnailUrl(vm.Thumbnail)" alt="@vm.Name">
     </a>
     <a href="@vm.Url" target="_blank" title="@vm.Name" class="title">@vm.Name</a>
-    @PrintNormalPrice(vm.UnitPriceWithTax, vm.HasMultiplePrice)
+    @PrintPrice(vm.UnitPriceWithTax, vm.HasMultiplePrice)
     <p class="desc">@(vm.MetaDescription??"No description") @when(vm.OverDescriptionLimit, "…") </p>
   </body>
 </html>

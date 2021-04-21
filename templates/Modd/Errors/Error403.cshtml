@@ -1,16 +1,12 @@
 ﻿@{
     ViewBag.PageTitle = "アクセスが出来ません";
 }
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <section class="formSection">
-            <h1 class="formSectionTitle center">403 Forbidden : アクセスが出来ません</h1>
-                <p class="formSectionLead">アクセスしようとしたページは、現在利用できません。</p>
-                <div class="buttonContainer">
-                    <a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">もどる</a>
-                </div>
-            </section>
+<main class="section content">
+    <h1 class="h-border text-center">403 Forbidden : アクセスが出来ません</h1>
+    <div class="message-box">
+        <p class="message lead text-center">アクセスしようとしたページは、ご利用できません。</p>
+        <div class="block">
+            <a href="javascript:history.back();" class="btn btn-primary btn-text btn-prev">もどる</a>
         </div>
-    </div>
-</div>
+    </div>  
+</main>

@@ -61,21 +61,20 @@
         }
     };
 }
-@if (Page.Request.QueryString["page"] == null) {
-    if (!string.IsNullOrEmpty(vm.Hero)) {
-        <div class="hero image spLarge">
-            <img class="heroImage center" src="@ImageUrl(vm.Hero)" loading="lazy">
-        </div>
-    }
-    <div class="section">
-        <div class="inner">
-            <h2 class="topicTitle textCenter">@(vm.Title ?? vm.Name)</h2>
-            <div class="topicContent">
-                @Raw(vm.Body ?? string.Empty)
-            </div>
-        </div>
+@if (Page.Request.QueryString["page"] == null && !string.IsNullOrEmpty(vm.Hero)) {
+    <div class="image image-hero">
+        <img src="@ImageUrl(vm.Hero)" alt="@vm.Name" loading="lazy" decoding="async">
     </div>
 }
-@Include("ProductList", new Dictionary<string, object> {
-    ["tags"] = new []{ vm.Code }
-})
+<main class="section content-wide">
+    <h1 class="h-border text-center">@PrintTitleOrName(vm.Title, vm.Name)</h1>
+    @if (Page.Request.QueryString["page"] == null && !string.IsNullOrEmpty(vm.Body)) {
+        <div class="article">
+            @Raw(vm.Body)
+        </div>
+        <hr>
+    }
+    @Include("ProductList", new Dictionary<string, object> {
+        ["tags"] = new []{ vm.Code }
+    })
+</main>

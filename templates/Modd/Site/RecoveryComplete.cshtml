@@ -1,20 +1,15 @@
 @{
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-}
-@DisplayViewMessages(viewData)
 
-<div class="section">
-    <div class="inner">
-        <div class="section formWrapper">
-            <section class="formSection">
-            <h1 class="formSectionTitle center">パスワードを再設定しました。</h1>
-            <div class="completeMessage center">
-                <p class="completeMessageText">マイページをご用意しましたので、ログインしてご利用ください。</p>
-            </div>
-            <div class="buttonContainer">
-                <a href="@LoginUrl()" class="btPrimary btNormalSize btNext">ログインページへ</a>
-            </div>
-            </section>
-        </div>
+    ViewBag.PageTitle = "パスワード再設定";
+}
+<main class="section content">
+    <h1 class="h-underline text-center">パスワードを再設定しました</h1>
+    @DisplayViewMessages(viewData)
+    <div class="message-box">
+        <p class="message lead text-center">パスワードを再設定しました。再度、ログインをお試しください。</p>
     </div>
-</div>
+    <div class="block">
+        <a href="@MyPageUrl()" class="btn btn-primary btn-next">ログインページへ</a>
+    </div>
+</main>

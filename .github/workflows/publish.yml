@@ -1,0 +1,27 @@
+name: Publish
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'templates/**'
+      - 'src/scss/**'
+      - '.github/workflows/publish.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14.x
+    - name: Install Dependencies
+      run: npm ci
+    - name: Publish to Commerble
+      env:
+          CBAPI_SB_ENDPOINT: ${{ secrets.CBAPI_ENDPOINT }}
+          CBAPI_SB_USERNAME: ${{ secrets.CBAPI_USERNAME }}
+          CBAPI_SB_PASSWORD: ${{ secrets.CBAPI_PASSWORD }}
+      run: npm run publish

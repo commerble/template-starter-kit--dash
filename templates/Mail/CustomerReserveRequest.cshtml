@@ -1,4 +1,29 @@
 @{
-    Message.Subject = "reserve request";
-}
-reserve request
+    Message.Subject = "ご予約いただいた商品が入荷しました";
+    long reserveRequestId = long.Parse(ViewBag.Parameters["reserveRequestId"]);
+
+    var reserveRequest = Database.EC.Single(db => (
+        from r in db.ReserveRequests
+        join p in db.Products on r.ProductId equals p.Id
+        join u in db.UserProperties on r.UserNo equals u.UserNo
+        where r.Id == reserveRequestId
+        select new {
+            Product = p,
+            u.LastName,
+            u.FirstName
+        }
+    ).FirstOrDefault());
+
+    var url = $"https://demo.cbpaas.com/commerble.sandbox/front/member/notices";
+}@reserveRequest.LastName @reserveRequest.FirstName 様
+
+お問い合わせをいただいておりました商品が本日入荷し、ご予約いただいた数量を確保いたしましたのでご連絡いたします。
+
+■ @reserveRequest.Product.Name
+
+マイページ次回入荷予約より、ご予約された商品をカートインしてご購入ください。
+@url
+
+こちら、大変人気のある商品のため、在庫の確保期間は3日とさせていただきます。
+確保期間が過ぎるとお客様の専用在庫から一般在庫に移させていただきます。
+それ以降のご購入は通常通り商品ページよりご購入ください。

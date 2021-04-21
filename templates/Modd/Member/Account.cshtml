@@ -4,270 +4,148 @@
 
     ViewBag.PageTitle = "会員情報編集";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="Account"})" method="post">
-                <section class="formSection">
-                    <h2 id="customer" class="formSectionTitle">会員情報</h2>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">氏名</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem name">
-                                @Page.Html.TextBox("LastName", account.LastName, new {
-                                    placeholder = "例）山田",
-                                    ic_action = "removeSpace;toZenkaku;validateForce",
-                                    ic_trigger_on = "focusout",
-                                    data_val = "true",
-                                    data_val_required = "氏名（姓）は必須項目です。",
-                                    data_val_length = "氏名（姓）は64文字以内でご入力ください。",
-                                    data_val_length_maxlength = "64",
-                                    data_val_regex = "氏名（姓）はひらがな、カタカタ、漢字、全角英数字、－―ー‐ヽヾゝゞ〃仝々〆〇 のみ使用可能です。",
-                                    data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]+$"
-                                })
-                                @Page.Html.TextBox("FirstName", account.FirstName, new {
-                                    placeholder = "例）太郎",
-                                    ic_action = "removeSpace;toZenkaku;validateForce",
-                                    ic_trigger_on = "focusout",
-                                    data_val = "true",
-                                    data_val_required = "氏名（名）は必須項目です。",
-                                    data_val_length = "氏名（名）は64文字以内でご入力ください。",
-                                    data_val_length_maxlength = "64",
-                                    data_val_regex = "氏名（名）はひらがな、カタカタ、漢字、全角英数字、－―ー‐ヽヾゝゞ〃仝々〆〇 のみ使用可能です。",
-                                    data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]+$"
-                                })
-                            </div>
-                            @ValidationMessageFor("LastName")
-                            @ValidationMessageFor("FirstName")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">フリガナ</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem name">
-                                @Page.Html.TextBox("LastNameKana", account.LastNameKana, new {
-                                    placeholder = "例）ヤマダ",
-                                    ic_action = "removeSpace;toZenkaku;validateForce",
-                                    ic_trigger_on = "focusout",
-                                    data_val = "true",
-                                    data_val_required = "フリガナ（セイ）は必須項目です。",
-                                    data_val_length = "フリガナ（セイ）は64文字以内でご入力ください。",
-                                    data_val_length_maxlength = "64",
-                                    data_val_regex = "フリガナ（セイ）はカタカタ、゠・ーヽヾヿ のみ使用可能です。",
-                                    data_val_regex_pattern = "^[\u30A0-\u30FF]+$"
-                                })
-                                @Page.Html.TextBox("FirstNameKana", account.FirstNameKana, new {
-                                    placeholder = "例）タロウ",
-                                    ic_action = "removeSpace;toZenkaku;validateForce",
-                                    ic_trigger_on = "focusout",
-                                    data_val = "true",
-                                    data_val_required = "フリガナ（メイ）は必須項目です。",
-                                    data_val_length = "フリガナ（メイ）は64文字以内でご入力ください。",
-                                    data_val_length_maxlength = "64",
-                                    data_val_regex = "フリガナ（メイ）はカタカタ、゠・ーヽヾヿ のみ使用可能です。",
-                                    data_val_regex_pattern = "^[\u30A0-\u30FF]+$"
-                                })
-                            </div>
-                            @ValidationMessageFor("LastNameKana")
-                            @ValidationMessageFor("FirstNameKana")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">生年月日</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                <span class="selectWrapper" style="min-width:auto;">
-                                    @Page.Html.DropDownList("BirthdayY", 
-                                    Enumerable.Range(DateTime.Today.Year-99,100)
-                                                .Select(i=>new SelectListItem{ Value=i+"", Text=i+"" }), "-")
-                                </span>
-                                年&nbsp;
-                                <span class="selectWrapper" style="min-width:auto;">
-                                    @Page.Html.DropDownList("BirthdayM", 
-                                                        Enumerable.Range(1,12)
-                                                                    .Select(i=>new SelectListItem{ Value=i+"", Text=i+"" }), "-" )
-                                </span>
-                                月&nbsp;
-                                <span class="selectWrapper" style="min-width:auto;">
-                                    @Page.Html.DropDownList("BirthdayD", 
-                                                        Enumerable.Range(1,31)
-                                                                    .Select(i=>new SelectListItem{ Value=i+"", Text=i+"" }), "-" )
-                                </span>
-                                日
-                            </div>
-                            @ValidationMessageFor("BirthdayY")
-                            @ValidationMessageFor("BirthdayM")
-                            @ValidationMessageFor("BirthdayD")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock optional">
-                        <dt class="formBlockTitle">性別</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                <label><input name="Sex" type="radio" value="@HumanSexes.NotKnown" @when(account.Sex==HumanSexes.NotKnown,"checked")><span class="text">未選択</span></label>
-                                <label><input name="Sex" type="radio" value="@HumanSexes.Male" @when(account.Sex==HumanSexes.Male,"checked")><span class="text">男性</span></label>
-                                <label><input name="Sex" type="radio" value="@HumanSexes.Female" @when(account.Sex==HumanSexes.Female,"checked")><span class="text">女性</span></label>
-                            </div>
-                            @ValidationMessageFor("Sex")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock optional">
-                        <dt class="formBlockTitle">メルマガ配信</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                <label><input name="Subscribe" type="radio" value="true" @when(account.Subscribe==true,"checked")><span class="text">希望する</span></label>
-                                <label><input name="Subscribe" type="radio" value="false" @when(account.Subscribe==false,"checked")><span class="text">希望しない</span></label>
-                            </div>
-                            @ValidationMessageFor("Subscribe")
-                        </dd>
-                    </dl>
-                    <div class="buttonContainer">
-                        <button type="submit" name="confirm" value="confirm" class="btPrimary btNormalSize btNext">変更を確認する</button>
-                    </div>
-                </section>
-            </form>
-            <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="AccountAddress"})" method="post">
-                <section class="formSection">
-                    <h2 id="address" class="formSectionTitle">会員住所</h2>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">郵便番号</dt>
-                        <dd class="formBlockBody">
-                            <div class="flexBox">
-                                <span class="postalMark">〒</span>
-                                <div class="formItem inputRowSet">
-                                    @Page.Html.TextBox("Address.ZipCode", account.Address.ZipCode, new {
-                                        type = "tel",
-                                        placeholder = "例）1234567",
-                                        @maxlength = "7",
-                                        size = "7",
-                                        data_val = "true",
-                                        data_val_required = "郵便番号は必須項目です。",
-                                    })
-                                </div>
-                                <span class="grow">
-                                    <button class="btn btn-default" ic-post-to="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="AccountAddress"})" ic-target="#address_zipsearch" ic-include='{"zipsearch":"zipsearch"}'>
-                                        検索 <span class="ic-indicator" style="display:none">中</span>
-                                    </button>
-                                </span>
-                            </div>
-                            <div id="address_zipsearch"></div>
-                            @ValidationMessageFor("Address.ZipCode")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">都道府県</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("Address.Pref", account.Address.Pref, new {
-                                    placeholder = "郵便番号検索で自動的に挿入されます。",
-                                    @readonly = "readonly",
-                                    data_val = "true",
-                                    data_val_required = "都道府県は必須項目です。",
-                                })
-                            </div>
-                            @ValidationMessageFor("Address.Pref")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">市区町村</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("Address.City", account.Address.City, new {
-                                    placeholder = "郵便番号検索で自動的に挿入されます。",
-                                    @readonly = "readonly",
-                                    data_val = "true",
-                                    data_val_required = "市区町村は必須項目です。",
-                                })
-                            </div>
-                            @ValidationMessageFor("Address.City")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">通り・丁番地</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("Address.Street", account.Address.Street, new {
-                                    placeholder = "例）○○町１－２－３",
-                                    ic_action = "toZenkaku;validateForce",
-                                    ic_trigger_on = "focusout",
-                                    data_val = "true",
-                                    data_val_required = "通り・丁番地は必須項目です。番地がない場合は「無番地」とご記入ください。",
-                                    data_val_length = "通り・丁番地は128文字以内でご入力ください。",
-                                    data_val_length_maxlength = "128",
-                                    data_val_regex = "通り・丁番地はひらがな、カタカタ、漢字、全角英数字、全角スペース、－―ー‐ヽヾゝゞ〃仝々〆〇＆（） のみ使用可能です。",
-                                    data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇|　|＆|（|）]+$"
-                                })
-                            </div>
-                            @ValidationMessageFor("Address.Street")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">建物名・部屋番号</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("Address.Building", account.Address.Building, new {
-                                    placeholder = "例）〇〇マンション　１０１",
-                                    ic_action = "toZenkaku;validateForce",
-                                    ic_trigger_on = "focusout",
-                                    data_val = "true",
-                                    data_val_length = "建物名・部屋番号は128文字以内でご入力ください。",
-                                    data_val_length_maxlength = "128",
-                                    data_val_regex = "建物名・部屋番号はひらがな、カタカタ、漢字、全角英数字、全角スペース、－―ー‐ヽヾゝゞ〃仝々〆〇＆（） のみ使用可能です。",
-                                    data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇|　|＆|（|）]+$"
-                                })
-                            </div>
-                            @ValidationMessageFor("Address.Building")
-                        </dd>
-                    </dl>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">電話番号</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("Address.Tel", account.Address.Tel, new {
-                                    placeholder = "例）09012345678",
-                                    @maxlength = "11",
-                                    size = "11",
-                                    data_val = "true",
-                                    data_val_required = "電話番号は必須項目です。",
-                                })
-                            </div>
-                            @ValidationMessageFor("Address.Tel")
-                        </dd>
-                    </dl>
-
-                    <div class="buttonContainer">
-                        <button type="submit" name="confirm" value="confirm" class="btPrimary btNormalSize btNext">変更を確認する</button>
-                    </div>
-                </section>
-            </form>
-            <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="UserName"})" method="post">
-                <section class="formSection">
-                    <h2 id="email" class="formSectionTitle">メールアドレス</h2>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">メールアドレス</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                @Page.Html.TextBox("UserName", account.UserName, new {
-                                    placeholder = "例）xxxxxx@commerble.com",
-                                    data_val = "true",
-                                    data_val_required="メールアドレスは必須項目です。",
-                                    data_val_email="メールアドレスをご入力ください。"
-                                })
-                            </div>
-                            @ValidationMessageFor("UserName")
-                            <p class="inputNote">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
-                        </dd>
-                    </dl>
-                    <div class="buttonContainer">
-                        <button type="submit" name="confirm" value="confirm" class="btPrimary btNormalSize btNext">変更を確認する</button>
-                    </div>
-                </section>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index"})" class="btPrimary btNormalSize btPrev">マイページへ戻る</a>
-                </div>
-            </form>
+<main class="section content">
+    <h1 class="h-underline">会員情報編集</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@AccountUrl()" method="post">
+        <h2 id="customer" class="h-title">会員情報</h2>
+        <dl class="field required">
+            <dt class="field-title">氏名</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("LastName", account.LastName, new {
+                    placeholder = "例）山田",
+                    ic_action = "removeSpace;toZenkaku;validateForce",
+                    ic_trigger_on = "focusout",
+                    data_val = "true",
+                    data_val_required = "氏名（姓）は必須項目です。",
+                    data_val_length = "氏名（姓）は64文字以内でご入力ください。",
+                    data_val_length_maxlength = "64",
+                    data_val_regex = "氏名（姓）はひらがな、カタカタ、漢字、全角英数字、－―ー‐ヽヾゝゞ〃仝々〆〇 のみ使用可能です。",
+                    data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]+$"
+                })
+                @Page.Html.TextBox("FirstName", account.FirstName, new {
+                    placeholder = "例）太郎",
+                    ic_action = "removeSpace;toZenkaku;validateForce",
+                    ic_trigger_on = "focusout",
+                    data_val = "true",
+                    data_val_required = "氏名（名）は必須項目です。",
+                    data_val_length = "氏名（名）は64文字以内でご入力ください。",
+                    data_val_length_maxlength = "64",
+                    data_val_regex = "氏名（名）はひらがな、カタカタ、漢字、全角英数字、－―ー‐ヽヾゝゞ〃仝々〆〇 のみ使用可能です。",
+                    data_val_regex_pattern = "^[\u3040-\u30FF|\u4E00-\u9FFF|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]+$"
+                })
+                @ValidationMessageFor("LastName")
+                @ValidationMessageFor("FirstName")
+            </dd>
+        </dl>
+        <dl class="field required">
+            <dt class="field-title">フリガナ</dt>
+            <dd class="field-body">
+                @Page.Html.TextBox("LastNameKana", account.LastNameKana, new {
+                    placeholder = "例）ヤマダ",
+                    ic_action = "removeSpace;toZenkaku;validateForce",
+                    ic_trigger_on = "focusout",
+                    data_val = "true",
+                    data_val_required = "フリガナ（セイ）は必須項目です。",
+                    data_val_length = "フリガナ（セイ）は64文字以内でご入力ください。",
+                    data_val_length_maxlength = "64",
+                    data_val_regex = "フリガナ（セイ）はカタカタ、゠・ーヽヾヿ のみ使用可能です。",
+                    data_val_regex_pattern = "^[\u30A0-\u30FF]+$"
+                })
+                @Page.Html.TextBox("FirstNameKana", account.FirstNameKana, new {
+                    placeholder = "例）タロウ",
+                    ic_action = "removeSpace;toZenkaku;validateForce",
+                    ic_trigger_on = "focusout",
+                    data_val = "true",
+                    data_val_required = "フリガナ（メイ）は必須項目です。",
+                    data_val_length = "フリガナ（メイ）は64文字以内でご入力ください。",
+                    data_val_length_maxlength = "64",
+                    data_val_regex = "フリガナ（メイ）はカタカタ、゠・ーヽヾヿ のみ使用可能です。",
+                    data_val_regex_pattern = "^[\u30A0-\u30FF]+$"
+                })
+                @ValidationMessageFor("LastNameKana")
+                @ValidationMessageFor("FirstNameKana")
+            </dd>
+        </dl>
+        <dl class="field required">
+            <dt class="field-title">生年月日</dt>
+            <dd class="field-body">
+                @Page.Html.DropDownList("BirthdayY", 
+                    Enumerable.Range(DateTime.Today.Year-99,100)
+                                .Select(i=>new SelectListItem{ Value=i+"", Text=i+"" }), "-")
+                年&nbsp;
+                @Page.Html.DropDownList("BirthdayM", 
+                    Enumerable.Range(1,12)
+                                .Select(i=>new SelectListItem{ Value=i+"", Text=i+"" }), "-" )
+                月&nbsp;
+                @Page.Html.DropDownList("BirthdayD", 
+                    Enumerable.Range(1,31)
+                                .Select(i=>new SelectListItem{ Value=i+"", Text=i+"" }), "-" )
+                日
+                @ValidationMessageFor("BirthdayY")
+                @ValidationMessageFor("BirthdayM")
+                @ValidationMessageFor("BirthdayD")
+            </dd>
+        </dl>
+        <dl class="field optional">
+            <dt class="field-title">性別</dt>
+            <dd class="field-body">
+                <label><input name="Sex" type="radio" value="@HumanSexes.NotKnown" @when(account.Sex==HumanSexes.NotKnown,"checked")><span class="text">未選択</span></label>
+                <label><input name="Sex" type="radio" value="@HumanSexes.Male" @when(account.Sex==HumanSexes.Male,"checked")><span class="text">男性</span></label>
+                <label><input name="Sex" type="radio" value="@HumanSexes.Female" @when(account.Sex==HumanSexes.Female,"checked")><span class="text">女性</span></label>
+                @ValidationMessageFor("Sex")
+            </dd>
+        </dl>
+        <dl class="field optional">
+            <dt class="field-title">メルマガ配信</dt>
+            <dd class="field-body">
+                <label><input name="Subscribe" type="radio" value="true" @when(account.Subscribe==true,"checked")><span class="text">希望する</span></label>
+                <label><input name="Subscribe" type="radio" value="false" @when(account.Subscribe==false,"checked")><span class="text">希望しない</span></label>
+                @ValidationMessageFor("Subscribe")
+            </dd>
+        </dl>
+        <div class="block">
+            <button type="submit" name="confirm" value="confirm" class="btn btn-primary btn-next">変更を確認する</button>
         </div>
+    </form>
+    <hr>
+    <form action="@AccountAddressUrl()" method="post">
+        <h2 id="address" class="h-title">会員住所</h2>
+        @Page.Html.PartialEx("ModdSharedAddressEntry", account.Address, new {
+            target = "Address", 
+            command = "zipsearch", 
+            commandUrl = AccountAddressUrl(),
+            hideName = true,
+        })
+        <div class="block">
+            <button type="submit" name="confirm" value="confirm" class="btn btn-primary btn-next">変更を確認する</button>
+        </div>
+    </form>
+    <hr>
+    <form action="@UserNameChangeUrl()" method="post">
+        <h2 id="email" class="h-title">メールアドレス</h2>
+        <dl class="field required">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <div class="formItem">
+                    @Page.Html.TextBox("UserName", account.UserName, new {
+                        placeholder = "例）xxxxxx@commerble.com",
+                        data_val = "true",
+                        data_val_required="メールアドレスは必須項目です。",
+                        data_val_email="メールアドレスをご入力ください。"
+                    })
+                </div>
+                @ValidationMessageFor("UserName")
+                <p class="inputNote">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
+            </dd>
+        </dl>
+        <div class="block">
+            <button type="submit" name="confirm" value="confirm" class="btn btn-primary btn-next">変更を確認する</button>
+        </div>
+    </form>
+    <hr>
+    <div class="block">
+        <a href="@MyPageUrl()" class="btn btn-primary btn-text btn-prev">マイページへ戻る</a>
     </div>
-</div>
+</main>
+

@@ -10,12 +10,15 @@
         }
     }
 }
-
-@if(campaigns.Any()){ 
-    <p>【 適応されるキャンペーン 】</p>
-    <ul>
-    @foreach(var campaign in campaigns.Distinct()){
-        <li>@campaign.Value @when(campaign.HasLimitOverBenefits, "終了しました") </li>
-    }
-    </ul>
+@if(campaigns.Any()){
+    <tr>
+        <th colspan="3">適用キャンペーン</th>
+        <td align="center">
+            <ul>
+                @foreach(var campaign in campaigns.Distinct()){
+                    <li>@campaign.Value @when(campaign.HasLimitOverBenefits, "終了しました") </li>
+                }
+            </ul>
+        </td>
+    </tr>
 }

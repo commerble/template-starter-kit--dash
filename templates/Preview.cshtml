@@ -3,7 +3,7 @@
 
     if (!IsPreview) {
         if (!Page.Request.IsAuthenticated ) { 
-            Page.Response.Redirect(Page.Template.GetLoginUrl());
+            Page.Response.Redirect(LoginUrl());
         }
         
         if (!Page.Template.UserIsInRole("Preview")) {
@@ -20,31 +20,26 @@
 
     ViewBag.PageTitle = "プレビュー";
 }
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form method="post">
-                @Page.Html.SessionAntiForgeryToken()
-                <section class="formSection">
-                    <h1 class="formSectionTitle center">プレビュー</h1>
-                    <p class="formSectionLead">
-                        プレビューを開始すると、発行フラグがOFFのアイテムが確認できるようになります。<br>
-                        プレビュー時間を指定すると、表示開始日時、表示終了日時を検証できます。
-                    </p>
-                    <dl class="formBlock required">
-                        <dt class="formBlockTitle">プレビュー時間</dt>
-                        <dd class="formBlockBody">
-                            <div class="formItem">
-                                <input type="datetime-local" name="time" value="@Now.ToString("yyyy-MM-ddTHH:mm")">
-                            </div>
-                        </dd>
-                    </dl>
-                    <div class="buttonContainer" style="margin-top:32px;">
-                        <input type="submit" name="start" value="プレビュー開始" class="btCallToAction btNext">
-                        <input type="submit" name="end" value="プレビュー終了" class="btAccent btNext">
-                    </div>
-                </section>
-            </form>
-        </div>
+<main class="section content">
+    <h1 class="h-underline">プレビュー</h1>
+    <div class="message-box">
+        <p class="message text-center">
+            プレビューを開始すると、発行フラグがOFFのアイテムが確認できるようになります。<br>
+            プレビュー時間を指定すると、表示開始日時、表示終了日時を検証できます。
+        </p>
     </div>
-</div>
+    <form method="post">
+        @Page.Html.SessionAntiForgeryToken()
+            <dl class="field">
+                <dt class="field-title">プレビュー時間</dt>
+                <dd class="field-body">
+                    <input type="datetime-local" name="time" value="@Now.ToString("yyyy-MM-ddTHH:mm")">
+                </dd>
+            </dl>
+            <div class="block block-horizontal">
+                <input type="submit" name="start" value="プレビュー開始" class="btn btn-action">
+                <input type="submit" name="end" value="プレビュー終了" class="btn btn-danger">
+            </div>
+        </section>
+    </form>
+</main>

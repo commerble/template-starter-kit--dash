@@ -79,6 +79,10 @@
     font-size: $font-size-default * 1.2;
 }
 
+.text {
+    margin: 0 $unit * 2;
+}
+
 .text-shadow {
     text-shadow: 2px 1px 4px rgba(0,0,0,.8);
 }

@@ -1,16 +1,20 @@
 ﻿@{
     ViewBag.PageTitle = "既に登録済みです";
+
+    var path = Page.Request.Url.AbsolutePath.ToLower();
+    if (path.EndsWith("member/createfavorite")) {
+        Page.Response.Redirect(FavoriteUrl());
+    }
+    if (path.EndsWith("member/createnotice")) {
+        Page.Response.Redirect(ReserveUrl());
+    }
 }
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <section class="formSection">
-            <h1 class="formSectionTitle center">409 Conflict : 既に登録済みです</h1>
-                <p class="formSectionLead">選択された項目は、既に登録済みです。</p>
-                <div class="buttonContainer">
-                    <a href="javascript:history.back();" class="btPrimary btNormalSize btPrev">もどる</a>
-                </div>
-            </section>
+<main class="section content">
+    <h1 class="h-border text-center">409 Conflict : 既に登録済みです</h1>
+    <div class="message-box">
+        <p class="message lead text-center">選択された項目は、既に登録済みです。</p>
+        <div class="block">
+            <a href="javascript:history.back();" class="btn btn-primary btn-text btn-prev">もどる</a>
         </div>
-    </div>
-</div>
+    </div>  
+</main>

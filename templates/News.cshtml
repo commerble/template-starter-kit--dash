@@ -1,8 +1,7 @@
 @functions {
     public class ViewModel {
-        public int ItemCount { get; set; }
+        public bool HasNextPage { get; set; }
         public int Page { get; set; }
-        public int EachPage { get; set; }
         public List<NoticeViewModel> Notices { get; set; }
     }
     public class NoticeViewModel {
@@ -47,10 +46,11 @@
                 && (p.IsPublished == true || args.IsPreview)
                 select p.Code
             ).Count());
+        var pageCount = total / eachPage + ((total % eachPage == 0) ? 0 : 1);
+        var pageLast = pageCount == 0 ? true : ( ((page+1) == pageCount) ? true : false);
         return new ViewModel {
-            ItemCount = total,
+            HasNextPage = total > 0 && !pageLast,
             Page = page,
-            EachPage = eachPage,
             Notices = notices,
         };
     }
@@ -60,19 +60,19 @@
 
     ViewBag.PageTitle = "NEWS";
 }
-<div class="section">
-    <div class="inner">
-        <h2 class="sectionTitle bordered">NEWS</h2>
-        @TopicTileList(vm.Notices, slot:(notice, index) =>
-            TopicTile(
-                notice.Code,
-                notice.Kind,
-                notice.Name,
-                notice.Thumbnail,
-                notice.PublishDate
-            ))
-        @if (vm.ItemCount > 0) {
-            @DisplayPager(vm.Page, vm.ItemCount, vm.EachPage)
-        }
-    </div>
-</div>
+<main class="section content">
+    <h1 class="h-border">NEWS</h1>
+    @TileList(vm.Notices, columns:3, slot:(notice, index) =>
+        TopicTile(
+            notice.Code,
+            notice.Kind,
+            notice.Name,
+            notice.Thumbnail,
+            notice.PublishDate
+        ))
+    @if (vm.HasNextPage) {
+        <div class="block">
+            <a href="@($"{Page.Request.Url.AbsolutePath}?page={vm.Page+1}")"
+        </div>
+    }
+</main>

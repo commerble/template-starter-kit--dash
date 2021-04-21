@@ -1,6 +1,6 @@
 @{
-    var kinds = Page.Request.QueryString.GetValues("k");
-    var tags = Page.Request.QueryString.GetValues("t");
+    var kinds = Page.Request.QueryString.GetValues("k") ?? new string[0];
+    var tags = Page.Request.QueryString.GetValues("t") ?? new string[0];
 
     ViewBag.PageTitle = "商品検索";
     ViewBag.JsonLd = new[] {
@@ -24,12 +24,11 @@
         }
     };
 }
-<div class="section">
-    <div class="inner">
-        <h2 class="sectionTitle bordered">商品検索</h2>
-    </div>
-</div>
-@Include("ProductList", new Dictionary<string, object> {
-    ["kinds"] = kinds,
-    ["tags"]  = tags,
-})
+<main class="section content-wide">
+    <h1 class="h-border text-center">商品検索</h1>
+    @Include("ProductList", new Dictionary<string, object> {
+        ["kinds"] = kinds,
+        ["tags"]  = tags,
+        ["open"]  = kinds.Length == 0 && tags.Length == 0,
+    })
+</main>

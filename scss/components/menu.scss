@@ -1,0 +1,29 @@
+.menu {
+    width: max-content;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    @include mq($bp-sp) {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        gap: $unit;
+    }
+}
+.menu-item {
+    font-size: $font-size-default * 1.2;
+    line-height: $line-height-default * 1.2;
+    padding: $unit;
+    a {
+        text-decoration: none;
+    }
+    &.active {
+        font-weight: $font-weight-bold;
+        list-style-type: disclosure-closed;
+        @include mq($bp-sp) {
+            list-style-type: none;
+            border-bottom: 2px solid $color-primary;
+        }
+    }
+}

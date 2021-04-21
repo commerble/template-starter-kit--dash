@@ -4,73 +4,57 @@
 
     ViewBag.PageTitle = "新規会員登録 - 確認";
 }
-<ol class="stepNavigation">
-    <li class="stepNavigationItem"><span>入力</span></li>
-    <li class="stepNavigationItem active"><span>確認</span></li>
-    <li class="stepNavigationItem"><span>完了</span></li>
-</ol>
-
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Account"})" method="post">
-                @Raw(Page.Html.ModelToObjectState("model",account))
-                @Page.Html.SessionAntiForgeryToken()
-                <section class="formSection">
-                    <h1 class="formSectionTitle">新規会員登録</h1>
-                    <p class="formSectionLead">下記の内容でお間違えなければ、下にある「登録する」ボタンを押してください。</p>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">氏名</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@(account.LastName + account.FirstName)</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">フリガナ</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@(account.LastNameKana + account.FirstNameKana)</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">メールアドレス</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@account.UserName</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">パスワード</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">セキュリティのため表示しておりません</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">生年月日</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@account.Birthday.Value.ToString("yyyy年MM月dd日")</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">性別</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@HumanSexesText[account.Sex]</p>
-                        </dd>
-                    </dl>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">メルマガ配信</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@SubscribeText[account.Subscribe]</p>
-                        </dd>
-                    </dl>
-                </section>
-                <div class="buttonContainer">
-                    <button type="submit" class="btCallToAction btLargeSize btNext" name="create" value="create">この内容で登録する</button>
-                </div>
-                <div class="buttonContainer">
-                    <button type="submit" class="btPrimary btNormalSize btPrev">前にもどる</button>
-                </div>
-            </form>
+<main class="section content">
+    <h1 class="h-underline">新規会員登録</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@RegisterUrl()" method="post">
+        @Raw(Page.Html.ModelToObjectState("model",account))
+        @Page.Html.SessionAntiForgeryToken()
+        <dl class="field">
+            <dt class="field-title">氏名</dt>
+            <dd class="field-body">
+                <p class="field-text">@(account.LastName + account.FirstName)</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">フリガナ</dt>
+            <dd class="field-body">
+                <p class="field-text">@(account.LastNameKana + account.FirstNameKana)</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <p class="field-text">@account.UserName</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">パスワード</dt>
+            <dd class="field-body">
+                <p class="field-text">セキュリティのため表示しておりません</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">生年月日</dt>
+            <dd class="field-body">
+                <p class="field-text">@account.Birthday.Value.ToString("yyyy年MM月dd日")</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">性別</dt>
+            <dd class="field-body">
+                <p class="field-text">@HumanSexesText[account.Sex]</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">メルマガ配信</dt>
+            <dd class="field-body">
+                <p class="field-text">@SubscribeText[account.Subscribe]</p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-large" name="create" value="create">この内容で登録する</button>
+            <button type="submit" class="btn btn-primary btn-text btn-prev">登録内容を変更する</button>
         </div>
-    </div>
-</div>
+    </form>
+</main>

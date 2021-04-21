@@ -1,16 +1,13 @@
 @{
     ViewBag.PageTitle = "要求が受理できません";
 }
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <section class="formSection">
-            <h1 class="formSectionTitle center">406 Not Acceptable : 要求が受理できません</h1>
-                <p class="formSectionLead">セッションが切れています。再ログインしてください。</p>
-                <div class="buttonContainer">
-                    <a href="@LoginUrl()" class="btPrimary btNormalSize btPrev">ログイン</a>
-                </div>
-            </section>
+}
+<main class="section content">
+    <h1 class="h-border text-center">406 Not Acceptable : 要求が受理できません</h1>
+    <div class="message-box">
+        <p class="message lead text-center">セッションが切れています。再ログインしてください。</p>
+        <div class="block">
+            <a href="@LoginUrl()" class="btn btn-primary btn-text btn-next">ログイン</a>
         </div>
-    </div>
-</div>
+    </div>  
+</main>

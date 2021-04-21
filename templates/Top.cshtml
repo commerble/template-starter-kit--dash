@@ -167,108 +167,106 @@
     }};
 }
 @if (vm.MainBanner != null) {
-    <div class="section withoutTopMargin">
-        <ul class="siteTopSlider">
-            <li class="bgImageContainer" style="background-image:url('@vm.MainBanner.Thumbnail')">
-                <div class="textBlock">
-                    <div class="textBlockContents pullAside">
-                        @if (!string.IsNullOrEmpty(vm.MainBanner.Title)) {
-                            <p class="title textShadow">@vm.MainBanner.Title</p>
-                        }
-                        @if (!string.IsNullOrEmpty(vm.MainBanner.Subtitle)) {
-                            <p class="lead textShadow">@vm.MainBanner.Subtitle</p>
-                        }
-                        @if (!string.IsNullOrEmpty(vm.MainBanner.LinkUrl)) {
-                            <div class="buttonContainer">
-                                <a href="@Href(vm.MainBanner.LinkUrl)" class="btAccent btLargeSize">@(vm.MainBanner.LinkText ?? "詳細を見る")</a>
-                            </div>
-                        }
-                    </div>
+    <section class="section hero">
+        <div class="hero-bgimage" style="background-image:url('@vm.MainBanner.Thumbnail')">
+            @if (!string.IsNullOrEmpty(vm.MainBanner.Title) 
+                || !string.IsNullOrEmpty(vm.MainBanner.Subtitle) 
+                || !string.IsNullOrEmpty(vm.MainBanner.LinkUrl)) {
+                <div class="hero-text">
+                    @if (!string.IsNullOrEmpty(vm.MainBanner.Title)) {
+                        <p class="title">@vm.MainBanner.Title</p>
+                    }
+                    @if (!string.IsNullOrEmpty(vm.MainBanner.Subtitle)) {
+                        <p class="lead">@vm.MainBanner.Subtitle</p>
+                    }
+                    @if (!string.IsNullOrEmpty(vm.MainBanner.LinkUrl)) {
+                        <div class="block">
+                            <a href="@Href(vm.MainBanner.LinkUrl)" class="btn btn-ghost btn-primary btn-large">@(vm.MainBanner.LinkText ?? "詳細を見る")</a>
+                        </div>
+                    }
                 </div>
-            </li>
-        </ul>
-    </div>
-}
-
-@if (vm.SubBanners.Any()) {
-    <section class="section withoutTopMargin">
-        <div class="inner">
-            <ul class="productTileList grid grid-pc-x4 grid-tb-x2 grid-sp-x2 recommend">
-                @foreach(var banner in vm.SubBanners) {
-                    <li class="productTile">
-                        <a href="@Href(banner.LinkUrl)">
-                            <div class="productTileImage">
-                                <img src="@ThumbnailUrl(banner.Thumbnail)" loading="lazy" alt="@banner.Title">
-                            </div>
-                            <div class="productTileText">
-                                <p class="productName">@banner.Title</p>
-                            </div>
-                        </a>
-                    </li>
-                }
-            </ul>
+            }
         </div>
+        @if (vm.SubBanners.Any()) {
+            <div class="content">
+                <div class="tiles tiles-x4">
+                    @foreach(var banner in vm.SubBanners) {
+                        <article class="tile">
+                            <a href="@Href(banner.LinkUrl)" rel="bookmark" title="@banner.Title">
+                                <h1>@banner.Title</h1>
+                                <figure class="image image-square">
+                                    <img src="@ThumbnailUrl(banner.Thumbnail)" alt="@banner.Title" loading="lazy" decoding="async">
+                                </figure>
+                            </a>
+                        </article>
+                    }
+                </div>
+            </div>
+        }
     </section>
 }
 
 @if (vm.Notices.Count > 0) {
-    @SectionBlock("NEWS", () =>
-        Concat(
-            () => TopicTileList(vm.Notices, slot:(notice, index) =>
-                    TopicTile(
-                        notice.Code,
-                        notice.Kind,
-                        notice.Name,
-                        notice.Thumbnail,
-                        notice.PublishDate
-                    ))
-            ,() => LinkAnnex("すべてのNEWSを読む", Href("~/news"))
-        ))
+    <section class="section content">
+        <h1 class="h-border text-center">NEWS</h1>
+        @TileList(vm.Notices, columns: 3, slot:(notice, index) =>
+            TopicTile(
+                notice.Code,
+                notice.Kind,
+                notice.Name,
+                notice.Thumbnail,
+                notice.PublishDate
+            ))
+        <div class="block">
+            <a href="@Href("~/news/")" class="btn btn-text btn-primary btn-next">すべてのお知らせを見る</a>
+        </div>
+    </section>
 }
 
 @if (vm.TopTag != null) {
-    @SectionBlock(vm.TopTag.Name, () =>
-        Concat(
-            () => ProductTileList(vm.ProductPages, klass:"grid-pc-x6 grid-tb-x2 grid-sp-x2", slot:(item, index) =>
-                    ProductTile(
-                        item.Code,
-                        item.Name,
-                        item.KindName,
-                        item.KindIcon,
-                        item.Thumbnail,
-                        item.UnitPriceWithTax,
-                        item.HasMultiplePrice,
-                        gtm: new {
-                            @event = "select_item",
-                            ecommerce = new {
-                                items = new [] {
-                                    new { 
-                                        item_name = item.PriceProductName,
-                                        item_id = item.PriceProductExternalId1,
-                                        item_category = item.Kind,
-                                        item_list_name = "TOP",
-                                        item_list_id = "TOP",
-                                        price = item.UnitPriceWithTax?.ToString("F0"),
-                                        index = index + 1,
-                                    } 
-                                }
-                            }
-                        } 
-                    )),
-            () => ButtonBlock("もっと見る", href:TagUrl(vm.TopTag.Code,"rcm_desc"), btAccent:true, btLargeSize:true, btNext:true)
-        )
-    )
+    <section class="section content">
+        <h1 class="h-border text-center">
+            季節の商品<br>春のオシャレコーデ
+        </h1>
+        @TileList(vm.ProductPages, columns: 4, slot:(item, index) =>
+            ProductTile(
+                item.Code,
+                item.Name,
+                item.KindName,
+                item.KindIcon,
+                item.Thumbnail,
+                item.UnitPriceWithTax,
+                item.HasMultiplePrice,
+                gtm: new {
+                    @event = "select_item",
+                    ecommerce = new {
+                        items = new [] {
+                            new { 
+                                item_name = item.PriceProductName,
+                                item_id = item.PriceProductExternalId1,
+                                item_category = item.Kind,
+                                item_list_name = "TOP",
+                                item_list_id = "TOP",
+                                price = item.UnitPriceWithTax?.ToString("F0"),
+                                index = index + 1,
+                            } 
+                        }
+                    }
+                } 
+            ))
+        <div class="block">
+            <a href="@TagUrl(vm.TopTag.Code,"rcm_desc")" class="btn btn-ghost btn-primary btn-next">もっと見る</a>
+        </div>
+    </section>
 }
 
 @if (vm.Tags.Count > 0) {
-    <section class="section">
-        <div class="inner">
-            <h2 class="sectionTitle">タグから探す</h2>
-            <p class="text tagList flexBoxCenter" style="font-size:18px;">
-                @foreach(var tag in vm.Tags) {
-                    <text><a href="@TagUrl(tag.Code,"rcm_desc")" class="tag">#@tag.Name</a> &nbsp;</text>
-                }
-            </p>
+    <section class="section content">
+        <h1 class="h-border text-center">タグから探す</h1>
+        <div class="block block-horizontal block-wrap">
+            @foreach(var tag in vm.Tags) {
+                <a href="@TagUrl(tag.Code,"rcm_desc")" class="badge">#@tag.Name</a>
+            }
         </div>
     </section>
 }

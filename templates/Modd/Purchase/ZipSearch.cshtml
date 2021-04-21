@@ -1,6 +1,6 @@
 ﻿@{
   Layout = null;
-  var cartId = Page.ViewData["cartId"];
+  var cartId = (int)Page.ViewData["cartId"];
   var zipList = Page.ViewData.Model as List<ZipCodeAddress>;
 }
 
@@ -12,8 +12,8 @@ else
 {
     foreach (var zip in zipList)
     {
-        <form action="@Page.Url.RouteUrl("ModdPurchase", new {cart=cartId, action="ZipSelect"} )" method="post">
-            <input type="submit" value="選択" class="btn btn-default btn-ghost"/>
+        <form action="@PurchaseZipSelect(cartId)" method="post">
+            <button type="submit" class="btn btn-primary btn-ghost">選択</button>
             〒 @zip.ZipCode @zip.Prefecture @zip.City @zip.Street
             @Page.Html.Hidden("ZipCode", zip.ZipCode)
             @Page.Html.Hidden("Pref", zip.Prefecture)

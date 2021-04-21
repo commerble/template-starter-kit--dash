@@ -2,32 +2,23 @@
     var user = Page.ViewData.Model as VM.ChangeUserName;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
 
-    ViewBag.PageTitle = "会員情報編集 - 確認";
+    ViewBag.PageTitle = "登録メールアドレス変更 - 確認";
 }
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="UserName"})" method="post">
-                @Raw(Page.Html.ModelToObjectState("model",user))
-                @Page.Html.SessionAntiForgeryToken()
-                <section class="formSection">
-                    <h2 id="customer" class="formSectionTitle">会員情報</h2>
-                    <dl class="formBlock">
-                        <dt class="formBlockTitle">メールアドレス</dt>
-                        <dd class="formBlockBody">
-                            <p class="inputContent">@user.UserName</p>
-                        </dd>
-                    </dl>
-                </section>
-                <div class="buttonContainer">
-                    <button type="submit" class="btCallToAction btLargeSize btNext" name="update" value="post">メールアドレスを変更</button>
-                </div>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Account" })" class="btPrimary btNormalSize btPrev">会員情報へ戻る</a>
-                </div>
-            </form>
+<main class="section content">
+    <h2 class="h-underline">登録メールアドレス変更</h2>
+    @DisplayViewMessages(viewData)
+    <form action="@UserNameChangeUrl()" method="post">
+        @Raw(Page.Html.ModelToObjectState("model",user))
+        @Page.Html.SessionAntiForgeryToken()
+        <dl class="field">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <p class="field-text">@user.UserName</p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-next" name="update" value="post">メールアドレスを変更する</button>
+            <a href="@AccountUrl()#email" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
         </div>
-    </div>
-</div>
+    </form>
+</main>

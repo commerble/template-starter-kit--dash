@@ -1,35 +1,28 @@
 ﻿@{
     var address = Page.ViewData.Model as Address;
 }
-<dl class="formBlock">
-    <dt class="formBlockTitle">氏名</dt>
-    <dd class="formBlockBody">
-        <div class="formItem">
-            <p class="inputContent">@address.Recipientlastname @address.Recipientfirstname</p>
-        </div>
+<dl class="field">
+    <dt class="field-title">氏名</dt>
+    <dd class="field-body">
+        <p class="field-text">@address.Recipientlastname @address.Recipientfirstname</p>
+
     </dd>
 </dl>
-<dl class="formBlock">
-    <dt class="formBlockTitle">フリガナ</dt>
-    <dd class="formBlockBody">
-        <div class="formItem">
-            <p class="inputContent">@address.Recipientlastnamekana @address.Recipientfirstnamekana</p>
-        </div>
+<dl class="field">
+    <dt class="field-title">フリガナ</dt>
+    <dd class="field-body">
+        <p class="field-text">@address.Recipientlastnamekana @address.Recipientfirstnamekana</p>
     </dd>
 </dl>
-<dl class="formBlock">
-    <dt class="formBlockTitle">住所</dt>
-    <dd class="formBlockBody">
-        <div class="formItem">
-            <p class="inputContent">@address.ToString()</p>
-        </div>
+<dl class="field">
+    <dt class="field-title">住所</dt>
+    <dd class="field-body">
+        <p class="field-text">@address.ToString()</p>
     </dd>
 </dl>
-<dl class="formBlock">
-    <dt class="formBlockTitle">電話番号</dt>
-    <dd class="formBlockBody">
-        <div class="formItem">
-            <p class="inputContent">@address.Tel</p>
-        </div>
+<dl class="field">
+    <dt class="field-title">電話番号</dt>
+    <dd class="field-body">
+        <p class="field-text">@address.Tel</p>
     </dd>
 </dl>

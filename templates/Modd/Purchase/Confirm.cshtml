@@ -1,7 +1,7 @@
 ﻿@{
     var cart = Page.ViewData.Model as ShoppingCartBase;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-    var hasErrors = HasViewMessages(viewData);
+    var hasErrors = viewData.Errors.Any();
 
     var ActionText = new Dictionary<PaymentMethod, string> {
         [PaymentMethod.External] = "注文を確定して決済へ進む",
@@ -16,127 +16,105 @@
 
     ViewBag.PageTitle = "カート - 内容確認";
 }
-<ol class="stepNavigation">
-    <li class="stepNavigationItem"><span>配送情報</span></li>
-    <li class="stepNavigationItem"><span>お支払い方法</span></li>
-    <li class="stepNavigationItem active"><span>内容確認</span></li>
-    <li class="stepNavigationItem"><span>注文完了</span></li>
-</ol>
-
-@DisplayViewMessages(viewData)
-
-<div class="section">
-    <div class="inner">
-        <form action="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Index"})" method="post" class="cartConfirm">
-              @Page.Html.SessionAntiForgeryToken()
-            <div class="flexBoxResponsive flexBoxAlignTop">
-                <div class="cartDetailBlock">
-                    <p class="cartDetailBlockTitle"><span class="cartDetailBlockTitleText">ご注文商品</span></p>
-                    @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
-                </div>
-                <div class="cartOrderBlock">
-                    <table class="orderSumTable">
-                        <tr>
-                            <th>商品合計<span class="tax">（税込）</span></th>
-                            <td>@FormatPrice(cart.ExpandOrderItems.Sum(item => item.LinePrice + item.DiscountPrice))</td>
-                        </tr>
-                        <tr>
-                            <th>送料<span class="tax">（税込）</span></th>
-                            <td>@FormatPrice(cart.DeliveryCharge)</td>
-                        </tr>
-                        <tr>
-                            <th>手数料<span class="tax">（税込）</span></th>
-                            <td>@FormatPrice(cart.CacheOnDeliveryCharge)</td>
-                        </tr>
-                        <tr class="sum">
-                            <th>合計<span class="tax">（税込）</span></th>
-                            <td>@FormatPrice(cart.ExpandOrderItems.Sum(item => item.LinePrice + item.DiscountPrice) + cart.DeliveryCharge + cart.CacheOnDeliveryCharge)</td>
-                        </tr>
-                        <tr>
-                            <th>値引</th>
-                            <td class="minus">-@FormatPrice(cart.DiscountPrice)</td>
-                        </tr>
-                        <tr>
-                            <th>ポイント利用</th>
-                            <td class="minus">-@FormatPrice(cart.TotalUsagePoint)</td>
-                        </tr>
-                        <tr class="sum">
-                            <th>総計<span class="tax">（税込）</span></th>
-                            <td class="total">@FormatPrice(cart.TotalPayment)</td>
-                        </tr>
-                    </table>
-                    <p class="getPoint">獲得ポイント：@FormatPoint(cart.ChargePointSummary)</p>
-                </div>
-            </div>
-            <div class="section orderInfoList">
-                <p class="orderInfoListTitle"><span class="orderInfoListTitleText">ご注文情報詳細</span></p>
-                <dl class="orderInfo">
-                    <dt>
-                        <p class="title">お客様情報</p>
-                        <p class="inTitleLink"><a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Shipping"})#customer">変更</a></p>
-                    </dt>
-                    <dd>
-                        @(cart.OrderCustomer.LastName + cart.OrderCustomer.FirstName) / @(cart.OrderCustomer.LastNameKana + @cart.OrderCustomer.FirstNameKana) <br> 
-                        @cart.OrderCustomerOrderedAddress.ToString() <br>
-                        @cart.OrderCustomerOrderedAddress.Tel <br>
-                        @cart.OrderCustomer.EmailAddr
-                    </dd>
-                </dl>
-                <dl class="orderInfo">
-                    <dt>
-                        <p class="title">お届け先</p>
-                        <p class="inTitleLink"><a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Shipping"})#destination">変更</a></p>
-                    </dt>
-                    <dd>
-                        @(cart.DeliveryOrderAddress.Recipientlastname + cart.DeliveryOrderAddress.Recipientfirstname) / @(cart.DeliveryOrderAddress.Recipientlastnamekana + @cart.DeliveryOrderAddress.Recipientfirstnamekana) <br> 
-                        @cart.DeliveryOrderAddress.ToString() <br>
-                        @cart.DeliveryOrderAddress.Tel <br>
-                    </dd>
-                </dl>
-                <dl class="orderInfo">
-                    <dt>
-                        <p class="title">お届け日時</p>
-                        <p class="inTitleLink"><a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Payment"})#delivery">変更</a></p>
-                    </dt>
-                    <dd>
-                        @if (cart.DeliveryOrder.DeliveryDate.HasValue) {
-                            <text>@PrintDate(cart.DeliveryOrder.DeliveryDate.Value)</text>
-                        } 
-                        else if (cart.LastReleaseDate > DateTime.Now) {
-                            <text>
-                                発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br/>
-                                発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
-                            </text>
-                        } else {
-                            <text>最短でお届け</text>
-                        }
-                        @if (!string.IsNullOrEmpty(cart.DeliveryOrder.HourRange)) {
-                            <text>（時間帯：@ViewExtensions.HourRanges[cart.DeliveryOrder.HourRange]）</text>
-                        }
-                    </dd>
-                </dl>
-                <dl class="orderInfo">
-                    <dt>
-                        <p class="title">お支払い方法</p>
-                        <p class="inTitleLink"><a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Payment"})#payment">変更</a></p>
-                    </dt>
-                    <dd>@PaymentMethodText[cart.PaymentMethod]</dd>
-                </dl>
-                <dl class="orderInfo">
-                    <dt>
-                    <p class="title">備考</p>
-                    <p class="inTitleLink"><a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Payment"})#remarks">変更</a></p>
-                    </dt>
-                    <dd>@(cart.ServiceValues.ContainsKey("Remarks") && !string.IsNullOrEmpty(cart.ServiceValues["Remarks"]) ? cart.ServiceValues["Remarks"] : "なし")</dd>
-                </dl>
-            </div>
-            @RenderParts("Message")
-            <div class="buttonContainer">
-                <button type="submit" class="btCallToAction btLargeSize btNext">@ActionText[cart.PaymentMethod]</button>
-            </div>
-            <div class="buttonContainer">
-                <a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Payment"})" class="btPrimary btNormalSize btPrev">お支払い方法を変更する</a>
-            </div>
-        </form>
-    </div>
-</div>
+<main class="section content">
+    <h1 class="h-underline">購入</h1>
+    @DisplayViewMessages(viewData)
+    <form action="@PurchaseUrl(cart.CartDefinition.CartId)" method="post">
+        @Page.Html.SessionAntiForgeryToken()
+        @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
+        <h2 class="h-centerline mt"><span>ご注文詳細情報</span></h2>
+        <h3 class="h-title">お客様情報</h3>
+        <dl class="field">
+            <dt class="field-title">氏名（フリガナ）</dt>
+            <dd class="field-body">
+                <p class="field-text">@(cart.OrderCustomer.LastName + cart.OrderCustomer.FirstName) / @(cart.OrderCustomer.LastNameKana + @cart.OrderCustomer.FirstNameKana)</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">住所</dt>
+            <dd class="field-body">
+                <p class="field-text">@cart.OrderCustomerOrderedAddress.ToString()</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">電話番号</dt>
+            <dd class="field-body">
+                <p class="field-text">@cart.OrderCustomerOrderedAddress.Tel</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <p class="field-text">@cart.OrderCustomer.EmailAddr</p>
+            </dd>
+        </dl>
+        <h3 class="h-title">お届け先</h3>
+        <dl class="field">
+            <dt class="field-title">氏名 / フリガナ</dt>
+            <dd class="field-body">
+                <p class="field-text"> @(cart.DeliveryOrderAddress.Recipientlastname + cart.DeliveryOrderAddress.Recipientfirstname) / @(cart.DeliveryOrderAddress.Recipientlastnamekana + @cart.DeliveryOrderAddress.Recipientfirstnamekana)</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">住所</dt>
+            <dd class="field-body">
+                <p class="field-text">@cart.DeliveryOrderAddress.ToString()</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">電話番号</dt>
+            <dd class="field-body">
+                <p class="field-text">@cart.DeliveryOrderAddress.Tel</p>
+            </dd>
+        </dl>
+        <h3 class="h-title">お届け日時</h3>
+        <dl class="field">
+            <dt class="field-title">お届け日</dt>
+            <dd class="field-body">
+                <p class="field-text">
+                    @if (cart.DeliveryOrder.DeliveryDate.HasValue) {
+                        <text>@PrintDate(cart.DeliveryOrder.DeliveryDate.Value)</text>
+                    } 
+                    else if (cart.LastReleaseDate > DateTime.Now) {
+                        <text>
+                            発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br/>
+                            発売日が最も遅い商品に合わせて全ての商品をお届けいたします。
+                        </text>
+                    } else {
+                        <text>最短でお届け</text>
+                    }
+                </p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">お届け時間</dt>
+            <dd class="field-body">
+                <p class="field-text">
+                    @if (!string.IsNullOrEmpty(cart.DeliveryOrder.HourRange)) {
+                        @ViewExtensions.HourRanges[cart.DeliveryOrder.HourRange]
+                    } else {
+                        <text>指定なし</text>
+                    }
+                </p>
+            </dd>
+        </dl>
+        <h3 class="h-title">お支払方法</h3>
+        <dl class="field">
+            <dt class="field-title">決済方法</dt>
+            <dd class="field-body">
+                <p class="field-text">@PaymentMethodText[cart.PaymentMethod]</p>
+            </dd>
+        </dl>
+        <h3 class="h-title">備考</h3>
+        <dl class="field">
+            <dt class="field-title">備考内容</dt>
+            <dd class="field-body">
+                <p class="field-text">@(cart.ServiceValues.ContainsKey("Remarks") && !string.IsNullOrEmpty(cart.ServiceValues["Remarks"]) ? cart.ServiceValues["Remarks"] : "なし")</p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-large">@ActionText[cart.PaymentMethod]</button>
+            <a href="@PurchasePaymentUrl(cart.CartDefinition.CartId)" class="btn btn-primary btn-text btn-prev">お支払い方法を変更する</a>
+        </div>
+    </form>
+</main>

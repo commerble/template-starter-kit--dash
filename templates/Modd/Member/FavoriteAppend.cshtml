@@ -5,9 +5,10 @@
         public string Name { get; set; }
         public string Icon { get; set; }
         public decimal? UnitPriceWithTax { get; set; }
+        public bool? HasMultiplePrice { get; set; }
     }
     ViewModel LoadViewModel() {
-          var favorite = Page.ViewData.Model as VM.FavoriteAppend; 
+        var favorite = Page.ViewData.Model as VM.FavoriteAppend; 
         var page = Database.Single(new { Now, Next, favorite.ProductId }, (db, args) => (
             from p in db.ProductPages
             join r in db.ProductRelations on p.Code equals r.ProductPageCode
@@ -17,7 +18,8 @@
                 p.Code,
                 p.Name,
                 p.Icon,
-                p.PriceProductId
+                p.PriceProductId,
+                p.HasMultiplePrice
             }
         ).FirstOrDefault());
 
@@ -30,7 +32,8 @@
             Code = page.Code,
             Name = page.Name,
             Icon = page.Icon,
-            UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(favorite.ProductId)
+            UnitPriceWithTax = page.PriceProductId.HasValue ? Page.Template.GetUnitPriceWithTax(page.PriceProductId.Value) : (decimal?)null,
+            HasMultiplePrice = page.HasMultiplePrice
         };
     }
 }
@@ -39,39 +42,36 @@
 
     ViewBag.PageTitle = "お気に入り - 登録確認";
 }
-<div class="section">
-    <div class="inner">
-        <div class="formWrapper">
-            <form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Favorites", item=vm.ProductId })" method="post">
-                @Page.Html.SessionAntiForgeryToken()
-                <section class="formSection">
-                    <h1 class="formSectionTitle">お気に入り登録のご確認</h1>
-                    <p class="formSectionLead">以下の内容でよろしければ「登録する」ボタンをクリックしてください。お気に入り商品を登録します。</p>
-                    <table class="cartDetailTable">
-                        <tbody>
-                            <tr>
-                                <td class="dataCell">
-                                    <div class="cartDetailProductImage">
-                                        <a href="@ItemUrl(vm.Code)" target="_blank">
-                                            <img src="@IconUrl(vm.Icon)" alt="@vm.Name">
-                                        </a>
-                                    </div>
-                                    <div class="cartDetailProductInfo">
-                                        <p class="productName"><a href="@ItemUrl(vm.Code)" target="_blank">@vm.Name</a></p>
-                                        @PrintPrice(vm.UnitPriceWithTax)
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>
-                <div class="buttonContainer">
-                    <button type="submit" class="btCallToAction btLargeSize btNext">登録する</button>
-                </div>
-                <div class="buttonContainer">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites"})" class="btPrimary btNormalSize btPrev">お気に入り一覧へ</a>
-                </div>
-            </form>
+<main class="section content">
+    <h1 class="h-underline">お気に入り</h1>
+    <form action="@FavoriteUrl(item:vm.ProductId)" method="post">
+        @Page.Html.SessionAntiForgeryToken()
+        <table class="table">
+            <thead>
+                <tr>
+                    <th colspan="2">商品</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td align="center">
+                        <a href="@ItemUrl(vm.Code)" class="product-icon" title="@vm.Name">
+                            <div class="image image-square">
+                                <img src="@IconUrl(vm.Icon)" alt="@vm.Name">
+                            </div>
+                        </a>
+                    </td>
+                    <td align="center">
+                        <a href="@ItemUrl(vm.Code)" class="product-icon" title="@vm.Name">
+                            @vm.Name <br>
+                            @PrintPrice(vm.UnitPriceWithTax, vm.HasMultiplePrice)
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="block">
+            <button type="submit" class="btn btn-action btn-next btn-large">お気に入りに登録する</button>
         </div>
-    </div>
-</div>
+    </form>
+</main>

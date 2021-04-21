@@ -12,8 +12,8 @@ else
 {
     foreach (var zip in zipList)
     {
-        <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="ZipSearch", id=addressId} )" method="post">
-            <input type="submit" value="選択" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="ZipSearch", id=addressId} )" formmethod="post"/>
+        <form action="@MemberZipSearch(addressId)" method="post">
+            <button type="submit" class="btn btn-primary btn-ghost">選択</button>
             〒 @zip.ZipCode @zip.Prefecture @zip.City @zip.Street
             @Page.Html.Hidden("ZipCode", zip.ZipCode)
             @Page.Html.Hidden("Pref", zip.Prefecture)
