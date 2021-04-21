@@ -7,7 +7,7 @@
     <p>郵便番号に該当する住所が見つかりませんでした。</p>
 } else {
     foreach(var zip in zipList ) {
-        <form id="history" action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="ZipSelect", id=orderId})" method="post">
+        <form id="history" action="@HistoryZipSelect(orderId)" method="post">
             <input type="submit" name="shipping" value="選択" class="btn btn-primary btn-ghost"/>
             〒 @zip.ZipCode @zip.Prefecture @zip.City @zip.Street
             @(Page.Html.Hidden("ZipCode", zip.ZipCode))

@@ -11,16 +11,6 @@
         public string ExternalId1 { get; set; }
         public decimal UnitPriceWithTax { get; set; }
         public int RequestQty { get; set; }
-        public string ProductName() {
-            if (string.IsNullOrEmpty(DisplayName)) {
-                return Name;
-            }
-            var valiation = string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
-            if (string.IsNullOrEmpty(valiation)) {
-                return DisplayName;
-            }
-            return $"{DisplayName} {valiation}";
-        }
     }
     ViewModel LoadViewModel() {
         var notice = Page.ViewData.Model as ReserveRequest; 
@@ -31,7 +21,8 @@
             where s.Id == args.ProductId
             select new {
                 p.Code,
-				p.Name,
+				s.Name,
+                s.DisplayName,
 				s.Size,
 				s.Color,
 				s.Id,
@@ -51,6 +42,7 @@
             RequestQty = notice.Amount,
             Code = sku?.Code,
             Name = sku?.Name,
+            DisplayName = sku?.DisplayName,
             Icon = !string.IsNullOrEmpty(sku?.ProductIcon) ? sku.ProductIcon : sku?.PageIcon,
             Size = sku?.Size,
             Color = sku?.Color,
@@ -66,7 +58,7 @@
 }
 <main class="section content">
     <h1 class="h-underline">次回入荷分の予約をキャンセル</h1>
-    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices", id=vm.RequestId})" method="post">
+    <form action="@ReserveUrl(vm.RequestId)" method="post">
         @Page.Html.HttpMethodOverride("delete")
         @Page.Html.SessionAntiForgeryToken()
         <table class="table">
@@ -87,23 +79,19 @@
                     </td>
                     <td align="center">
                         <a href="@ItemUrl(vm.Code)" class="product-icon" title="@vm.Name">
-                            @vm.ProductName() <br>
+                            @SkuName(vm.Name, vm.DisplayName, vm.Color, vm.Size) <br>
                             @PrintPrice(vm.UnitPriceWithTax)
                         </a>
                     </td>
                     <td data-title="個数">
-                        <select name="RequestAmount" ic-action="showRecalc">
-                            @for (var i = 1; i <= 10; i++ ) {
-                                <option value="@i" @when(i==vm.RequestQty, "selected")>@i</option>
-                            }
-                        </select>
+                        @vm.RequestQty
                     </td>
                 </tr>
             </tbody>
         </table>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-danger btn-text">次回入荷分の予約をキャンセルする</button>
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices", id=(long?)null})" class="btn btn-default btn-prev">仮予約一覧へもどる</a>
+            <a href="@ReserveUrl()" class="btn btn-default btn-prev">仮予約一覧へもどる</a>
         </div>
     </form>
 </main>

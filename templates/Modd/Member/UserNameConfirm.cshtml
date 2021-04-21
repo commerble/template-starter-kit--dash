@@ -7,7 +7,7 @@
 <main class="section content">
     <h2 class="h-underline">登録メールアドレス変更</h2>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="UserName"})" method="post">
+    <form action="@UserNameChangeUrl()" method="post">
         @Raw(Page.Html.ModelToObjectState("model",user))
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field">
@@ -18,7 +18,7 @@
         </dl>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-action btn-next" name="update" value="post">メールアドレスを変更する</button>
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Account" })#email" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
+            <a href="@AccountUrl()#email" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
         </div>
     </form>
 </main>

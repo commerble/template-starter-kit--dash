@@ -7,22 +7,22 @@
     <h1 class="h-title text-center">会員メニュー</h1>
     <ul class="menu">
         <li class="menu-item @when(controller=="Member" && action=="Index", "active")">
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Index"})" >会員情報</a>
+            <a href="@MyPageUrl()" >会員情報</a>
         </li>
         <li class="menu-item @when(controller=="Member" && action=="Point", "active")">
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Point"})">ポイント</a>
+            <a href="@PointUrl()">ポイント</a>
         </li>
         <li class="menu-item @when(controller=="Order" && action=="History", "active")">
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History"})">購入履歴</a>
+            <a href="@HistoryUrl()">購入履歴</a>
         </li>
         <li class="menu-item @when(controller=="Member" && action=="Addresses", "active")">
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses"})">お届け先</a>
+            <a href="@AddressUrl()">お届け先</a>
         </li>
         <li class="menu-item @when(controller=="Member" && action=="Favorites", "active")">
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites"})">お気に入り</a>
+            <a href="@FavoriteUrl()">お気に入り</a>
         </li>
         <li class="menu-item @when(controller=="Member" && action=="Notices", "active")">
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices"})">次回入荷予約</a>
+            <a href="@ReserveUrl()">次回入荷予約</a>
         </li>
         @if (Page.Template.UserIsInRole("Preview")) {
             <li class="menu-item"><a href="@Href("~/preview/")">プレビュー</a></li>

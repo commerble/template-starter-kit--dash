@@ -6,7 +6,7 @@
 <main class="section content">
     <h1 class="h-underline">パスワード再設定</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Recovery", id=Page.ViewData["id"] })" method="post">
+    <form action="@RecoveryUrl((string)Page.ViewData["id"])" method="post">
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field required">
             <dt class="field-title">新パスワード</dt>

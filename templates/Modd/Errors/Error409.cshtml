@@ -3,10 +3,10 @@
 
     var path = Page.Request.Url.AbsolutePath.ToLower();
     if (path.EndsWith("member/createfavorite")) {
-        Page.Response.Redirect(Page.Url.RouteUrl("ModdDefault", new { controller = "Member", action = "Favorites", id=(int?)null }));
+        Page.Response.Redirect(FavoriteUrl());
     }
     if (path.EndsWith("member/createnotice")) {
-        Page.Response.Redirect(Page.Url.RouteUrl("ModdDefault", new { controller = "Member", action = "Notices", id=(long?)null }));
+        Page.Response.Redirect(ReserveUrl());
     }
 }
 <main class="section content">

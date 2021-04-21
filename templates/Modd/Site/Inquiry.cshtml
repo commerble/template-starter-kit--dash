@@ -7,7 +7,7 @@
 <main class="section content">
     <h1 class="h-underline">お問い合わせ</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="Inquiry", id="contact"})" method="post">
+    <form action="@InquiryUrl("contact")" method="post">
         <dl class="field required">
             <dt class="field-title">メールアドレス</dt>
             <dd class="field-body">

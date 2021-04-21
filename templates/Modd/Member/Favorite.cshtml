@@ -46,7 +46,7 @@
 
 <main class="section content">
     <h1 class="h-underline">お気に入りの登録削除</h1>
-    <form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Favorites", item=vm.ProductId })" method="post">
+    <form action="@FavoriteUrl(vm.ProductId)" method="post">
         @Page.Html.HttpMethodOverride("delete")
         @Page.Html.SessionAntiForgeryToken()
         <table class="table">
@@ -75,7 +75,7 @@
         </table>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-danger btn-text">お気に入りの登録を削除する</button>
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=(int?)null})" class="btn btn-default">お気に入り一覧へもどる</a>
+            <a href="@FavoriteUrl()" class="btn btn-default">お気に入り一覧へもどる</a>
         </div>
     </form>
 </main>

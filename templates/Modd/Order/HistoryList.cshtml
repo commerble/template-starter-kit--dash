@@ -17,7 +17,7 @@
     ViewBag.PageTitle = "購入履歴";
 
     if (total == 0) {
-        Page.Response.Redirect(Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Archives"}));
+        Page.Response.Redirect(ArchiveUrl());
     }
 }
 <main class="content-wide columns">
@@ -43,22 +43,22 @@
                         <td data-title="ご注文状況">@OrderStatusText[order.OrderStatus]</td>
                         <td data-title="お支払方法">@Raw(string.Join("<br>",PaymentMethodText[order.PaymentMethod].Split(' ')))</td>
                         <td data-title="合計金額">@PrintPrice(order.TotalPayment)</td>
-                        <td align="center"><a class="btn btn-primary btn-text" href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=order.OrderId} )">詳細を見る</a></td>
+                        <td align="center"><a class="btn btn-primary btn-text" href="@HistoryUrl(order.OrderId)">詳細を見る</a></td>
                     </tr>
                 }
             </tbody>
         </table>
         @if (!pageLast) {
             <div class="block block-vertical">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History"})?page=@(page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
+                <a href="@HistoryUrl()?page=@(page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
             </div>
         }
         <hr>
         <div class="block block-horizontal block-wrap">
             @foreach(var year in orders.GroupBy(order => order.OrderDate.Year)) {
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History"})?page=@PageOf(year.First())" class="btn btn-primary btn-text">@(year.Key)年</a>
+                <a href="@HistoryUrl()?page=@PageOf(year.First())" class="btn btn-primary btn-text">@(year.Key)年</a>
             }
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Archives"})" class="btn btn-primary btn-text">さらに前のご注文</a>
+            <a href="@ArchiveUrl()" class="btn btn-primary btn-text">さらに前のご注文</a>
         </div>
     </div>
     <div class="col-1 col-order-1 col-order-2-sp">

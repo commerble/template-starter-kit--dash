@@ -10,14 +10,14 @@
         <h1 class="h-title text-center">サイトリニューアルに伴うパスワード再設定のお願い</h1>
         <p class="lead">当サイトのリニューアルに伴い、ログインシステムを刷新いたしました。<br> セキュリティ向上のため、たいへんお手数をおかけいたしますが、再設定がお済みでない方はパスワードの再設定をお願いいたします。</p>
         <div class="block">
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="Recovery" })" class="btn btn-primary btn-next">パスワードを再設定する</a>
+            <a href="@RecoveryUrl()" class="btn btn-primary btn-next">パスワードを再設定する</a>
         </div>
     </div>
 </aside>
 <main class="section content">
     <h1 class="h-underline">会員登録がお済みのお客様</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Login"})" method="post">
+    <form action="@LoginChallengeUrl()" method="post">
         @Page.Html.Hidden("returnUrl")
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field">
@@ -36,7 +36,7 @@
         </dl>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-action btn-large">ログイン</button>
-            <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="Recovery"})" class="btn btn-primary btn-text btn-next">パスワードをお忘れの場合はこちら</a>
+            <a href="@RecoveryUrl()" class="btn btn-primary btn-text btn-next">パスワードをお忘れの場合はこちら</a>
         </div>
     </form>
 </main>
@@ -44,9 +44,9 @@
     <h1 class="h-underline">まだ会員登録されていないお客様</h1>
     <p class="lead text">会員登録をすると便利なマイページをご利用いただけます。<br>また、ログインするだけで、毎回お名前や住所などを入力することなくスムーズにお買い物をお楽しみいただけます。</p>
     <div class="block block-vertical mt">
-        <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="Account"})" class="btn btn-primary btn-next">会員登録をする（無料）</a>
+        <a href="@RegisterUrl()" class="btn btn-primary btn-next">会員登録をする（無料）</a>
         @if (showGuestLogin) {
-            <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Site",action="NewGuest", returnUrl})" class="btn btn-primary btn-text">登録せずにレジへ進む</a>
+            <a href="@NewGuestUrl(returnUrl)" class="btn btn-primary btn-text">登録せずにレジへ進む</a>
         }
     </div>
 </aside>

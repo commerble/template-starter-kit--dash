@@ -10,7 +10,7 @@
 <main class="section content">
     <h1 class="h-underline">注文キャンセル</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" method="post">
+    <form action="@HistoryUrl(cart.OrderId)" method="post">
         @Page.Html.HttpMethodOverride("delete")
         @Page.Html.SessionAntiForgeryToken()
         @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
@@ -29,7 +29,7 @@
             else {
                 <button type="button" class="btn btn-danger btn-text" disabled>この注文はキャンセル出来ません</button>
             }
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" class="btn btn-default btn-prev">注文詳細へもどる</a>
+            <a href="@HistoryUrl(cart.OrderId)" class="btn btn-default btn-prev">注文詳細へもどる</a>
         </div>
     </form>
 </main>

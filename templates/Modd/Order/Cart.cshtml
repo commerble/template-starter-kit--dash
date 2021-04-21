@@ -49,7 +49,7 @@
         return new ViewModel {
             CartId = cart.CartDefinition.CartId,
             IsEmpty = cart.Items.Count == 0,
-            HasErrors = HasViewMessages(viewData),
+            HasErrors = viewData.Errors.Any(),
             ViewMessages = viewData,
             TotalPayment = cart.Subtotal,
             ChargePoint = cart.ExpandOrderItems.Sum(item => item.PointCharge+item.ExtraPoint??0),
@@ -102,7 +102,7 @@
         </div>
     }
     else {
-        <form action="@Page.Url.RouteUrl("ModdDefault", new {controller = "Order", action = "Cart"})" method="post">
+        <form action="@CartUrl()" method="post">
             @Page.Html.Hidden("CartId", vm.CartId )
             @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=true })
         </form>
@@ -115,7 +115,7 @@
             @if (vm.HasErrors) {
                 <button class="btn btn-action btn-large btn-next" disabled>メッセージをご確認ください</button>
             } else {
-                <a href="@Page.Template.SecuredLink("ModdPurchase", new {cart=vm.CartId,action="Index", direct=true})" class="btn btn-action btn-large btn-next">注文手続きへ進む</a>
+                <a href="@PurchaseUrl(vm.CartId, direct:true)" class="btn btn-action btn-large btn-next">注文手続きへ進む</a>
             }
             <button type="submit" name="recalc" value="recalc" class="btn btn-primary btn-large btn-next" style="display:none;">数量変更して再計算</button>
             <a onclick="backToCheckPoint();" class="btn btn-primary btn-text btn-prev">お買い物を続ける</a>

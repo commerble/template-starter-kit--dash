@@ -13,7 +13,7 @@
 <main class="section content">
     <h1 class="h-underline">パスワード再設定</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Recovery"})" method="post">
+    <form action="@RecoveryUrl()" method="post">
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field">
             <dt class="field-title">メールアドレス</dt>

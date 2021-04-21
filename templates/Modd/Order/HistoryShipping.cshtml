@@ -7,7 +7,7 @@
 <main class="section content">
     <h1 class="h-underline">お届け先</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryShipping", id=shipping.Cart.OrderId})" method="post">
+    <form action="@HistoryShippingUrl(shipping.Cart.OrderId)" method="post">
         @Page.Html.HttpMethodOverride("put")
         <dl class="field required">
             <dt class="field-title">お届け先選択</dt>
@@ -22,11 +22,11 @@
         @Page.Html.PartialEx("ModdSharedAddressEditor", shipping.DeliveryOrderAddress, new {
             target = "DeliveryOrderAddress", 
             command = "zipsearch", 
-            commandUrl = Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryShipping", id=shipping.Cart.OrderId })
+            commandUrl = HistoryShippingUrl(shipping.Cart.OrderId)
         })
         <div class="block block-vertical">
             <button type="submit" class="btn btn-action btn-next" name="shipping" value="put">お届け先を変更</button>
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=shipping.Cart.OrderId})" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
+            <a href="@HistoryUrl(shipping.Cart.OrderId)" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
         </div>
     </form>
 </main>

@@ -13,7 +13,7 @@
 <main class="section content">
     <h1 class="h-underline">注文編集 - お支払い方法</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=payment.Cart.OrderId})" method="post">
+    <form action="@HistoryUrl(payment.Cart.OrderId)" method="post">
         @Page.Html.HttpMethodOverride("put")
         <dl class="field required">
             <dt class="field-title">決済方法</dt>
@@ -35,7 +35,7 @@
         </dl>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-action btn-next" name="payment" value="put">お支払い方法を変更</button>
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=payment.Cart.OrderId})" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
+            <a href="@HistoryUrl(payment.Cart.OrderId)" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
         </div>
     </form>
 </main>

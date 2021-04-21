@@ -10,8 +10,8 @@
         ["OrderID"] = order.OrderId.ToString(),
         ["Amount"] = order.TotalPayment.ToString("F0"),
         ["DateTime"] = DateTime.Now.ToString("yyyyMMddHHmmss"),
-        ["RetURL"] = Page.Template.SecuredLink("CallbacksGMOPG", new {}).Replace("http://", "https://"),
-        ["CancelURL"] = Page.Template.SecuredLink("ModdPurchase", new { cart=1, action="External", id=order.OrderId }),
+        ["RetURL"] = CallbacksGMOPGUrl(),
+        ["CancelURL"] = PurchaseExternalUrl(order.Items.First().Product.SalesPattern.CartId,order.OrderId),
         ["SessionTimeout"] = "1200",
         ["TemplateNo"] = "1"
     };

@@ -10,16 +10,6 @@
         public string ExternalId1 { get; set; }
         public decimal UnitPriceWithTax { get; set; }
         public int RequestQty { get; set; }
-        public string ProductName() {
-            if (string.IsNullOrEmpty(DisplayName)) {
-                return Name;
-            }
-            var valiation = string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
-            if (string.IsNullOrEmpty(valiation)) {
-                return DisplayName;
-            }
-            return $"{DisplayName} {valiation}";
-        }
     }
     ViewModel LoadViewModel() {
         var notice = Page.ViewData.Model as VM.NoticeAppend; 
@@ -30,7 +20,8 @@
             where s.Id == args.ProductId
             select new {
 				p.Code,
-				p.Name,
+				s.Name,
+                s.DisplayName,
 				s.Size,
 				s.Color,
 				s.Id,
@@ -49,6 +40,7 @@
             RequestQty = notice.RequestAmount,
             Code = sku?.Code,
             Name = sku?.Name,
+            DisplayName = sku?.DisplayName,
             Icon = !string.IsNullOrEmpty(sku?.ProductIcon) ? sku.ProductIcon : sku?.PageIcon,
             Size = sku?.Size,
             Color = sku?.Color,
@@ -64,7 +56,7 @@
 }
 <main class="section content">
     <h1 class="h-underline">次回入荷分を予約</h1>
-    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="CreateNotice", item=vm.ProductId })" method="post">
+    <form action="@ReserveCreateUrl(vm.ProductId)" method="post">
         @Page.Html.SessionAntiForgeryToken()
         <table class="table">
             <thead>
@@ -84,7 +76,7 @@
                     </td>
                     <td align="center">
                         <a href="@ItemUrl(vm.Code)" class="product-icon" title="@vm.Name">
-                            @vm.ProductName() <br>
+                            @SkuName(vm.Name, vm.DisplayName, vm.Color, vm.Size) <br>
                             @PrintPrice(vm.UnitPriceWithTax)
                         </a>
                     </td>

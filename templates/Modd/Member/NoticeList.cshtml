@@ -20,16 +20,6 @@
 		public decimal? UnitPriceWithTax { get; set; }
 		public bool CanCartIn { get; set; }
 		public bool CanCancel { get; set; }
-		public string ProductName() {
-            if (string.IsNullOrEmpty(DisplayName)) {
-                return Name;
-            }
-            var valiation = string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
-            if (string.IsNullOrEmpty(valiation)) {
-                return DisplayName;
-            }
-            return $"{DisplayName} {valiation}";
-        }
 	}
 	ViewModel LoadViewModel() {
 		var notices = Page.ViewData.Model as IEnumerable<ReserveRequest>;
@@ -56,7 +46,8 @@
 			where productIds.Contains(s.Id)
 			select new {
 				p.Code,
-				p.Name,
+				s.Name,
+				s.DisplayName,
 				s.Size,
 				s.Color,
 				s.Id,
@@ -82,6 +73,7 @@
 					Status = n.Status,
 					Code = sku?.Code,
 					Name = sku?.Name,
+					DisplayName = sku?.DisplayName,
 					Icon = !string.IsNullOrEmpty(sku?.ProductIcon) ? sku.ProductIcon : sku?.PageIcon,
 					Size = sku?.Size,
 					Color = sku?.Color,
@@ -125,7 +117,7 @@
                             </td>
                             <td align="center">
                                 <a href="@ItemUrl(nt.Code)" class="product-icon" title="@nt.Name">
-                                    @nt.ProductName() <br>
+                                    @SkuName(nt.Name, nt.DisplayName, nt.Color, nt.Size) <br>
                                     @PrintPrice(nt.UnitPriceWithTax)
                                 </a>
                             </td>
@@ -140,7 +132,7 @@
 									<a href="@CartInUrl(nt.ProductId, nt.RequestId)" class="btn btn-action">カートイン</a>
 								}
 								@if (nt.CanCancel) {
-									<a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices", id=nt.RequestId })" class="btn btn-primary btn-text">予約をキャンセル</a>
+									<a href="@ReserveUrl(nt.RequestId)" class="btn btn-primary btn-text">予約をキャンセル</a>
 								}
                             </td>
                         </tr>
@@ -149,7 +141,7 @@
 			</table>
 			if (vm.HasNextPage) {
                 <div class="block">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Notices", id=(long?)null })?page=@(vm.Page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
+                    <a href="@ReserveUrl()?page=@(vm.Page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
                 </div>
             }
 		} else {

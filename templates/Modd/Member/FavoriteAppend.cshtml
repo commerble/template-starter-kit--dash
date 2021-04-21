@@ -44,7 +44,7 @@
 }
 <main class="section content">
     <h1 class="h-underline">お気に入り</h1>
-    <form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Member", action="Favorites", item=vm.ProductId })" method="post">
+    <form action="@FavoriteUrl(item:vm.ProductId)" method="post">
         @Page.Html.SessionAntiForgeryToken()
         <table class="table">
             <thead>

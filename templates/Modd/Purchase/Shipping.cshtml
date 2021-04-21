@@ -8,20 +8,20 @@
 <main class="section content">
     <h1 class="h-underline">購入</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Url.RouteUrl("ModdPurchase", new {cart=shipping.CartId, action="Shipping"} )" method="post">
+    <form action="@PurchaseShippingUrl(shipping.CartId)" method="post">
         <h2 class="h-title">お客様情報</h2>
         @if(shipping.IsAnonymous) {
             @:@Page.Html.PartialEx("ModdSharedAddressEditor", shipping.OrderCustomerOrderedAddress, new {
                 target = "OrderCustomerOrderedAddress", 
                 command ="zipsearch_customer", 
-                commandUrl = Page.Url.RouteUrl("ModdPurchase", new {cart=shipping.CartId, action="Shipping"})
+                commandUrl = PurchaseShippingUrl(shipping.CartId)
             })
         }
         else if (shipping.User.Account.ExtendProperties.AddressId == 0) {
             @:@Page.Html.PartialEx("ModdSharedAddressEntry", shipping.OrderCustomerOrderedAddress, new {
                 target = "OrderCustomerOrderedAddress", 
                 command = "zipsearch_customer", 
-                commandUrl = Page.Url.RouteUrl("ModdPurchase", new {cart=shipping.CartId, action="Shipping"})
+                commandUrl = PurchaseShippingUrl(shipping.CartId)
             })
         }
         else {
@@ -56,7 +56,7 @@
             @Page.Html.PartialEx("ModdSharedAddressEditor", shipping.DeliveryOrderAddress, new {
                 target = "DeliveryOrderAddress", 
                 command = "zipsearch_shipping", 
-                commandUrl = Page.Url.RouteUrl("ModdPurchase", new { cart=shipping.CartId, action="Shipping" })
+                commandUrl = PurchaseShippingUrl(shipping.CartId)
             })
             
             <div class="block block-horizontail block-wrap">
@@ -64,7 +64,7 @@
                 <button type="submit" class="btn btn-primary btn-ghost btn-large" name="next_copy" value="go">お客様住所へお届け</button>
             </div>
             <div class="block">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { Controller="Order",Action="Cart"})" class="btn btn-primary btn-text btn-prev">数量を選び直す</a>
+                <a href="@CartUrl()" class="btn btn-primary btn-text btn-prev">数量を選び直す</a>
             </div>
         </template>
 
@@ -74,7 +74,7 @@
                 <button type="button" class="btn btn-primary btn-ghost btn-large" ic-get-from="#destination-tmpl" ic-target="#destination" ic-swap-style="replace">お届け先を別に指定する</button>
             </div>
             <div class="block">
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { Controller="Order",Action="Cart"})" class="btn btn-primary btn-text btn-prev">数量を選び直す</a>
+                <a href="@CartUrl()" class="btn btn-primary btn-text btn-prev">数量を選び直す</a>
             </div>
         </div>
     </form>

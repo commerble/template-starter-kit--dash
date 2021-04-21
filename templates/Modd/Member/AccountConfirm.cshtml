@@ -7,7 +7,7 @@
 <main class="section content">
     <h1 class="h-underline">会員情報編集</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="Account"})" method="post">
+    <form action="@AccountUrl()" method="post">
         @Raw(Page.Html.ModelToObjectState("model",account))
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field">
@@ -42,7 +42,7 @@
         </dl>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-action btn-next" name="update" value="post">会員情報を変更する</button>
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Account" })#customer" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
+            <a href="@AccountUrl()#customer" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
         </div>
     </form>
 </main>

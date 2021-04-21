@@ -6,7 +6,7 @@
 <main class="section content">
     <h1 class="h-underline">お問い合わせ - 内容確認</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Template.SecuredLink("ModdDefault", new {controller="Site", action="Inquiry", id="contact"})" method="post">
+    <form action="@InquiryUrl("contact")" method="post">
         @Raw(Page.Html.ModelToObjectState("model",general))
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field">

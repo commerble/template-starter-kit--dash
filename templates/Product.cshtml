@@ -211,7 +211,7 @@
 
         vm.Campaigns = vm.Products.SelectMany(p => Page.Template.GetProductCampaigns(p.Id).Select(c => c.CampaignName)).Distinct().ToArray();
 
-        vm.Embed = $"<iframe src=\"{Page.Template.SecuredLink("ItemEmbed", new {vm.Code}).Replace("http:","https:")}\" style=\"border:none;width;300px;height:150px;\" scrolling=\"no\" allow=\"autoplay; encrypted-media\"></iframe>";
+        vm.Embed = $"<iframe src=\"{EmbedUrl(vm.Code)}\" style=\"border:none;width;300px;height:150px;\" scrolling=\"no\" allow=\"autoplay; encrypted-media\"></iframe>";
 
         return vm;
     }
@@ -320,7 +320,7 @@
             @PrintPrice(vm.PriceProduct?.Point, vm.HasMultiplePrice)
         </p>
         <div class="block block-horizontal block-wrap">
-            <a href="@CategoryUrl(vm.Kind)" class="badge">
+            <a href="@KindUrl(vm.Kind)" class="badge">
                 @if (!string.IsNullOrEmpty(vm.KindIcon)) {
                     if (vm.KindIcon.StartsWith("https://")) {
                         <img class="badge-icon" src="@vm.KindIcon" alt="vm.KindName" loading="lazy" decoding="async">
@@ -339,7 +339,7 @@
             <p class="text-center">キャンペーン開催中：@string.Join(",", vm.Campaigns)</p>
         }
         <hr>
-        <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Cart" })" method="get">
+        <form action="@CartUrl()" method="get">
              @if (vm.Products.Count > 1) {
                 <table class="product-skus">
                     <thead>
@@ -373,7 +373,7 @@
                                             <text>@FormatPrice(sku.UnitPriceWithTax)<br></text>
                                             if (sku.Stockout) {
                                                 if (Page.Template.CanReserveRequest(sku.Id)) {
-                                                    <a href="@ReserveUrl(sku.Id)">次回入荷分を予約</a>
+                                                    <a href="@ReserveCreateUrl(sku.Id)">次回入荷分を予約</a>
                                                 } 
                                                 else {
                                                     <text>&times;</text>
@@ -417,7 +417,7 @@
             <hr>
             <div class="block block-vertical">
                 <button type="submit" class="btn btn-primary btn-large full">カートに入れる</button>
-                <a href="@FavoriteUrl(vm.PriceProductId.Value)" class="btn btn-primary btn-text">お気に入りに追加する</a>
+                <a href="@FavoriteCreateUrl(vm.PriceProductId.Value)" class="btn btn-primary btn-text">お気に入りに追加する</a>
             </div>
         </form>
     </div>

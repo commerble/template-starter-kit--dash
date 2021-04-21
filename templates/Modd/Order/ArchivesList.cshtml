@@ -38,14 +38,14 @@
                             <td data-title="ご注文状況">@OrderStatusText[order.OrderStatus]</td>
                             <td data-title="お支払方法">@Raw(string.Join("<br>",PaymentMethodText[order.PaymentMethod].Split(' ')))</td>
                             <td data-title="合計金額">@PrintPrice(order.TotalPayment)</td>
-                            <td align="center"><a class="btn btn-primary btn-text" href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=order.OrderId} )">詳細を見る</a></td>
+                            <td align="center"><a class="btn btn-primary btn-text" href="@ArchiveUrl(order.OrderId)">詳細を見る</a></td>
                         </tr>
                     }
                 </tbody>
             </table>
             if (!pageLast) {
                 <div class="block block-vertical">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="Archives"})?page=@(page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
+                    <a href="@ArchiveUrl()?page=@(page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
                 </div>
             }
         } else {

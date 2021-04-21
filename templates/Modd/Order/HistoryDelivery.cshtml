@@ -8,7 +8,7 @@
 }
 <main class="section content">
     <h1 class="h-underline">注文編集 - お届け日時</h1>
-    <form action="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=delivery.Cart.OrderId})" method="post">
+    <form action="@HistoryUrl(delivery.Cart.OrderId)" method="post">
         @Page.Html.HttpMethodOverride("put")
         <dl class="field optional">
             <dt class="field-title">お届け日</dt>
@@ -69,7 +69,7 @@
         </dl>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-action btn-next" name="delivery" value="put">お届け日時を変更</button>
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=delivery.Cart.OrderId})" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
+            <a href="@HistoryUrl(delivery.Cart.OrderId)" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
         </div>
     </form>
 </main>

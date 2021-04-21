@@ -13,7 +13,7 @@
 <main class="section content">
     <h1 class="h-underline">購入</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Url.RouteUrl("ModdPurchase", new {cart=payment.CartId, action="Payment"})" method="post">
+    <form action="@PurchasePaymentUrl(payment.CartId)" method="post">
         @Page.Html.Hidden("DeliveryOrder.WrappingType", 2)
         <h2 class="h-title">お届け日時</h2>
         <dl class="field optional">
@@ -133,7 +133,7 @@
         </dl>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-action btn-large">内容の確認に進む</button>
-            <a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=payment.CartId, action="Shipping"} )" class="btn btn-primary btn-text btn-prev">配送情報を変更する</a>
+            <a href="@PurchaseShippingUrl(payment.CartId)" class="btn btn-primary btn-text btn-prev">配送情報を変更する</a>
         </div>
     </form>
 </main>

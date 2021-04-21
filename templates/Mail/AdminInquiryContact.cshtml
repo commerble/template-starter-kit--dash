@@ -1,4 +1,9 @@
 @{
-    Message.Subject = "contact";
+  Message.Subject = "お問い合わせ";
 }
-contact
+■お名前：@(ViewBag.Parameters["LastName"]) @(ViewBag.Parameters["FirstName"])
+■お名前フリガナ：@(ViewBag.Parameters["LastKana"]) @(ViewBag.Parameters["FirstKana"])
+■メールアドレス：@(ViewBag.Parameters["Email"])
+■注文番号： @(ViewBag.Parameters["OrderId"])
+■お問い合わせ内容：
+@(ViewBag.Parameters["Text"])

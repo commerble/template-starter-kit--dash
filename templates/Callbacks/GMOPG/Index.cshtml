@@ -7,16 +7,6 @@
         public string Icon { get; set; }
         public string Size { get; set; }
         public string Color { get; set; }
-        public string ProductName() {
-            if (string.IsNullOrEmpty(DisplayName)) {
-                return Name;
-            }
-            var valiation = string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
-            if (string.IsNullOrEmpty(valiation)) {
-                return DisplayName;
-            }
-            return $"{DisplayName} {valiation}";
-        }
     }
 
     List<LineViewModel> LoadViewModel(PurchaseOrder order) {
@@ -157,7 +147,7 @@
 
         service.UpdatePaymentStatus(order, paymentStatus, autoCancelDate);
 
-        Page.Response.Redirect(Page.Url.RouteUrl("ModdPurchase", new { cart=1, action="Complete", id }));
+        Page.Response.Redirect(PurchaseCompleteUrl(order.Items.First().Product.SalesPattern.CartId, id));
     }
 
     ViewBag.PageTitle = "お支払いキャンセル";
@@ -178,38 +168,36 @@
                 <li>エラー情報：@Page.Request.Form["ErrInfo"]</li>
             </ul>
         </div>
-        <div class="message">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th colspan="2">商品</th>
-                        <th>個数</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var line in vm ) {
-                        <tr>
-                            <td align="center">
-                                <div class="product-icon">
-                                    <div class="image image-square">
-                                        <img src="@IconUrl(line.Icon)" alt="@line.ProductName()">
-                                    </div>
-                                </div>
-                            </td>
-                            <td align="center">
-                                @line.ProductName()
-                            </td>
-                            <td data-title="個数">
-                                @line.Qty
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="block block-vertical">
-            <a href="@cartinUrl" class="btn btn-action btn-large">もう一度カートにいれる</a>
-            <a href="@Href("~/")" class="btn btn-primary btn-text btn-prev">トップページへ戻る</a>
-        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th colspan="2">商品</th>
+                <th>個数</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var line in vm ) {
+                <tr>
+                    <td align="center">
+                        <div class="product-icon">
+                            <div class="image image-square">
+                                <img src="@IconUrl(line.Icon)" alt="@SkuName(line.Name, line.DisplayName, line.Color, line.Size)">
+                            </div>
+                        </div>
+                    </td>
+                    <td align="center">
+                        @SkuName(line.Name, line.DisplayName, line.Color, line.Size)
+                    </td>
+                    <td data-title="個数">
+                        @line.Qty
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="block block-vertical">
+        <a href="@cartinUrl" class="btn btn-action btn-large">もう一度カートにいれる</a>
+        <a href="@Href("~/")" class="btn btn-primary btn-text btn-prev">トップページへ戻る</a>
     </div>
 </main>

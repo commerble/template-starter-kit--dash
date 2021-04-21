@@ -29,7 +29,7 @@
         <div class="alert alert-success">
             <p><strong>注文変更はまだ確定されていません。他の項目を編集し、「注文を変更する」ボタンから変更を確定してください。</strong></p>
         </div>
-        <form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="History", id=cart.OrderId} )" method="post">
+        <form action="@HistoryUrl(cart.OrderId)" method="post">
             @Page.Html.SessionAntiForgeryToken()
             @Page.Html.HttpMethodOverride("put")
             @if(cart.CanModify || cart.CanModifyPaymentMethod()) {
@@ -39,7 +39,7 @@
             }
         </form>
     }
-    <form>
+    <form action="@HistoryUrl(cart.OrderId)" method="post">
         @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
         <h2 class="h-title">お客様情報</h3>
         <dl class="field">
@@ -68,7 +68,7 @@
         </dl>
         @if(cart.CanModify) {
             <div class="block block-horizontal block-right">
-                <button type="submit" name="customer" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" class="btn btn-primary btn-text btn-next">お客様情報を変更する</button>
+                <button type="submit" name="customer" value="post" class="btn btn-primary btn-text btn-next">お客様情報を変更する</button>
             </div>
         }
         <h2 class="h-title">お届け先</h3>
@@ -92,7 +92,7 @@
         </dl>
         @if(cart.CanModify) {
             <div class="block block-horizontal block-right">
-                <button type="submit" name="shipping" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" class="btn btn-primary btn-text btn-next">お届け先を変更する</button>
+                <button type="submit" name="shipping" value="post" class="btn btn-primary btn-text btn-next">お届け先を変更する</button>
             </div>
         }
         <h2 class="h-title">お届け日時</h3>
@@ -128,7 +128,7 @@
         </dl>
         @if(cart.CanModify) {
             <div class="block block-horizontal block-right">
-                <button type="submit" name="delivery" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" class="btn btn-primary btn-text btn-next">お届け日時を変更する</button>
+                <button type="submit" name="delivery" value="post" class="btn btn-primary btn-text btn-next">お届け日時を変更する</button>
             </div>
         }
         <h2 class="h-title">お支払方法</h3>
@@ -140,7 +140,7 @@
         </dl>
         @if(cart.CanModify) {
             <div class="block block-horizontal block-right">
-                <button type="submit" name="payment" value="post" formmethod="post" formaction="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=cart.OrderId})" class="btn btn-primary btn-text btn-next">お支払方法を変更する</button>
+                <button type="submit" name="payment" value="post" class="btn btn-primary btn-text btn-next">お支払方法を変更する</button>
             </div>
         }
         <h2 class="h-title">備考</h3>
@@ -151,7 +151,7 @@
             </dd>
         </dl>
     </form>
-    <form action="@Page.Template.SecuredLink("ModdDefault", new { controller="Order", action="History", id=cart.OrderId} )" method="post">
+    <form action="@HistoryUrl(cart.OrderId)" method="post">
         @Page.Html.SessionAntiForgeryToken()
         @Page.Html.HttpMethodOverride("put")
         <div class="block block-vertical">
@@ -159,10 +159,10 @@
                 <button type="submit" name="commit" value="commit" class="btn btn-action btn-next">注文を変更する</button>
             }
             @if (!cart.OrderCustomer.IsGuest) {
-                <a href="@Page.Url.RouteUrl("ModdDefault", new {  controller="Order", action="History", id=(long?)null })" class="btn btn-primary btn-text btn-prev">購入履歴一覧へもどる</a>
+                <a href="@HistoryUrl()" class="btn btn-primary btn-text btn-prev">購入履歴一覧へもどる</a>
             }
             @if (cart.CanCancel) {
-                <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="HistoryCancel", id=cart.OrderId} )" class="btn btn-danger btn-text">注文をキャンセルする</a>
+                <a href="@CancelUrl(cart.OrderId)" class="btn btn-danger btn-text">注文をキャンセルする</a>
             }
         </div>
     </form>

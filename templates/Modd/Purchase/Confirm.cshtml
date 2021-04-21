@@ -1,7 +1,7 @@
 ﻿@{
     var cart = Page.ViewData.Model as ShoppingCartBase;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-    var hasErrors = HasViewMessages(viewData);
+    var hasErrors = viewData.Errors.Any();
 
     var ActionText = new Dictionary<PaymentMethod, string> {
         [PaymentMethod.External] = "注文を確定して決済へ進む",
@@ -19,7 +19,7 @@
 <main class="section content">
     <h1 class="h-underline">購入</h1>
     @DisplayViewMessages(viewData)
-    <form action="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Index"})" method="post">
+    <form action="@PurchaseUrl(cart.CartDefinition.CartId)" method="post">
         @Page.Html.SessionAntiForgeryToken()
         @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
         <h2 class="h-centerline mt"><span>ご注文詳細情報</span></h2>
@@ -114,7 +114,7 @@
         </dl>
         <div class="block block-vertical">
             <button type="submit" class="btn btn-action btn-large">@ActionText[cart.PaymentMethod]</button>
-            <a href="@Page.Url.RouteUrl("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Payment"})" class="btn btn-primary btn-text btn-prev">お支払い方法を変更する</a>
+            <a href="@PurchasePaymentUrl(cart.CartDefinition.CartId)" class="btn btn-primary btn-text btn-prev">お支払い方法を変更する</a>
         </div>
     </form>
 </main>

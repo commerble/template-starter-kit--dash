@@ -29,16 +29,6 @@
                 quantity = Qty,
             };
         }
-        public string ProductName() {
-            if (string.IsNullOrEmpty(DisplayName)) {
-                return Name;
-            }
-            var valiation = string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
-            if (string.IsNullOrEmpty(valiation)) {
-                return DisplayName;
-            }
-            return $"{DisplayName} {valiation}";
-        }
     }
 
     List<LineViewModel> LoadViewModel(ShoppingCartBase cart) {
@@ -122,7 +112,7 @@
                 </td>
                 <td align="center">
                     <dl>
-                        <dt><a href="@ItemUrl(line.ProductPageCode)">@line.ProductName()</a></dt>
+                        <dt><a href="@ItemUrl(line.ProductPageCode)">@SkuName(line.Name, line.DisplayName, line.Color, line.Size)</a></dt>
                         <dd>
                             @PrintPrice(line.UnitPriceWithTax, del:line.DiscountPrice > 0)
                             @if (line.DiscountPrice > 0) {

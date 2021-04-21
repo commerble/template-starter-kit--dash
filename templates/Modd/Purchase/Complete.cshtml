@@ -3,8 +3,7 @@
     bool isGuest = order.OrderCustomer.IsGuest;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     var lines = order.Items.Where(l => l.OrderLineType != OrderLineType.SetProductChild && l.OrderLineType != OrderLineType.Benefit);
-    var history = isGuest ? Page.Url.RouteUrl("ModdDefault", new { controller="Site", action="GuestOrder", id=order.OrderCustomer.GuestAccessKey })
-                          : Page.Url.RouteUrl("ModdDefault", new { controller="Order", action="History", id=order.OrderId });
+    var history = isGuest ? GuestOrderUrl(order.OrderCustomer.GuestAccessKey) : HistoryUrl(order.OrderId);
 
   ViewBag.DataLayer = new {
       @event = "purchase",

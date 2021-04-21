@@ -92,7 +92,7 @@
                                 </a>
                             </td>
                             <td align="center">
-                                <a class="btn btn-primary btn-text" href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=fav.ProductId })">お気に入りから削除</a>
+                                <a class="btn btn-primary btn-text" href="@FavoriteUrl(fav.ProductId)">お気に入りから削除</a>
                             </td>
                         </tr>
                     }
@@ -100,7 +100,7 @@
             </table>
             if (vm.HasNextPage) {
                 <div class="block">
-                    <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Favorites", id=(int?)null })?page=@(vm.Page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
+                    <a href="@FavoriteUrl()?page=@(vm.Page+1)" class="btn btn-primary btn-text btn-next">次のページ</a>
                 </div>
             }
         } else {

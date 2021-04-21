@@ -22,12 +22,14 @@
                 <p class="field-note">仮ポイントは出荷後に有効化されます。</p>
             </dd>
         </dl>
-        <dl class="field">
-            <dt class="field-title">有効期限</dt>
-            <dd class="field-body">
-                <p class="field-text">@account.ExpireDate.ToString("yyyy年M月d日")</p>
-            </dd>
-        </dl>
+        @if (account.ActivePoint > 0 || account.TemporaryPoint > 0) {
+            <dl class="field">
+                <dt class="field-title">有効期限</dt>
+                <dd class="field-body">
+                    <p class="field-text">@account.ExpireDate.ToString("yyyy年M月d日")</p>
+                </dd>
+            </dl>
+        }
     </div>
     <div class="col-1 col-order-1 col-order-2-sp">
         @Page.Html.Partial("ModdSharedMemberNav", null)

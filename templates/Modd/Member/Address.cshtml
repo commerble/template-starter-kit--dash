@@ -1,8 +1,8 @@
 ﻿@{
     var address = Page.ViewData.Model as UserAddress;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-    var action = Page.Url.RouteUrl("ModdDefault", new {controller="Member", action=address.AddressId == 0 ? "CreateAddress" : "Addresses", id=address.AddressId == 0 ? "" : address.AddressId.ToString()} );
-
+    var action = address.AddressId == 0 ? AddressCreateUrl() : AddressUrl(address.AddressId);
+    
     ViewBag.PageTitle = "お届け先登録";
 }
 <main class="section content">
@@ -34,7 +34,7 @@
                 <button type="submit" class="btn btn-action" name="update" value="post">変更する</button>
                 <button type="submit" class="btn btn-danger btn-text" name="delete" value="post">削除する</button>
             }
-            <a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses", id=(int?)null })" class="btn btn-primary btn-text btn-prev">お届け先一覧へもどる</a>
+            <a href="@AddressUrl()" class="btn btn-primary btn-text btn-prev">お届け先一覧へもどる</a>
         </div>
     </form>
 </main>

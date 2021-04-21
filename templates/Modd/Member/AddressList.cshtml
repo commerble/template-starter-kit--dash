@@ -9,7 +9,7 @@
         <h1 class="h-underline">お届け先</h1>
         @DisplayViewMessages(viewData)
         <div class="block block-horizontal block-right">
-            <a href="@Page.Url.RouteUrl("ModdDefault", new {controller="Member", action="CreateAddress"})" class="btn btn-primary btn-text btn-next">新規登録</a>
+            <a href="@AddressCreateUrl()" class="btn btn-primary btn-text btn-next">新規登録</a>
         </div>
         @if (addresses.Any()) {
             <table class="table">
@@ -29,7 +29,7 @@
                                 @address.Address.ToString()<br>
                                 @address.Address.Tel
                             </td>
-                            <td align="center"><a href="@Page.Url.RouteUrl("ModdDefault", new { controller="Member", action="Addresses", id=address.AddressId} )">編集</a></td>
+                            <td align="center"><a href="@AddressUrl(address.AddressId)">編集</a></td>
                         </tr>
                     }
                 </tbody>
