@@ -1,5 +1,5 @@
 ﻿@{
-  var orderId = Page.ViewData["orderId"];
+  var orderId = (long)Page.ViewData["orderId"];
   var zipList = Page.ViewData.Model as List<ZipCodeAddress>;
 }
 
