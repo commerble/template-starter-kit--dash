@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
+    "build-storybook": "build-storybook -o ./dist/",
     "build:sass": "webpack --mode production",
     "build:watch": "webpack --mode development --watch",
     "upload:watch": "node ./sync.js watch",

@@ -1,12 +1,12 @@
-name: Publish
+name: Publish Templates
 
 on:
   push:
     branches: [ master ]
     paths:
       - 'templates/**'
-      - 'src/scss/**'
-      - '.github/workflows/publish.yml'
+      - 'scss/**'
+      - '.github/workflows/templates.yml'
 
 jobs:
   build:
