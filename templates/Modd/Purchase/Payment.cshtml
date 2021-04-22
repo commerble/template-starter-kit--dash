@@ -8,7 +8,7 @@
         new SelectListItem  { Text = PaymentMethodText[PaymentMethod.External], Value = "External", Selected = payment.PaymentMethod == PaymentMethod.External },
     }.Where(pm => payment.Cart.UsablePaymentMethod.Any(upm => upm.ToString() == pm.Value));
 
-    ViewBag.PageTitle = "カート - お支払い方法";
+    ViewBag.MetaTitle = "カート - お支払い方法";
 }
 <main class="section content">
     <h1 class="h-underline">購入</h1>

@@ -7,7 +7,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="description" content="@ViewBag.PageDescription">
     <meta name="x-root" content="@Href("~/")">
-    <title>@(ViewBag.PageTitle) | @GetConfigValue("BRAND_NAME")</title>
+    <title>@(ViewBag.MetaTitle) | @GetConfigValue("BRAND_NAME")</title>
     <link rel="stylesheet" href="@Href("~/style.css" + ViewBag.ResourceSuffix)">
     @RenderParts("Head")
     @RenderJsonLD()

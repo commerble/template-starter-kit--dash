@@ -150,7 +150,7 @@
         Page.Response.Redirect(PurchaseCompleteUrl(order.Items.First().Product.SalesPattern.CartId, id));
     }
 
-    ViewBag.PageTitle = "お支払いキャンセル";
+    ViewBag.MetaTitle = "お支払いキャンセル";
     var vm = LoadViewModel(order);
     var cartinUrl = Href("~/Order/Cart?") + string.Join("&", vm.Select(line => $"item={line.ProductId}&qty={line.Qty}"));
 }

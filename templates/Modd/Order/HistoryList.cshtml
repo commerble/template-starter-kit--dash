@@ -14,7 +14,7 @@
 
     int PageOf(PurchaseOrder order) => orders.IndexOf(order) / eachPage;
 
-    ViewBag.PageTitle = "購入履歴";
+    ViewBag.MetaTitle = "購入履歴";
 
     if (total == 0) {
         Page.Response.Redirect(ArchiveUrl());

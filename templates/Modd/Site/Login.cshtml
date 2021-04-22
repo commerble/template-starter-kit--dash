@@ -3,7 +3,7 @@
     var returnUrl = Page.ViewData.Eval("returnUrl") as string ?? string.Empty;
     var showGuestLogin = returnUrl.StartsWith(Href("~/Purchase/"), StringComparison.OrdinalIgnoreCase);
 
-    ViewBag.PageTitle = "ログイン";
+    ViewBag.MetaTitle = "ログイン";
 }
 <aside class="section content">
     <div class="message-box">

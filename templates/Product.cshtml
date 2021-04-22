@@ -224,7 +224,7 @@
         throw new System.Web.HttpException(404, "Not Found");
     }
 
-    ViewBag.PageTitle = vm.MetaTitle ?? vm.Name;
+    ViewBag.MetaTitle = vm.MetaTitle ?? vm.Name;
     ViewBag.PageDescription = vm.MetaDescription;
     ViewBag.OgImage = vm.MetaImage;
     ViewBag.JsonLd = new[] {

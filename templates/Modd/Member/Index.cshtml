@@ -3,7 +3,7 @@
     var user = Page.Template.GetModdUser();
     var address = Commerble.TypeResolver.Resolve<IAccountService>().GetAccountAddress(user.Account.UserNo);
 
-    ViewBag.PageTitle = "マイページ"; 
+    ViewBag.MetaTitle = "マイページ"; 
 }
 <main class="content-wide columns">
     @DisplayViewMessages(viewData)

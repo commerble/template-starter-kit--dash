@@ -2,7 +2,7 @@
     var kinds = Page.Request.QueryString.GetValues("k") ?? new string[0];
     var tags = Page.Request.QueryString.GetValues("t") ?? new string[0];
 
-    ViewBag.PageTitle = "商品検索";
+    ViewBag.MetaTitle = "商品検索";
     ViewBag.JsonLd = new[] {
         new Dictionary<string, object> {
             ["@context"] = "https://schema.org/",
