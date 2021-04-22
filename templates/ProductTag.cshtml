@@ -37,6 +37,11 @@
         throw new System.Web.HttpException(404, "Not Found");
     }
 
+    var sort = Page.Request.QueryString["sort"] ?? "new";
+    var page = Page.Request.QueryString["page"] ?? "0";
+    var query = new[]{$"sort={sort}",$"page={page}"};
+    ViewBag.Canonical = Page.Template.SecuredHost(true) + Page.Request.Path + "?" + string.Join("&", query);
+
     ViewBag.MetaTitle = vm.MetaTitle ?? vm.Name ?? "タグ";
     ViewBag.MetaDescription = vm.MetaDescription;
     ViewBag.MetaImage = vm.MetaImage;

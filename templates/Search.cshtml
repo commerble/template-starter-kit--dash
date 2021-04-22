@@ -2,6 +2,11 @@
     var kinds = Page.Request.QueryString.GetValues("k") ?? new string[0];
     var tags = Page.Request.QueryString.GetValues("t") ?? new string[0];
 
+    var sort = Page.Request.QueryString["sort"] ?? "new";
+    var page = Page.Request.QueryString["page"] ?? "0";
+    var query = kinds.Select(k => $"k={k}").Concat(tags.Select(t => $"t={t}")).Concat(new[]{$"sort={sort}",$"page={page}"});
+    ViewBag.Canonical = Page.Template.SecuredHost(true) + Page.Request.Path + "?" + string.Join("&", query);
+    
     ViewBag.MetaTitle = "商品検索";
     ViewBag.JsonLd = new[] {
         new Dictionary<string, object> {
