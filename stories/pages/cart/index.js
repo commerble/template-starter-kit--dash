@@ -59,14 +59,14 @@ export const render = ({
                 <tbody>
                     ${lines.map(o => `
                         <tr>
-                            <td data-title="">
+                            <td align="center">
                                 <a href="${o.href}" class="product-icon">
                                     <div class="image image-square">
                                         <img src="${o.icon}" alt="${o.alt}">
                                     </div>
                                 </a>
                             </td>
-                            <td data-title="">
+                            <td align="center">
                                 <dl>
                                     <dt><a href="${o.href}">${o.name}</a></dt>
                                     <dd>
