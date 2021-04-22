@@ -34,7 +34,7 @@
             @Page.Html.HttpMethodOverride("put")
             @if(cart.CanModify || cart.CanModifyPaymentMethod()) {
                 <div class="block block-vertical">
-                    <button type="submit" name="commit" value="commit" class="btn btn-action">注文を変更する</button>
+                    <button type="submit" name="commit" value="commit" class="btn btn-action btn-large">注文を変更する</button>
                 </div>
             }
         </form>
@@ -156,7 +156,7 @@
         @Page.Html.HttpMethodOverride("put")
         <div class="block block-vertical">
             @if(hasChanges && (cart.CanModify || cart.CanModifyPaymentMethod())) {
-                <button type="submit" name="commit" value="commit" class="btn btn-action btn-next">注文を変更する</button>
+                <button type="submit" name="commit" value="commit" class="btn btn-action btn-large">注文を変更する</button>
             }
             @if (!cart.OrderCustomer.IsGuest) {
                 <a href="@HistoryUrl()" class="btn btn-primary btn-text btn-prev">購入履歴一覧へもどる</a>

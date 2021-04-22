@@ -28,10 +28,10 @@
         })
         <div class="block block-vertical">
             @if (address.AddressId == 0) {
-                <button type="submit" class="btn btn-action" name="create" value="post">登録する</button>
+                <button type="submit" class="btn btn-action btn-large" name="create" value="post">登録する</button>
             }
             else {
-                <button type="submit" class="btn btn-action" name="update" value="post">変更する</button>
+                <button type="submit" class="btn btn-action btn-large" name="update" value="post">変更する</button>
                 <button type="submit" class="btn btn-danger btn-text" name="delete" value="post">削除する</button>
             }
             <a href="@AddressUrl()" class="btn btn-primary btn-text btn-prev">お届け先一覧へもどる</a>

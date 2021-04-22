@@ -3,17 +3,6 @@
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     var hasErrors = viewData.Errors.Any();
 
-    var ActionText = new Dictionary<PaymentMethod, string> {
-        [PaymentMethod.External] = "注文を確定して決済へ進む",
-        [PaymentMethod.CashOnDelivery] = "注文を完了する",
-        [PaymentMethod.Offsite] = "注文を完了する",
-        [PaymentMethod.Offline] = "注文を完了する",
-        [PaymentMethod.PointOnly] = "注文を完了する",
-        [PaymentMethod.Token] = "注文を完了する",
-        [PaymentMethod.Cvs] = "注文を完了する",
-        [PaymentMethod.None] = "注文を完了する",
-    };
-
     ViewBag.PageTitle = "カート - 内容確認";
 }
 <main class="section content">
@@ -113,7 +102,11 @@
             </dd>
         </dl>
         <div class="block block-vertical">
-            <button type="submit" class="btn btn-action btn-large">@ActionText[cart.PaymentMethod]</button>
+            @if (cart.PaymentMethod == PaymentMethod.External) {
+                <button type="submit" class="btn btn-action btn-large btn-next">注文を確定して決済へ進む</button>
+            } else {
+                <button type="submit" class="btn btn-action btn-large">注文を完了する</button>
+            }
             <a href="@PurchasePaymentUrl(cart.CartDefinition.CartId)" class="btn btn-primary btn-text btn-prev">お支払い方法を変更する</a>
         </div>
     </form>

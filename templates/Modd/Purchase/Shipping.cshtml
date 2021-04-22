@@ -60,7 +60,7 @@
             })
             
             <div class="block block-horizontail block-wrap">
-                <button type="submit" class="btn btn-action btn-large" name="next" value="go">お支払い方法の指定に進む</button>
+                <button type="submit" class="btn btn-action btn-large btn-next" name="next" value="go">お支払い方法の指定に進む</button>
                 <button type="submit" class="btn btn-primary btn-ghost btn-large" name="next_copy" value="go">お客様住所へお届け</button>
             </div>
             <div class="block">
@@ -70,7 +70,7 @@
 
         <div id="destination" @when(hasDestination, "ic-get-from=#destination-tmpl ic-trigger-on=load")>
             <div class="block block-horizontal block-wrap">
-                <button type="submit" class="btn btn-action btn-large" name="@(hasDestination?"next":"next_copy")" value="go">お支払い方法の指定に進む</button>
+                <button type="submit" class="btn btn-action btn-large btn-next" name="@(hasDestination?"next":"next_copy")" value="go">お支払い方法の指定に進む</button>
                 <button type="button" class="btn btn-primary btn-ghost btn-large" ic-get-from="#destination-tmpl" ic-target="#destination" ic-swap-style="replace">お届け先を別に指定する</button>
             </div>
             <div class="block">
