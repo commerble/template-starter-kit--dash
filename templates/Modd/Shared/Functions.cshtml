@@ -513,7 +513,7 @@
 @helper RenderCheckPoint() {
     var routes = new [] { "Top", "Search", "Tag", "Category", "Landing", "Notice" };
     if (routes.Contains((string)ViewBag.RouteName)) {
-        <script>updateCheckPoint();</script>
+        <script>window.updateCheckPoint();</script>
     }
 }
 

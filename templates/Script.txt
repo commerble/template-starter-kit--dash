@@ -101,13 +101,13 @@ if (window.$) {
     })
 }
 
-function backToCheckPoint() {
+window.backToCheckPoint = function() {
     const url = decodeURIComponent(document.cookie.split(';').filter(str => str.startsWith('checkpoint')).map(str => str.substring('checkpoint='.length))[0] || '')
     const root = document.querySelector('meta[name=x-root]').content;
     location = url ? url : root;
 }
 
-function updateCheckPoint() {
+window.updateCheckPoint = function() {
     const root = document.querySelector('meta[name=x-root]').content;
     document.cookie = 'checkpoint=' + encodeURIComponent(location.href) + ';path=' + root; 
 }
