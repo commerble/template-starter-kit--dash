@@ -1,89 +1,65 @@
-$.fn.showRecalc = function() {
-    $('[name=recalc]').show().siblings().hide();
-}
+if (window.$) {
+    $.fn.showRecalc = function() {
+        $('[name=recalc]').show().siblings().hide();
+    }
 
-$.fn.toZenkaku = function() {
-    $(this).val(($(this).val() || '').replace(/[A-Za-z0-9&\(\)\- ]/g, function (s) {
-        return s === ' ' ? '　' : String.fromCharCode(s.charCodeAt(0) + 65248);
-    }));
-}
+    $.fn.toZenkaku = function() {
+        $(this).val(($(this).val() || '').replace(/[A-Za-z0-9&\(\)\- ]/g, function (s) {
+            return s === ' ' ? '　' : String.fromCharCode(s.charCodeAt(0) + 65248);
+        }));
+    }
 
-$.fn.removeSpace = function() {
-    $(this).val(($(this).val() || '').replace(/\s/g, ''));
-}
+    $.fn.removeSpace = function() {
+        $(this).val(($(this).val() || '').replace(/\s/g, ''));
+    }
 
-$.fn.validateForce = function() {
-    $(this).closest('form').validate().element(this);
-}
+    $.fn.validateForce = function() {
+        $(this).closest('form').validate().element(this);
+    }
 
-$.fn.changePaymentDetail = function() {
-    const value = $(this).val();
-    const $target = $('[name="OrderCustomer.PaymentDetail"]');
-    $target.val($target.attr('data-' + value.toLowerCase()));
-}
-$.fn.openAccordion = function() {
-    const value = $(this).val();
-    const $target = $('[data-accordion="' + value + '"]');
-    $target.siblings('.field-note').hide();
-    $target.show();
-}
+    $.fn.changePaymentDetail = function() {
+        const value = $(this).val();
+        const $target = $('[name="OrderCustomer.PaymentDetail"]');
+        $target.val($target.attr('data-' + value.toLowerCase()));
+    }
+    $.fn.openAccordion = function() {
+        const value = $(this).val();
+        const $target = $('[data-accordion="' + value + '"]');
+        $target.siblings('.field-note').hide();
+        $target.show();
+    }
 
-$.fn.togglePasswordMask = function () {
-    const show = $(this).attr('data-show');
-    const hide = $(this).attr('data-hide');
-    $(this).text($(this).text() == show ? hide : show);
-    $(this).siblings('input').each(function(i,input){
-        input.type = input.type == 'password' ? 'text' : 'password';
+    $.fn.togglePasswordMask = function () {
+        const show = $(this).attr('data-show');
+        const hide = $(this).attr('data-hide');
+        $(this).text($(this).text() == show ? hide : show);
+        $(this).siblings('input').each(function(i,input){
+            input.type = input.type == 'password' ? 'text' : 'password';
+        })
+    }
+    $('body').on('click', 'a[data-gtm]', function(e) {
+        if (window.google_tag_manager) {
+            e.preventDefault();
+        }
+        const href = $(this).attr('href');
+        const json = $(this).attr('data-gtm');
+        const data = JSON.parse(json);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(Object.assign(data, {
+            eventCallback: function() {
+                document.location = href;
+            }
+        }));
     })
-}
-$('body').on('click', 'a[data-gtm]', function(e) {
-    if (window.google_tag_manager) {
-        e.preventDefault();
-    }
-    const href = $(this).attr('href');
-    const json = $(this).attr('data-gtm');
-    const data = JSON.parse(json);
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(Object.assign(data, {
-        eventCallback: function() {
-            document.location = href;
-        }
-    }));
-})
 
-$('body').on('click', '[type="submit"][data-gtm]', function(e) {
-    if (window.google_tag_manager) {
-        e.preventDefault();
-    }
-    const name = $(this).attr('name');
-    const value = $(this).val();
-    const form = $(this).closest('form');
-    const json = $(this).attr('data-gtm');
-    const data = JSON.parse(json);
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(Object.assign(data, {
-        eventCallback: function() {
-            const input = document.createElement('input');
-            input.type = "hidden";
-            input.name = name,
-            input.value = value;
-            form.append(input);
-            form.submit();
-        }
-    }));
-})
-
-$('body').on('click', '[type="submit"][data-gtm-radio]', function(e) {
-    const radio = $(this).attr('data-gtm-radio');
-    const checked = $('[name="' + radio + '"]:checked');
-    if (checked.length > 0) {
+    $('body').on('click', '[type="submit"][data-gtm]', function(e) {
         if (window.google_tag_manager) {
             e.preventDefault();
         }
         const name = $(this).attr('name');
         const value = $(this).val();
         const form = $(this).closest('form');
-        const json = checked.attr('data-gtm');
+        const json = $(this).attr('data-gtm');
         const data = JSON.parse(json);
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push(Object.assign(data, {
@@ -96,8 +72,34 @@ $('body').on('click', '[type="submit"][data-gtm-radio]', function(e) {
                 form.submit();
             }
         }));
-    }
-})
+    })
+
+    $('body').on('click', '[type="submit"][data-gtm-radio]', function(e) {
+        const radio = $(this).attr('data-gtm-radio');
+        const checked = $('[name="' + radio + '"]:checked');
+        if (checked.length > 0) {
+            if (window.google_tag_manager) {
+                e.preventDefault();
+            }
+            const name = $(this).attr('name');
+            const value = $(this).val();
+            const form = $(this).closest('form');
+            const json = checked.attr('data-gtm');
+            const data = JSON.parse(json);
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push(Object.assign(data, {
+                eventCallback: function() {
+                    const input = document.createElement('input');
+                    input.type = "hidden";
+                    input.name = name,
+                    input.value = value;
+                    form.append(input);
+                    form.submit();
+                }
+            }));
+        }
+    })
+}
 
 function backToCheckPoint() {
     const url = decodeURIComponent(document.cookie.split(';').filter(str => str.startsWith('checkpoint')).map(str => str.substring('checkpoint='.length))[0] || '')
