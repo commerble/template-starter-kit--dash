@@ -51,7 +51,7 @@
     ViewBag.Name = vm.Name;
 
     ViewBag.MetaTitle = vm.MetaTitle ?? vm.Name;
-    ViewBag.PageDescription = vm.MetaDescription;
+    ViewBag.MetaDescription = vm.MetaDescription;
     ViewBag.OgImage = vm.MetaImage;
 }
 @Raw(vm.Body ?? string.Empty)

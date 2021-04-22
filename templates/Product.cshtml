@@ -225,7 +225,7 @@
     }
 
     ViewBag.MetaTitle = vm.MetaTitle ?? vm.Name;
-    ViewBag.PageDescription = vm.MetaDescription;
+    ViewBag.MetaDescription = vm.MetaDescription;
     ViewBag.OgImage = vm.MetaImage;
     ViewBag.JsonLd = new[] {
         new Dictionary<string, object> {
@@ -257,7 +257,7 @@
             ["@type"] = "Product",
             ["name"] = vm.Name,
             ["image"] = vm.Images,
-            ["description"] = ViewBag.PageDescription,
+            ["description"] = ViewBag.MetaDescription,
             ["sku"] = vm.PriceProduct?.ExternalId1,
             ["mpn"] = vm.PriceProduct?.ExternalId1, // Manufacturer Part Number 製品番号
             ["category"] = "Category",

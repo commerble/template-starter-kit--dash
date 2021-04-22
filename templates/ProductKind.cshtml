@@ -40,7 +40,7 @@
     }
 
     ViewBag.MetaTitle = vm.MetaTitle ?? vm.Name ?? "カテゴリ";
-    ViewBag.PageDescription = vm.MetaDescription;
+    ViewBag.MetaDescription = vm.MetaDescription;
     ViewBag.OgImage = vm.MetaImage;
     ViewBag.JsonLd = new[] {
         new Dictionary<string, object> {
