@@ -417,9 +417,9 @@
 @helper RenderHeader() {
     <header class="gheader content-wide">
         <h1 class="logo"><a href="@Href("~/")" class="image image-base"><img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22"></a></h1>
-        <a href="@Href("~/Member/Favorite")" class="gheader-link"><i class="icon-dash-heart"></i><span class="sp-hide">お気に入り</span></a>
-        <a href="@Href("~/Member/Index")" class="gheader-link"><i class="icon-dash-user"></i><span class="sp-hide">マイページ</span></a>
-        <a href="@Href("~/Order/Cart")" class="gheader-link"><i class="icon-dash-cart"></i><span class="sp-hide">カート</span></a>
+        <a href="@Href("~/Member/Favorite")" title="お気に入り" class="gheader-link"><i class="icon-dash-heart"></i><span class="sp-hide">お気に入り</span></a>
+        <a href="@Href("~/Member/Index")" title="マイページ" class="gheader-link"><i class="icon-dash-user"></i><span class="sp-hide">マイページ</span></a>
+        <a href="@Href("~/Order/Cart")" title="カート" class="gheader-link"><i class="icon-dash-cart"></i><span class="sp-hide">カート</span></a>
     </header>
 }
 

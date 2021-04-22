@@ -1,6 +1,6 @@
 .gfooter {
     margin-top: $unit * 8;
-    background-color: $color-border;
+    background-color: $color-aside;
     padding: $unit * 4;
     & > ul {
         display: flex;
@@ -8,12 +8,12 @@
         justify-content: space-evenly;
         & > li {
             font-size: $font-size-default * 0.9;
-            line-height: $font-size-default * 4;
-            color: lighten($color-primary, 50%);
+            color: lighten($color-primary, 40%);
             &>ul {
+                margin-top: $unit * 2;
                 &>li {
                     font-size: $font-size-default;
-                    line-height: $font-size-default * 2;
+                    // line-height: normal;
                 }
             }
         }
@@ -27,6 +27,8 @@
         color: $color-primary;
         text-decoration: none;
         opacity: 1;
+        padding: $unit * 1.5 0;
+        display: inline-block;
     }
     a:hover {
         opacity: .5;
