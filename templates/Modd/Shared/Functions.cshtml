@@ -355,6 +355,40 @@
     @:@Raw(string.Join("\n", parts))
 }
 
+@helper RenderMeta() {
+    var brand = GetConfigValue("BRAND_NAME"); 
+    var defaultTitle = $"{ViewBag.RouteName} | {brand}";
+    var defaultDescription = GetConfigValue("BRAND_DESCRIPTION");
+    var defaultImage = GetConfigValue("BRAND_IMAGE_URL");
+    var requestUrl = Page.Template.SecuredHost(true) + Page.Request.Path;
+
+    var title = string.IsNullOrWhiteSpace(ViewBag.MetaTitle) ? defaultTitle : $"{ViewBag.MetaTitle} | {brand}";
+    var description = string.IsNullOrWhiteSpace(ViewBag.MetaDescription) ? defaultDescription : (string)ViewBag.MetaDescription;
+    var image = string.IsNullOrWhiteSpace(ViewBag.MetaImage) ? defaultImage : (string)ViewBag.MetaImage;
+    
+    var ogType = string.IsNullOrWhiteSpace(ViewBag.ogType) ? "article" : (string)ViewBag.ogType; 
+    var ogTitle = string.IsNullOrWhiteSpace(ViewBag.OgTitle) ? title : (string)ViewBag.OgTitle;
+    var ogDescription = string.IsNullOrWhiteSpace(ViewBag.OgDescription) ? description : (string)ViewBag.OgDescription;
+    var ogImage = string.IsNullOrWhiteSpace(ViewBag.OgImage) ? image : (string)ViewBag.OgImage;
+    var ogUrl = string.IsNullOrWhiteSpace(ViewBag.OgUrl) ? requestUrl : (string)ViewBag.OgUrl;
+    var canonical = string.IsNullOrWhiteSpace(ViewBag.Canonical) ? requestUrl : (string)ViewBag.Canonical;
+
+    <title>@title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1; IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="x-root" content="@Href("~/")">
+    <meta name="description" content="@description">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:title" content="@ogTitle">
+    <meta property="og:url" content="@ogUrl">
+    <meta property="og:description" content="@ogDescription">
+    <meta property="og:type" content="@ogType">
+    <meta property="og:image" content="@ogImage">
+    <link rel="canonical" href="@canonical">
+}
+
 @helper RenderJsonLD() {
     if (ViewBag.JsonLd != null) {
     <script type="application/ld+json">@Raw(Jil.JSON.SerializeDynamic(ViewBag.JsonLd))</script>
