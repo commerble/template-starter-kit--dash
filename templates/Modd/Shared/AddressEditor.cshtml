@@ -76,7 +76,7 @@
                 data_val = "true",
                 data_val_required = "郵便番号は必須項目です。",
             })
-            <button class="btn" @(commandMethod)="@commandUrl" ic-target="#@(prefix)zipsearch" ic-include='{"@command":"@command"}'>検索</button>
+            <button type="button" class="btn" @(commandMethod)="@commandUrl" ic-target="#@(prefix)zipsearch" ic-include='{"@command":"@command"}'>検索</button>
         </div>
         <div id="@(prefix)zipsearch"></div>
         @ValidationMessageFor(target + "ZipCode")

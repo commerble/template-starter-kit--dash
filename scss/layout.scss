@@ -18,6 +18,10 @@ hr {
     margin-bottom: $unit * 8;
 }
 
+.hide {
+    display: none !important;
+}
+
 .sp-hide {
     @include mq($bp-sp) {
         display: none;

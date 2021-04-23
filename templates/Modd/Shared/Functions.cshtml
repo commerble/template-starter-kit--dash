@@ -10,6 +10,7 @@
     else {
         Page.Response.Cache.SetExpires(Next);
     }
+    Page.Response.Headers.Add("Content-Security-Policy", GetConfigValue("CONTENT_SECURITY_POLICY"));
 }
 @functions {
     // -- プレビュー
@@ -396,9 +397,10 @@
 }
 
 @helper RenderDataLayer() {
+    <script type="application/json" id="datalayer-initial">@Raw(Jil.JSON.SerializeDynamic(ViewBag.DataLayer))</script>
     <script>
         (function() {
-            var data = @Raw(Jil.JSON.SerializeDynamic(ViewBag.DataLayer));
+            var data = JSON.parse(document.getElementById("datalayer-initial").innerHTML);
             window.dataLayer = window.dataLayer || [];
             if (!Array.isArray(data)) { data = [data]; }
             for (var i = 0; i < data.length; i++) { window.dataLayer.push(data[i]); }
