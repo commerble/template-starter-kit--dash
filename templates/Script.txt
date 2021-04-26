@@ -228,5 +228,5 @@ window.backToCheckPoint = function() {
 
 window.updateCheckPoint = function() {
     const root = document.querySelector('meta[name=x-root]').content;
-    document.cookie = 'checkpoint=' + encodeURIComponent(location.href) + ';path=' + root; 
+    document.cookie = 'checkpoint=' + encodeURIComponent(location.href) + ';path=' + root + ';samesite=Strict'; 
 }
