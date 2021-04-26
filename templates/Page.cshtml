@@ -1,6 +1,8 @@
 @functions {
     public class ViewModel {
         public string Layout { get; set; }
+        public string Code { get; set; }
+        public string Kind { get; set; }
         public string Name { get; set; }
         public string Hero { get; set; }
         public string Title { get; set; }
@@ -23,6 +25,8 @@
                 && (p.IsPublished || args.IsPreview)
                 select new ViewModel {
                     Layout = k.Layout,
+                    Code = p.Code,
+                    Kind = p.Kind,
                     Name = p.Name,
                     Hero = p.Hero,
                     Title = p.Title,
@@ -53,5 +57,7 @@
     ViewBag.MetaTitle = vm.MetaTitle ?? vm.Name;
     ViewBag.MetaDescription = vm.MetaDescription;
     ViewBag.MetaImage = vm.MetaImage;
+
+    ViewBag.Canonical = PageUrl(vm.Code, vm.Kind);
 }
 @Raw(vm.Body ?? string.Empty)
