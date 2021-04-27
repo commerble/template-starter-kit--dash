@@ -24,11 +24,11 @@ hr {
 
 .sp-hide {
     @include mq($bp-sp) {
-        display: none;
+        display: none !important;
     }
 }
 .pc-hide {
-    display: none;
+    display: none !important;
     @include mq($bp-sp) {
         display: initial;
     }
