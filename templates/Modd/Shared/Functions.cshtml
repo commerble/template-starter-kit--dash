@@ -106,16 +106,16 @@
         return url + sep + $"_rc={Page.Template.RestartCounter}";
     }
     string IconUrl(string url) {
-        return ImageUrl(url, "https://via.placeholder.com/270x270?text=NO%20IMG");
+        return ImageUrl(url, "https://fakeimg.pl/270x270/?text=NO%20IMG");
     }
     string ThumbnailUrl(string url) {
-        return ImageUrl(url, "https://via.placeholder.com/270x270?text=NO%20IMG");
+        return ImageUrl(url, "https://fakeimg.pl/270x270/?text=NO%20IMG");
     }
     string LargeImageUrl(string url) {
-        return ImageUrl(url, "https://via.placeholder.com/640x640?text=NO%20IMG");
+        return ImageUrl(url, "https://fakeimg.pl/640x640/?text=NO%20IMG");
     }
     string SmallImageUrl(string url) {
-        return ImageUrl(url, "https://via.placeholder.com/64x64?text=NO%20IMG");
+        return ImageUrl(url, "https://fakeimg.pl/64x64/?text=NO%20IMG");
     }
     string PageUrl(string code, string kind) {
         return Page.Url.RouteUrl(SitePageKindRoutes[kind], new { Code = code?.ToLower() });
@@ -421,7 +421,7 @@
 
 @helper RenderHeader() {
     <header class="gheader content-wide">
-        <h1 class="logo"><a href="@Href("~/")" class="image image-base"><img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22"></a></h1>
+        <h1 class="logo"><a href="@Href("~/")" class="image image-base"><img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22" crossorigin="anonymous"></a></h1>
         <a href="@FavoriteUrl()" title="お気に入り" class="gheader-link"><i class="icon-dash-heart"></i><span class="sp-hide">お気に入り</span></a>
         <a href="@MyPageUrl()" title="マイページ" class="gheader-link"><i class="icon-dash-user"></i><span class="sp-hide">マイページ</span></a>
         <a href="@CartUrl()" title="カート" class="gheader-link"><i class="icon-dash-cart"></i><span class="sp-hide">カート</span></a>

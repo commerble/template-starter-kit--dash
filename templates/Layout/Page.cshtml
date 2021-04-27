@@ -15,7 +15,7 @@
     @RenderGlobalNav()
     @if (!string.IsNullOrEmpty(ViewBag.Hero as string)) {
         <div class="image image-hero">
-            <img src="@ImageUrl(ViewBag.Hero)" alt="@ViewBag.Name" loading="lazy" decoding="async">
+            <img src="@ImageUrl(ViewBag.Hero)" alt="@ViewBag.Name" loading="lazy" decoding="async" crossorigin="anonymous">
         </div>
     }
     <article class="article content">
