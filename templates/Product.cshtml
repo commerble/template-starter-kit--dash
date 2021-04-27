@@ -350,7 +350,7 @@
                                     else {
                                         <div class="product-icon icon-small">
                                             <div class="image image-square">
-                                                <img src="@IconUrl(colorGroup.First().Icon)" alt="@colorGroup.Key" loading="lazy" decoding="async">
+                                                <img src="@IconUrl(colorGroup.First().Icon)" alt="@colorGroup.Key" loading="lazy" decoding="async" crossorigin="anonymous">
                                             </div>
                                         </div>
                                         @colorGroup.Key
@@ -395,7 +395,8 @@
                                                     <input type="radio" name="item" value="@sku.Id"
                                                         data-val="true"
                                                         data-val-required="商品を選択してください。"
-                                                        data-gtm="@Jil.JSON.Serialize(gtm)" >
+                                                        data-gtm="@Jil.JSON.Serialize(gtm)"
+                                                        aria-label="@sku.Color @sku.Size">
                                                     <span class="text"></span>
                                                 </label>
                                             }
@@ -424,7 +425,7 @@
         <details class="text-right">
             <summary class="btn btn-primary btn-text">埋め込みコード使用してシェアする</summary>
             <div class="block">
-                <textarea rows="5">@vm.Embed</textarea>
+                <textarea rows="5" readonly aria-label="埋め込みコード">@vm.Embed</textarea>
             </div>
         </details>
     </div>
@@ -432,7 +433,7 @@
         <ul class="carousel-images">
             @foreach(var (img, index) in vm.Images.Select((img, index) => (img, index))) {
                 <li id="carousel-frame-@index" class="carousel-frame image image-square">
-                    <img src="@LargeImageUrl(img.LargeUrl)" alt="@(img.Alt ?? vm.Name)" loading="lazy" decoding="async">
+                    <img src="@LargeImageUrl(img.LargeUrl)" alt="@(img.Alt ?? vm.Name)" loading="lazy" decoding="async" crossorigin="anonymous">
                 </li>
             }
         </ul>
@@ -440,7 +441,7 @@
             @foreach(var (img, index) in vm.Images.Select((img, index) => (img, index))) {
                 <a href="#carousel-frame-@index" target="_self">
                     <div class="image image-square">
-                        <img src="@SmallImageUrl(img.SmallUrl)" alt="@(img.Alt ?? vm.Name)" width="64" height="64" loading="lazy" decoding="async">
+                        <img src="@SmallImageUrl(img.SmallUrl)" alt="@(img.Alt ?? vm.Name)" width="64" height="64" loading="lazy" decoding="async" crossorigin="anonymous">
                     </div>
                 </a>
             }
@@ -494,11 +495,3 @@
     )
 </aside>
 }
-<div class="section content">
-    <details class="text-center">
-        <summary class="badge">埋め込みコード</summary>
-        <div class="block">
-            <textarea rows="5">@vm.Embed</textarea>
-        </div>
-    </details>
-</div>
