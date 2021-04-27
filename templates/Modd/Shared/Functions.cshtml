@@ -10,7 +10,10 @@
     else {
         Page.Response.Cache.SetExpires(Next);
     }
-    Page.Response.Headers.Add("Content-Security-Policy", GetConfigValue("CONTENT_SECURITY_POLICY"));
+    var csp = GetConfigValue("CONTENT_SECURITY_POLICY");
+    if (!string.IsNullOrEmpty(csp)) {
+        Page.Response.Headers.Add("Content-Security-Policy", csp);
+    }
 }
 @functions {
     // -- プレビュー
