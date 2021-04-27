@@ -440,7 +440,7 @@
             @foreach(var (img, index) in vm.Images.Select((img, index) => (img, index))) {
                 <a href="#carousel-frame-@index" target="_self">
                     <div class="image image-square">
-                        <img src="@SmallImageUrl(img.SmallUrl)" width="64" height="64" loading="lazy" decoding="async">
+                        <img src="@SmallImageUrl(img.SmallUrl)" alt="@(img.Alt ?? vm.Name)" width="64" height="64" loading="lazy" decoding="async">
                     </div>
                 </a>
             }
