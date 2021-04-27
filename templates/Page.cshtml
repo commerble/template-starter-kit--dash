@@ -58,6 +58,6 @@
     ViewBag.MetaDescription = vm.MetaDescription;
     ViewBag.MetaImage = vm.MetaImage;
 
-    ViewBag.Canonical = PageUrl(vm.Code, vm.Kind);
+    ViewBag.Canonical = Page.Template.SecuredHost(true) + PageUrl(vm.Code, vm.Kind);
 }
 @Raw(vm.Body ?? string.Empty)
