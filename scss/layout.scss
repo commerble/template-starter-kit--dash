@@ -30,7 +30,7 @@ hr {
 .pc-hide {
     display: none !important;
     @include mq($bp-sp) {
-        display: initial;
+        display: initial !important;
     }
 }
 
