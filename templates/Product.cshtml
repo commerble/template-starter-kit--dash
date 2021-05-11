@@ -10,6 +10,8 @@
         public string MetaTitle { get ;set; }
         public string MetaDescription { get ;set; }
         public string MetaImage { get ;set; }
+        public string Thumbnail { get ;set; }
+        public string Icon { get ;set; }
         public int? PriceProductId { get ;set; }
         public bool? HasMultiplePrice { get ;set; }
         public List<ImageViewModel> Images { get; set; }
@@ -95,6 +97,8 @@
                     MetaTitle = p.MetaTitle,
                     MetaDescription = p.MetaDescription,
                     MetaImage = p.MetaImage,
+                    Thumbnail = p.Thumbnail,
+                    Icon = p.Icon,
                     PriceProductId = p.PriceProductId,
                     HasMultiplePrice = p.HasMultiplePrice
                 }
@@ -223,7 +227,7 @@
 
     ViewBag.MetaTitle = vm.MetaTitle ?? vm.Name;
     ViewBag.MetaDescription = vm.MetaDescription;
-    ViewBag.MetaImage = vm.MetaImage;
+    ViewBag.MetaImage = vm.MetaImage ?? vm.Thumbnail ?? vm.Icon ?? vm.Images.FirstOrDefault()?.LargeUrl;
     ViewBag.JsonLd = new[] {
         new Dictionary<string, object> {
             ["@context"] = "https://schema.org/",
