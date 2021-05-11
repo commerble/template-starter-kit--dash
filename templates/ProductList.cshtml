@@ -20,6 +20,7 @@
         public string KindIcon { get; set; }
         public string Name { get; set; }
         public string Thumbnail { get; set; }
+        public string Icon { get; set; }
         public int? PriceProductId { get; set; }
         public bool? HasMultiplePrice { get; set; }
         public decimal? UnitPriceWithTax { get; set; }
@@ -138,6 +139,7 @@
                     KindIcon = k.Icon,
                     Name = p.Name,
                     Thumbnail = p.Thumbnail,
+                    Icon = p.Icon,
                     PriceProductId = p.PriceProductId,
                     HasMultiplePrice = p.HasMultiplePrice,
                     PriceProductExternalId1 = s.ExternalId1,
@@ -217,7 +219,7 @@
                 item.Name,
                 item.KindName,
                 item.KindIcon,
-                item.Thumbnail,
+                item.Thumbnail ?? item.Icon,
                 item.UnitPriceWithTax,
                 item.HasMultiplePrice,
                 gtm: new {
