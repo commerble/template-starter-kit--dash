@@ -124,7 +124,7 @@
         <dl class="field optional">
             <dt class="field-title">備考内容</dt>
             <dd class="field-body">
-                @Page.Html.TextArea("ServiceValues[Remarks]", new {
+                @Page.Html.TextArea("ServiceValues[Remarks]", payment.ServiceValues.ContainsKey("Remarks") ? payment.ServiceValues["Remarks"] : null, new {
                     data_val = "true",
                     data_val_regex = "備考内容に半角の「<」「>」「&#」を含めることはできません。",
                     data_val_regex_pattern = "^(?!(.|\n|\r)*(&#|[<>]))(.|\n|\r)*$"
