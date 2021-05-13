@@ -23,8 +23,18 @@
                 <p class="field-note">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
             </dd>
         </dl>
+        <dl class="field optional">
+            <dt class="field-title">備考内容</dt>
+            <dd class="field-body">
+                @Page.Html.TextArea("ServiceValues[Remarks]", customer.ServiceValues.ContainsKey("Remarks") ? customer.ServiceValues["Remarks"] : null, new {
+                    data_val = "true",
+                    data_val_regex = "備考内容に半角の「<」「>」「&#」を含めることはできません。",
+                    data_val_regex_pattern = "^(?!(.|\n|\r)*(&#|[<>]))(.|\n|\r)*$"
+                })
+            </dd>
+        </dl>
         <div class="block block-vertical">
-            <button type="submit" class="btn btn-action btn-large btn-next" name="customer" value="put">メールアドレスを変更する</button>
+            <button type="submit" class="btn btn-action btn-large btn-next" name="customer" value="put">お客様情報を変更する</button>
             <a href="@HistoryUrl(customer.Cart.OrderId)" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
         </div>
     </form>
