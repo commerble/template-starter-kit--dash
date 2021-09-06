@@ -318,7 +318,7 @@
         <h1 class="title text-center">@PrintTitleOrName(vm.Title, vm.Name)</h1>
         <p class="product-price text-center">
             @PrintPrice(vm.PriceProduct?.UnitPriceWithTax, vm.HasMultiplePrice)
-            @PrintPrice(vm.PriceProduct?.Point, vm.HasMultiplePrice)
+            @PrintPoint(vm.PriceProduct?.Point, vm.HasMultiplePrice)
         </p>
         <div class="block block-horizontal block-wrap">
             <a href="@KindUrl(vm.Kind)" class="badge">
