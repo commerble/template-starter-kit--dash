@@ -207,7 +207,9 @@
 
         if (vm.PriceProductId.HasValue) {
             vm.PriceProduct = vm.Products.Where(p => p.Id == vm.PriceProductId).FirstOrDefault();
-            vm.PriceProduct.Point = (int)vm.PriceProduct.UnitPriceWithTax * Page.Template.GetPointChargeRate(vm.PriceProductId.Value) / 100;
+            if (vm.PriceProduct != null) {
+                vm.PriceProduct.Point = (int)vm.PriceProduct.UnitPriceWithTax * Page.Template.GetPointChargeRate(vm.PriceProductId.Value) / 100;
+            }
         }
 
         vm.Campaigns = vm.Products.SelectMany(p => Page.Template.GetProductCampaigns(p.Id).Select(c => c.CampaignName)).Distinct().ToArray();
@@ -339,9 +341,9 @@
         @if (vm.Campaigns.Length > 0) {
             <p class="text-center">キャンペーン開催中：@string.Join(",", vm.Campaigns)</p>
         }
-        <hr>
         <form action="@CartUrl()" method="get">
              @if (vm.Products.Count > 1) {
+                <hr>
                 <table class="product-skus">
                     <thead>
                         <tr>
@@ -414,12 +416,14 @@
                 @ValidationMessageFor("item")
             }
             else {
-                <input type="hidden" name="item" value="1">
+                <input type="hidden" name="item" value="@(vm.Products?.FirstOrDefault()?.Id)">
             }
             <hr>
             <div class="block block-vertical">
                 <button type="submit" class="btn btn-primary btn-large full" @when(!vm.Products.Any(sku => !sku.Stockout), "disabled")>カートに入れる</button>
-                <a href="@FavoriteCreateUrl(vm.PriceProductId.Value)" class="btn btn-primary btn-text">お気に入りに追加する</a>
+                @if (vm.PriceProductId.HasValue) {
+                    <a href="@FavoriteCreateUrl(vm.PriceProductId.Value)" class="btn btn-primary btn-text">お気に入りに追加する</a>
+                }
             </div>
         </form>
     </div>
