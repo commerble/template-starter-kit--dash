@@ -51,7 +51,7 @@
     </div>
     <h2 class="h-underline">商品分類</h2>
     <ul class="facet">
-        @foreach(var group in vm.GroupedKinds) {
+        @foreach(var group in vm.GroupedKinds.Where(o => !string.IsNullOrEmpty(o.Key))) {
             <li class="facet-group">
                 <details @when(vm.Open || group.Any(kind => vm.CheckedKinds.Contains(kind.Code)), "open")>
                     <summary>@group.Key</summary>
@@ -67,6 +67,16 @@
                     </ul>
                 </details>
             </li>
+        }
+        @foreach(var group in vm.GroupedKinds.Where(o => string.IsNullOrEmpty(o.Key))) {
+            foreach(var kind in group) {
+                <li class="facet-item">
+                    <label>
+                        <input type="checkbox" name="k" value="@kind.Code" @when(vm.CheckedKinds.Contains(kind.Code), "checked")>
+                        <span class="text">@if (!string.IsNullOrEmpty(kind.Icon)) { <i class="facet-icon @kind.Icon"></i> }@kind.Name</span>
+                    </label>
+                </li>
+            }
         }
     </ul>
     <hr>
