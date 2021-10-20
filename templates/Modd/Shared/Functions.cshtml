@@ -61,7 +61,7 @@
             return _configs;
         }
     }
-    string GetConfigValue(string configKey, string defaultValue = null) => Configs.ContainsKey(configKey) ? Configs[configKey] : defaultValue;
+    string GetConfigValue(string configKey, string defaultValue = null) => Configs.ContainsKey(configKey) ? Configs[configKey] ?? defaultValue : defaultValue;
 
     // -- サイトページのルーティング規則をランタイムキャッシュで保持する。更新サイクルは1日（NextLongLong）
     Dictionary<string, string> _sitePageKindRoutes = null;
