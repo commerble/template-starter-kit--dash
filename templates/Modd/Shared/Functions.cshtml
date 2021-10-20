@@ -9,6 +9,7 @@
     }
     else {
         Page.Response.Cache.SetExpires(Next);
+        Page.Response.Cache.SetMaxAge(Next - DateTime.Now);
     }
     var csp = GetConfigValue("CONTENT_SECURITY_POLICY");
     if (!string.IsNullOrEmpty(csp)) {
