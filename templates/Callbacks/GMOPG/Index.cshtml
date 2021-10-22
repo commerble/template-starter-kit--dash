@@ -17,15 +17,16 @@
             from p in db.ProductPages
             join r in db.ProductRelations on p.Code equals r.ProductPageCode
             join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            join d in db.ProductDetails on r.ProductExternalId1 equals d.ExternalId1
             where productIds.Contains(s.Id)
             select new {
                 ProductId = s.Id,
                 p.Code,
                 p.Name,
-                s.Size,
-                s.Color,
+                d.Size,
+                d.Color,
                 PageIcon = p.Icon,
-                ProductIcon = s.Icon
+                ProductIcon = d.Icon
             }
         ).ToList();
         

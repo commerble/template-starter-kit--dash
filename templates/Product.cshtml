@@ -124,15 +124,16 @@
             Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
                 from r in db.ProductRelations
                 join p in db.Products on r.ProductExternalId1 equals p.ExternalId1
+                join d in db.ProductDetails on r.ProductExternalId1 equals d.ExternalId1
                 where r.ProductPageCode == args.code
                 orderby r.DisplayOrder
                 select new ProductViewModel {
                     Id = p.Id,
                     ExternalId1 = p.ExternalId1,
-                    Name = string.IsNullOrEmpty(p.DisplayName) ? p.Name : p.DisplayName,
-                    Size = p.Size,
-                    Color = p.Color,
-                    Icon = p.Icon,
+                    Name = string.IsNullOrEmpty(d.DisplayName) ? p.Name : d.DisplayName,
+                    Size = d.Size,
+                    Color = d.Color,
+                    Icon = d.Icon,
                     Stockout = p.Stockout,
                 }
             )).ToList();

@@ -35,6 +35,7 @@
         var productIds = cart.ExpandItems.Select(item => item.ProductId).ToArray();
         var products = Database.Query(new { Now, Next }, (db, args)=> 
             from s in db.Products
+            join d in db.ProductDetails on s.ExternalId1 equals d.ExternalId1
             join r in db.ProductRelations on s.ExternalId1 equals r.ProductExternalId1
             join p in db.ProductPages on r.ProductPageCode equals p.Code
             where productIds.Contains(s.Id)
@@ -43,11 +44,11 @@
                 p.Code,
                 p.Kind,
                 s.Name,
-                s.DisplayName,
-                s.Size,
-                s.Color,
+                d.DisplayName,
+                d.Size,
+                d.Color,
                 PageIcon = p.Icon,
-                ProductIcon = s.Icon
+                ProductIcon = d.Icon
             }
         ).ToList();
         

@@ -17,16 +17,17 @@
             from p in db.ProductPages
             join r in db.ProductRelations on p.Code equals r.ProductPageCode
             join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            join d in db.ProductDetails on r.ProductExternalId1 equals d.ExternalId1
             where s.Id == args.ProductId
             select new {
 				p.Code,
 				s.Name,
-                s.DisplayName,
-				s.Size,
-				s.Color,
+                d.DisplayName,
+				d.Size,
+				d.Color,
 				s.Id,
 				s.ExternalId1,
-				ProductIcon = s.Icon,
+				ProductIcon = d.Icon,
 				PageIcon = p.Icon
 			}
         ).FirstOrDefault());
