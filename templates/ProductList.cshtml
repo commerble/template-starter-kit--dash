@@ -59,14 +59,22 @@
                 where p.DisplayStart <= Now 
                    && (p.DisplayEnd == null || p.DisplayEnd > Now)
                    && (p.IsPublished || IsPreview)
-                select new {
-                    ProductPageCode = p.Code,
-                    ProductTagCode = r == null ? null : r.ProductTagCode.ToLower(),
-                    Kind = p.Kind.ToLower(),
-                    p.ReleaseDate,
-                    p.RankingIndex,
-                    p.RecommendIndex,
+                group new { p, r } by new { 
+                    p.Code, 
+                    p.Kind, 
+                    p.ReleaseDate, 
+                    p.RankingIndex, 
+                    p.RecommendIndex, 
                     p.PriceIndex
+                } into g
+                select new {
+                    ProductPageCode = g.Key.Code,
+                    Kind = g.Key.Kind.ToLower(),
+                    g.Key.ReleaseDate,
+                    g.Key.RankingIndex,
+                    g.Key.RecommendIndex,
+                    g.Key.PriceIndex,
+                    Tags = g.Select(o => o.r.ProductTagCode)
                 }
             );
 
@@ -74,19 +82,19 @@
             builder.Append(query => query.Where(p => checkedKinds.Contains(p.Kind)));
         }
 
-        foreach (var checkedGroupedTag in tags.Where(t => checkedTags.Contains(t.Code)).GroupBy(t => t.GroupCode??Guid.NewGuid().ToString())){
-            var checkedGroupedTagCodes = checkedGroupedTag.Select(t => t.Code).ToArray();
-            builder.Append(query => query.Where(p => checkedGroupedTagCodes.Contains(p.ProductTagCode)));
+        foreach (var checkedTagGrouping in tags.Where(t => checkedTags.Contains(t.Code)).GroupBy(t => t.GroupCode??Guid.NewGuid().ToString())){
+            var checkedTagGroupingCodes = checkedTagGrouping.Select(t => t.Code).ToArray();
+            builder.Append(query => query.Where(p => p.Tags.Any(t => checkedTagGroupingCodes.Contains(t))));
         }
 
         builder.Append(query => query.Select(p => new {
             p.ProductPageCode,
-            ProductTagCode = (string)null,
             Kind = (string)null,
             p.ReleaseDate,
             p.RankingIndex,
             p.RecommendIndex,
             p.PriceIndex,
+            Tags = (IEnumerable<string>)null,
         }).Distinct());
         
         switch (sort) {
