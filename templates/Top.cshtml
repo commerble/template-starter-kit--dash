@@ -40,6 +40,7 @@
     public class TagViewModel {
         public string Code { get; set; }
         public string Name { get; set; }
+        public string Title { get; set; }
     }
     ViewModel LoadViewModel() {
         var mainBanner = 
@@ -101,6 +102,7 @@
                 select new TagViewModel {
                     Code = t.Code.ToLower(),
                     Name = string.IsNullOrEmpty(t.DisplayName) ? t.Name : t.DisplayName,
+                    Title = t.Title,
                 }
             ).FirstOrDefault());
         var items =
@@ -226,7 +228,7 @@
 @if (vm.TopTag != null) {
     <section class="section content">
         <h1 class="h-border text-center">
-            季節の商品<br>春のオシャレコーデ
+            @Raw(vm.TopTag.Title)
         </h1>
         @TileList(vm.ProductPages, columns: 4, slot:(item, index) =>
             ProductTile(
