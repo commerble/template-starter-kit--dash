@@ -19,7 +19,6 @@
               items = lines.Select(l => new {
                   item_name = l.Product.Name,
                   item_id = l.Product.ExternalId1,
-                  item_category = l.Product.Categories.FirstOrDefault(c => c.CategoryGroupID == 2)?.ExternalCategoryName1,
                   price = (l.LinePrice / l.OrderAmount).ToString("F0"),
                   quantity = l.OrderAmount,
               })
