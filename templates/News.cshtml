@@ -21,10 +21,11 @@
             Database.Query(new { Now, Next, IsPreview }, (db, args) => (
                 from p in db.SitePages
                 join q in db.SitePagePriorities on p.Priority equals q.Priority
-                where p.Kind == "Notice" 
-                &&  p.DisplayStart <= args.Now
-                && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
-                && (p.IsPublished == true || args.IsPreview)
+                where p.Kind == "news" 
+                  &&  p.IsListed
+                  &&  p.DisplayStart <= args.Now
+                  && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                  && (p.IsPublished == true || args.IsPreview)
                 orderby p.Priority descending, p.DisplayStart descending
                 select new NoticeViewModel {
                     Code = p.Code,
@@ -65,14 +66,13 @@
     @TileList(vm.Notices, columns:3, slot:(notice, index) =>
         TopicTile(
             notice.Code,
-            notice.Kind,
             notice.Name,
             notice.Thumbnail,
             notice.PublishDate
         ))
     @if (vm.HasNextPage) {
         <div class="block">
-            <a href="@($"{Page.Request.Url.AbsolutePath}?page={vm.Page+1}")"
+            <a href="@($"{Page.Request.Url.AbsolutePath}?page={vm.Page+1}")" class="btn btn-ghost btn-primary btn-next">もっと見る</a>
         </div>
     }
 </main>

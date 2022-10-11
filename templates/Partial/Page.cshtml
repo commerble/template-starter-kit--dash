@@ -1,0 +1,151 @@
+@model dynamic
+@functions {
+    public class ViewModel {
+        public List<RelateProductViewModel> RelateProducts { get; set; }
+        public List<RelatePageViewModel> RelatePages { get; set; }
+    }
+
+    public class RelateProductViewModel {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Thumbnail { get; set; }
+        public int? PriceProductId { get; set; }
+        public bool? HasMultiplePrice { get; set; }
+
+        public decimal? UnitPriceWithTax { get; set; }
+        public string PriceProductExternalId1 { get; set; }
+        public string PriceProductName { get; set; }
+    }
+
+    public class RelatePageViewModel {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Thumbnail { get; set; }
+        public DateTime? PublishDate { get; set; }
+    }
+
+    ViewModel LoadViewModel() {
+        var code = Model.Code as string;
+        var vm = new ViewModel{};
+        
+        vm.RelateProducts =
+            Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
+                from r in db.PageRelations
+                join p in db.SitePages on r.RelateCode equals p.Code
+                join m in db.Search on p.Code equals m.PageCode into meta
+                from m in meta.DefaultIfEmpty()
+                join s in db.Products on m.PriceProductId equals s.Id into sku
+                from s in sku.DefaultIfEmpty()
+                where r.PageCode == args.code
+                  &&  p.Kind == "product"
+                  &&  p.DisplayStart <= args.Now
+                  && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                  && (p.IsPublished || args.IsPreview)
+                orderby m.RecommendIndex descending, m.RankingIndex
+                select new RelateProductViewModel {
+                    Code = p.Code,
+                    Name = p.Name,
+                    Thumbnail = p.Thumbnail,
+                    HasMultiplePrice = m.HasMultiplePrice,
+                    PriceProductId = m.PriceProductId,
+                    PriceProductExternalId1 =  s.ExternalId1,
+                    PriceProductName = s.Name,
+                }
+            ).Take(12)).ToList();
+
+        vm.RelatePages =
+            Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
+                from r in db.PageRelations
+                join p in db.SitePages on r.RelateCode equals p.Code
+                where r.PageCode == args.code
+                  &&  p.Kind != "product"
+                  &&  p.DisplayStart <= args.Now
+                  && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                  && (p.IsPublished || args.IsPreview)
+                orderby p.Priority descending, p.DisplayOrder
+                select new RelatePageViewModel {
+                    Code = p.Code,
+                    Name = p.Name,
+                    Thumbnail = p.Thumbnail,
+                    PublishDate = p.PublishDate
+                }
+            )).ToList();
+        
+        foreach (var p in vm.RelateProducts) {
+            if (p.PriceProductId.HasValue) {
+                p.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(p.PriceProductId.Value);
+            }
+        }
+
+        return vm;
+    }
+}
+@{
+    var vm = LoadViewModel();
+
+    if (vm == null) {
+        throw new System.Web.HttpException(404, "Not Found");
+    }
+}
+@if (!string.IsNullOrEmpty(Model.Hero as string)) {
+    <div class="image image-hero">
+        <img src="@ImageUrl(Model.Hero)" alt="@Model.Name" loading="lazy" decoding="async" crossorigin="anonymous">
+    </div>
+}
+<article class="article content">
+    <h1 class="h-underline">@PrintTitleOrName(Model.Title, Model.Name)</h1>
+    @if(Model.PublishDate is DateTime publishDate) {
+        <p class="text-right">
+            <time class="topicDate" datetime="@publishDate.ToString("o")">@publishDate.ToString("yyyy-MM-dd")</time>
+        </p>
+    }
+    @Raw((Model.Body as string) ?? string.Empty)
+</article>
+
+@if (vm.RelatePages.Any()) {
+<aside class="section content">
+    @TileList(vm.RelatePages, columns:2, slot:(item, index) => 
+        TopicTile(
+            item.Code,
+            item.Name,
+            item.Thumbnail,
+            item.PublishDate
+        )
+    )
+</aside>
+}
+
+@if (vm.RelateProducts.Any()) {
+<aside class="section content">
+    @if (vm.RelatePages.Any()) {
+        <h1 class="h-border text-center">商品</h1>
+    }
+    @TileList(vm.RelateProducts, columns:4, slot:(item, index) =>
+        ProductTile(
+            item.Code,
+            item.Name,
+            item.Thumbnail,
+            item.UnitPriceWithTax,
+            item.HasMultiplePrice,
+            gtm: new {
+                @event = "select_item",
+                ecommerce = new {
+                    items = new [] {
+                        new { 
+                            item_name = item.PriceProductName,
+                            item_id = item.PriceProductExternalId1,
+                            item_list_name = $"Relate Products of {Model.Name}",
+                            item_list_id = $"{Model.Code}:RelateProducts",
+                            price = item.UnitPriceWithTax?.ToString("F0"),
+                            index = index + 1,
+                        } 
+                    }
+                }
+            }
+        )
+    )
+    <div class="block">
+        <a href="@SearchUrl()?filter=@Model.Code" class="btn btn-ghost btn-primary btn-next">もっと見る</a>
+    </div>
+</aside>
+}

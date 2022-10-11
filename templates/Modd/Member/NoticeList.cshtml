@@ -40,10 +40,10 @@
 		notices = notices.OrderByDescending(n=> statsSort[n.Status] ).ThenByDescending(n=> n.ReserveRequestId).Skip(page*eachPage).Take(eachPage).ToList();
 		var productIds = notices.Select(n => n.ProductId).ToList();
 		var products = Database.Query(new { Now, Next, productIds }, db => (
-			from s in db.Products
-			join r in db.ProductRelations on s.ExternalId1 equals r.ProductExternalId1
-			join p in db.ProductPages on r.ProductPageCode equals p.Code
-            join d in db.ProductDetails on r.ProductExternalId1 equals d.ExternalId1
+			from p in db.SitePages
+            join r in db.ProductRelations on p.Code equals r.PageCode
+            join s in db.Products on r.ExternalId1 equals s.ExternalId1
+            join d in db.ProductDetails on r.ExternalId1 equals d.ExternalId1
 			where productIds.Contains(s.Id)
 			select new {
 				p.Code,
@@ -54,7 +54,7 @@
 				s.Id,
 				s.ExternalId1,
 				ProductIcon = d.Icon,
-				PageIcon = p.Icon
+				PageIcon = p.Thumbnail
 			}
 		).Distinct());
 		var canCancel = new List<ReserveRequestStatus>{

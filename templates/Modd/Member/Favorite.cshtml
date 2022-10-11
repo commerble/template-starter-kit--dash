@@ -3,37 +3,35 @@
         public int ProductId { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-        public string Icon { get; set; }
+        public string Thumbnail { get; set; }
         public decimal? UnitPriceWithTax { get; set; }
         public bool? HasMultiplePrice { get; set; }
     }
     ViewModel LoadViewModel() {
         var favorite = Page.ViewData.Model as Favorite; 
         var page = Database.Single(new { Now, Next, favorite.ProductId }, (db, args) => (
-            from p in db.ProductPages
-            join r in db.ProductRelations on p.Code equals r.ProductPageCode
-            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            from p in db.SitePages
+            join r in db.ProductRelations on p.Code equals r.PageCode
+            join s in db.Products on r.ExternalId1 equals s.ExternalId1
+            join m in db.Search on r.PageCode equals m.PageCode into meta
+            from m in meta.DefaultIfEmpty()
             where s.Id == args.ProductId
             select new {
                 p.Code,
                 p.Name,
-                p.Icon,
-                p.PriceProductId,
-                p.HasMultiplePrice
+                p.Thumbnail,
+                m.PriceProductId,
+                m.HasMultiplePrice
             }
         ).FirstOrDefault());
 
-        if (page == null) {
-            throw new System.Web.HttpException(404, "NotFound");
-        }
-
         return new ViewModel {
             ProductId = favorite.ProductId,
-            Code = page.Code,
-            Name = page.Name,
-            Icon = page.Icon,
-            UnitPriceWithTax = page.PriceProductId.HasValue ? Page.Template.GetUnitPriceWithTax(page.PriceProductId.Value) : (decimal?)null,
-            HasMultiplePrice = page.HasMultiplePrice
+            Code = page?.Code,
+            Name = page?.Name,
+            Thumbnail = page?.Thumbnail,
+            UnitPriceWithTax = page?.PriceProductId != null ? Page.Template.GetUnitPriceWithTax(page.PriceProductId.Value) : (decimal?)null,
+            HasMultiplePrice = page?.HasMultiplePrice
         };
     }
 }
@@ -60,7 +58,7 @@
                     <td align="center">
                         <a href="@ItemUrl(vm.Code)" class="product-icon" title="@vm.Name">
                             <div class="image image-square">
-                                <img src="@IconUrl(vm.Icon)" alt="@vm.Name">
+                                <img src="@IconUrl(vm.Thumbnail)" alt="@vm.Name">
                             </div>
                         </a>
                     </td>

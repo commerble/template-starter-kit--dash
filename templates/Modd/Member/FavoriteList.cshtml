@@ -27,17 +27,19 @@
         favorites = favorites.OrderByDescending(fav => fav.RegisterAt).Skip(page*eachPage).ToList();
         var productIds = favorites.Select(fav => fav.ProductId);
         var productPages = Database.Query(new { Now, Next, productIds }, db => 
-            from s in db.Products
-            join r in db.ProductRelations on s.ExternalId1 equals r.ProductExternalId1
-            join p in db.ProductPages on r.ProductPageCode equals p.Code
+            from p in db.SitePages
+            join r in db.ProductRelations on p.Code equals r.PageCode
+            join s in db.Products on r.ExternalId1 equals s.ExternalId1
+            join m in db.Search on r.PageCode equals m.PageCode into meta
+            from m in meta.DefaultIfEmpty()
             where productIds.Contains(s.Id)
             select new {
                 s.Id,
                 p.Code,
                 p.Name,
                 p.Thumbnail,
-                p.PriceProductId,
-                p.HasMultiplePrice,
+                m.PriceProductId,
+                m.HasMultiplePrice,
             }
         );
         return new ViewModel {

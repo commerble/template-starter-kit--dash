@@ -75,7 +75,7 @@
                         from k in db.SitePageKinds
                         select new {
                             k.Code,
-                            k.RouteName
+                            RouteName = k.Code
                         }).ToDictionary(c => c.Code, c => c.RouteName);
                 });
             }
@@ -85,16 +85,16 @@
 
     // -- URLヘルパー
     string ItemUrl(string code) {
-        return Href($"~/item/{(code?.ToLower())}");
+        return Href($"~/{(code?.ToLower())}");
     }
     string EmbedUrl(string code) {
         return Page.Template.SecuredLink("ItemEmbed", new { Code = code }).Replace("http:","https:");
     }
     string KindUrl(string code, string sort = "new") {
-        return Href($"~/category/{(code?.ToLower())}?sort={sort}");
+        return Href($"~/{(code?.ToLower())}?sort={sort}");
     }
     string TagUrl(string code, string sort = "new") {
-        return Href($"~/tag/{(code?.ToLower())}?sort={sort}");
+        return Href($"~/{(code?.ToLower())}");
     }
     string SearchUrl() {
         return Href($"~/search/");
@@ -112,14 +112,17 @@
     string ThumbnailUrl(string url) {
         return ImageUrl(url, "https://fakeimg.pl/270x270/?text=NO%20IMG");
     }
+    string TopicThumbnailUrl(string url) {
+        return ImageUrl(url, "https://fakeimg.pl/270x135/?text=NO%20IMG");
+    }
     string LargeImageUrl(string url) {
         return ImageUrl(url, "https://fakeimg.pl/640x640/?text=NO%20IMG");
     }
     string SmallImageUrl(string url) {
         return ImageUrl(url, "https://fakeimg.pl/64x64/?text=NO%20IMG");
     }
-    string PageUrl(string code, string kind) {
-        return Page.Url.RouteUrl(SitePageKindRoutes[kind], new { Code = code?.ToLower() });
+    string PageUrl(string code) {
+        return Href($"~/{code.ToLower()}");
     }
     string CallbacksGMOPGUrl() {
         return Page.Template.SecuredLink("CallbacksGMOPG", new {}).Replace("http://", "https://");
@@ -288,53 +291,32 @@
         [ReserveRequestStatus.Purchased] = "購入済",
         [ReserveRequestStatus.Cancel]    = "キャンセル",
     };
-
-    List<(string GroupCode, string Code, string Name, string Icon)> _kinds = null;
-    List<(string GroupCode, string Code, string Name, string Icon)> Kinds {
-        get {
-            if (_kinds == null) {
-                var cacheKey = globalCacheKey("Kinds");
-                _kinds = Page.Template.Cache(cacheKey, Next, () => {
-                    return Database.Query(new { Now, Next, IsPreview }, (db, args) => (
-                        from k in db.ProductKinds
-                        where k.IsPublished || args.IsPreview
-                        orderby k.DisplayOrder
-                        select new {
-                            GroupCode = k.GroupCode,
-                            Code = k.Code,
-                            Name = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                            Icon = k.Icon
-                        }
-                    )).Select(k => (k.GroupCode, k.Code, k.Name, k.Icon)).ToList();
-                });
-            }
-            return _kinds;
-        }
-    }
-
-    List<(string GroupCode, string Code, string Name, string Icon)> _tags = null;
-    List<(string GroupCode, string Code, string Name, string Icon)> Tags {
+    List<(string Code, string Name, string Thumbnail, int DisplayOrder, bool IsListed)> _tags = null;
+    List<(string Code, string Name, string Thumbnail, int DisplayOrder, bool IsListed)> Tags {
         get {
             if (_tags == null) {
                 var cacheKey = globalCacheKey("Tags");
                 _tags = Page.Template.Cache(cacheKey, Next, () => {
                     return Database.Query(new { Now, Next, IsPreview }, (db, args) => (
-                        from t in db.ProductTags
-                        where (t.IsPublished || args.IsPreview) && t.IsSearchable
-                        orderby t.DisplayOrder
+                        from p in db.SitePages
+                        where p.Kind == "tag"
+                          &&  p.DisplayStart <= Now 
+                          && (p.DisplayEnd == null || p.DisplayEnd > Now)
+                          && (p.IsPublished || IsPreview)
+                        orderby p.DisplayOrder
                         select new {
-                            GroupCode = t.GroupCode,
-                            Code = t.Code,
-                            Name = string.IsNullOrEmpty(t.DisplayName) ? t.Name : t.DisplayName,
-                            Icon = t.Icon
+                            p.Code,
+                            p.Name,
+                            p.Thumbnail,
+                            p.DisplayOrder,
+                            p.IsListed,
                         }
-                    )).Select(k => (k.GroupCode, k.Code, k.Name, k.Icon)).ToList();
+                    )).Select(k => (k.Code, k.Name, k.Thumbnail, k.DisplayOrder, k.IsListed)).ToList();
                 });
             }
             return _tags;
         }
     }
-
     string SkuName(string name, string displayName, string color, string size) {
         if (string.IsNullOrEmpty(displayName)) {
             return name;
@@ -431,37 +413,51 @@
 
 @helper RenderGlobalNav() {
     var cacheKey = globalCacheKey("GlobalNav");
-    var groups = GetConfigValue("GNAV_KIND_GROUPS", string.Empty).Split(',').Select(text => text.Trim()).ToArray();
     var groupedKinds = 
-        Page.Template.Cache(cacheKey, Next, () =>
-            Database.Query(new { Now, Next, IsPreview }, (db, args) => 
-                from k in db.ProductKinds
-                where groups.Contains(k.GroupCode)
-                  && (k.IsPublished == true || args.IsPreview)
-                select new { 
-                    k.GroupCode,
-                    k.Code,
-                    k.Icon,
-                    k.DisplayOrder,
-                    Name = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName
-                }
-            ).GroupBy(k => k.GroupCode));
+        Page.Template.Cache(cacheKey, NextLongLong, () => {
+            var codes = GetConfigValue("GNAV_KIND_GROUPS", string.Empty).Split(',').Select(text => text.Trim()).ToArray();
+            var groups = 
+                Database.Query(new { Now, Next, IsPreview }, (db, args) => 
+                    from p in db.SitePages
+                    where codes.Contains(p.Code)
+                    select new {
+                        p.Code,
+                        p.Name,
+                    }
+                );
+            groups = groups.OrderBy(group => Array.IndexOf(codes, group.Code));
+            return groups.Select(group => new {
+                Name = group.Name,
+                Children = Database.Query(new { Now, Next, IsPreview, group.Code }, (db, args) =>
+                    from p in db.SitePages
+                    where p.Code != args.Code && p.Code.StartsWith(args.Code)
+                      && (p.IsPublished == true || args.IsPreview)
+                    select new {
+                        p.Code,
+                        p.Thumbnail,
+                        p.DisplayOrder,
+                        p.Name,
+                        p.Title,
+                    }
+                )
+            });
+        });
     <nav class="gnav">
         <ul>
-            @foreach(var kinds in groupedKinds) {
+            @foreach(var group in groupedKinds) {
                 <li>
                     <button>
-                        @kinds.Key
+                        @group.Name
                         <ul>
-                            @foreach(var kind in kinds.OrderBy(k => k.DisplayOrder)) {
+                            @foreach(var kind in group.Children.OrderBy(k => k.DisplayOrder)) {
                                 <li>
                                     <a href="@KindUrl(kind.Code)" rel="bookmark" title="@kind.Name" class="gnav-link">
-                                        @if (!string.IsNullOrEmpty(kind.Icon)) {
+                                        @if (!string.IsNullOrEmpty(kind.Thumbnail)) {
                                             <div class="gnav-link-icon">
-                                                @if (kind.Icon.StartsWith("https://")) {
-                                                    <div class="image image-square"><img src="https://httpstat.us/404"></div>
+                                                @if (kind.Thumbnail.StartsWith("https://")) {
+                                                    <div class="image image-square"><img src="@kind.Thumbnail"></div>
                                                 } else {
-                                                    <i class="@kind.Icon"></i>
+                                                    <i class="@kind.Thumbnail"></i>
                                                 }
                                             </div>
                                         }
@@ -569,7 +565,7 @@
     <p class="field-error" data-valmsg-for="@name" data-valmsg-replace="true"></p>
 }
 
-@helper ProductTile(string code, string name, string kindName, string kindIcon, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
+@helper ProductTile(string code, string name, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
     <article class="tile">
         <a href="@ItemUrl(code)" rel="bookmark" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
             <h1>@name</h1>
@@ -583,9 +579,9 @@
     </article>
 }
 
-@helper TopicTile(string code, string kind, string name, string thumbnail, DateTime? publishDate) {
+@helper TopicTile(string code, string name, string thumbnail, DateTime? publishDate) {
     <article class="tile">
-        <a href="@PageUrl(code, kind)" rel="bookmark" title="@name">
+        <a href="@PageUrl(code)" rel="bookmark" title="@name">
             <h1>@name</h1>
             @if (publishDate.HasValue) {
                 <time datetime="@publishDate.Value.ToString("o")">@publishDate.Value.ToString("yyyy.MM.dd")</time>
@@ -593,7 +589,7 @@
                 <time></time>
             }
             <figure class="image image-2x1">
-                <img src="@ThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
+                <img src="@TopicThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
             </figure>
         </a>
     </article>

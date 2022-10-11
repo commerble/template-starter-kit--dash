@@ -14,10 +14,10 @@
         var items = order.Items.Where(item => types.Contains(item.OrderLineType));
         var productIds = items.Select(item => item.ProductId).ToArray();
         var productPages = Database.Query(new { Now, Next }, (db, args)=> 
-            from p in db.ProductPages
-            join r in db.ProductRelations on p.Code equals r.ProductPageCode
-            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
-            join d in db.ProductDetails on r.ProductExternalId1 equals d.ExternalId1
+            from p in db.SitePages
+            join r in db.ProductRelations on p.Code equals r.PageCode
+            join s in db.Products on r.ExternalId1 equals s.ExternalId1
+            join d in db.ProductDetails on r.ExternalId1 equals d.ExternalId1
             where productIds.Contains(s.Id)
             select new {
                 ProductId = s.Id,
@@ -25,7 +25,7 @@
                 p.Name,
                 d.Size,
                 d.Color,
-                PageIcon = p.Icon,
+                PageIcon = p.Thumbnail,
                 ProductIcon = d.Icon
             }
         ).ToList();

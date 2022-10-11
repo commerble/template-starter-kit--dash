@@ -1,11 +1,186 @@
-@{
-    var kinds = Page.Request.QueryString.GetValues("k") ?? new string[0];
-    var tags = Page.Request.QueryString.GetValues("t") ?? new string[0];
+@functions {
+    public class ViewModel {
+        public string Filter { get; set; }
+        public string Sort { get; set; }
+        public int Page { get; set; }
+        public string Query => string.Join("&", new[]{ $"filter={Filter}", $"sort={Sort}",$"page={Page}" });
+        public string Condition => string.Join("&", new[]{ $"filter={Filter}", $"sort={Sort}"});
+        public List<TagViewModel> Tags { get; set; }
+        public string ListName { get; set; }
+        public bool HasNextPage { get; set; }
+        public bool IsEmpty { get; set; }
+        public List<ProductPageViewModel> ProductPages { get; set; }
+    }
 
-    var sort = Page.Request.QueryString["sort"] ?? "new";
-    var page = Page.Request.QueryString["page"] ?? "0";
-    var query = kinds.Select(k => $"k={k}").Concat(tags.Select(t => $"t={t}")).Concat(new[]{$"sort={sort}",$"page={page}"});
-    ViewBag.Canonical = Page.Template.SecuredHost(true) + Page.Request.Path + "?" + string.Join("&", query);
+    public class TagViewModel {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Thumbnail { get; set; }
+        public int DisplayOrder { get; set; }
+        public List<TagViewModel> Children { get; set; }
+    }
+
+    public class ProductPageViewModel {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Thumbnail { get; set; }
+        public int? PriceProductId { get; set; }
+        public bool? HasMultiplePrice { get; set; }
+        public decimal? UnitPriceWithTax { get; set; }
+        public string PriceProductExternalId1 {get; set;}
+        public string PriceProductName {get; set;}
+    }
+
+    ViewModel LoadViewModel() {
+        var filter = Page.Request.QueryString["filter"];
+        var sort = Page.Request.QueryString["sort"] ?? "new";
+        int page = int.TryParse(Page.Request.QueryString["page"], out page) ? page : 0;
+        int eachPage = 12;
+        var vm = new ViewModel {
+            Filter = filter,
+            Sort = sort,
+            Page = page,
+            Tags = new List<TagViewModel>{ 
+                new TagViewModel { Code = "category", Name = "カテゴリ", Children = new List<TagViewModel>() },
+                new TagViewModel { Code = "tag", Name = "タグ", Children = new List<TagViewModel>() },
+            },
+        };
+
+        foreach (var t in Tags.OrderBy(o => o.Code)) {
+            var segments = t.Code.Split('/');
+            var tree = vm.Tags;
+            var path = "";
+            foreach (var segment in segments) {
+                path = path + "/" + segment;
+                var node = tree.FirstOrDefault(o => "/" + o.Code == path);
+                if (node != null) {
+                    tree = node.Children;
+                    continue;
+                }
+                node = new TagViewModel {
+                    Code = t.Code,
+                    Name = t.Name,
+                    Thumbnail = t.Thumbnail,
+                    DisplayOrder = t.DisplayOrder,
+                    Children = new List<TagViewModel>(),
+                };
+                tree.Add(node);
+            }
+        }
+
+        var builder = string.IsNullOrEmpty(filter) 
+            ? Database.Builder(db => 
+                from p in db.SitePages
+                join m in db.Search on p.Code equals m.PageCode into meta
+                from m in meta.DefaultIfEmpty()
+                where  p.Kind == "product"
+                   &&  p.DisplayStart <= Now 
+                   && (p.DisplayEnd == null || p.DisplayEnd > Now)
+                   && (p.IsPublished || IsPreview)
+                select new {
+                    p.Code,
+                    p.DisplayStart,
+                    m.RankingIndex,
+                    m.RecommendIndex,
+                    m.PriceIndex,
+                }
+            )
+            : Database.Builder(db => 
+                from r in db.PageRelations
+                join p in db.SitePages on r.RelateCode equals p.Code
+                join m in db.Search on p.Code equals m.PageCode into meta
+                from m in meta.DefaultIfEmpty()
+                where  r.PageCode == filter
+                   &&  p.Kind == "product"
+                   &&  p.DisplayStart <= Now 
+                   && (p.DisplayEnd == null || p.DisplayEnd > Now)
+                   && (p.IsPublished || IsPreview)
+                select new {
+                    p.Code,
+                    p.DisplayStart,
+                    m.RankingIndex,
+                    m.RecommendIndex,
+                    m.PriceIndex,
+                }
+            );
+        
+        switch (sort) {
+            case "prc_asc":
+                builder.Append(query=> query.OrderBy(p => p.PriceIndex));
+                break;
+            case "prc_desc":
+                builder.Append(query=> query.OrderByDescending(p => p.PriceIndex));
+                break;
+            case "rkg_asc":
+                builder.Append(query=> query.OrderBy(p => p.RankingIndex));
+                break;
+            case "rkg_desc":
+                builder.Append(query=> query.OrderByDescending(p => p.RankingIndex));
+                break;
+            case "rcm_asc":
+                builder.Append(query=> query.OrderBy(p => p.RecommendIndex));
+                break;
+            case "rcm_desc":
+                builder.Append(query=> query.OrderByDescending(p => p.RecommendIndex));
+                break;
+            case "old":
+                builder.Append(query=> query.OrderBy(p => p.DisplayStart));
+                break;
+            case "new":
+            default:
+                sort = "new";
+                builder.Append(query=> query.OrderByDescending(p => p.DisplayStart));
+                break;
+        }
+
+        var total = builder.Count(new { Now, Next, IsPreview, filter, sort });
+
+        builder.Append(query => query.Skip(page * eachPage).Take(eachPage));
+        var search = builder.Execute(new { Now, Next, IsPreview, filter, sort });
+        var codes = search.Select(p => p.Code).ToList();
+
+        var items = 
+            Database.Query(new { Now, Next, IsPreview }, db =>
+                from p in db.SitePages
+                join m in db.Search on p.Code equals m.PageCode into meta
+                from m in meta.DefaultIfEmpty()
+                join s in db.Products on m.PriceProductId equals s.Id into sku
+                from s in sku.DefaultIfEmpty()
+                where codes.Contains(p.Code)
+                select new ProductPageViewModel {
+                    Code = p.Code,
+                    Name = p.Name,
+                    Thumbnail = p.Thumbnail,
+                    PriceProductId = m.PriceProductId,
+                    HasMultiplePrice = m.HasMultiplePrice,
+                    PriceProductExternalId1 = s.ExternalId1,
+                    PriceProductName = s.Name
+                }
+            ).ToList();
+
+        items = items.OrderBy(item => codes.IndexOf(item.Code)).ToList();
+        
+        foreach (var item in items) {
+            if (item.PriceProductId.HasValue) {
+                item.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(item.PriceProductId.Value);
+            }
+        }
+
+        var pageCount = total / eachPage + ((total % eachPage == 0) ? 0 : 1);
+        var pageLast = pageCount == 0 ? true : ( ((page+1) == pageCount) ? true : false);
+
+        vm.ListName = $"Item:{filter}:{sort}:{eachPage}:{page}";
+        vm.HasNextPage = total > 0 && !pageLast;
+        vm.IsEmpty = total == 0;
+        vm.ProductPages = items;
+        
+        return vm;
+    }
+}
+
+@{
+    var vm = LoadViewModel();
+    ViewBag.Canonical = Page.Template.SecuredHost(true) + Page.Request.Path + "?" + vm.Query;
     
     ViewBag.MetaTitle = "商品検索";
     ViewBag.JsonLd = new[] {
@@ -28,12 +203,91 @@
             }
         }
     };
+    ViewBag.DataLayer = new object[] { new {
+        @event = "view_item_list",
+        ecommerce = new {
+            impressions = vm.ProductPages.Select((p, index) => new {
+                item_name = p.PriceProductName,
+                item_id = p.PriceProductExternalId1,
+                price = p.UnitPriceWithTax?.ToString(),
+                //item_category = p.Kind,
+                item_list_name = vm.ListName,
+                item_list_id = vm.ListName,
+                index = index + 1,
+            })
+        }
+    }};
 }
-<main class="section content-wide">
+@helper RenderOption(TagViewModel item, string filter) {
+    if (item.Children?.Any() == true) {
+        <optgroup label="@item.Name">
+            @foreach (var child in item.Children.OrderBy(o => o.DisplayOrder)) {
+                @:@RenderOption(child, filter)
+            }
+        </optgroup>
+    }
+    else {
+        <option value="@item.Code" @when(item.Code == filter, "selected")>@item.Name</option>
+    }
+} 
+<main class="section content">
     <h1 class="h-border text-center">商品検索</h1>
-    @Include("ProductList", new Dictionary<string, object> {
-        ["kinds"] = kinds,
-        ["tags"]  = tags,
-        ["open"]  = kinds.Length == 0 && tags.Length == 0,
-    })
+    <form class="block block-horizontal">
+        <dl class="field">
+            <dd class="field-body">
+                <div class="field-group">
+                    <select name="filter">
+                        <option value="">---</option>
+                        @foreach (var tag in vm.Tags) {
+                            @RenderOption(tag, vm.Filter)
+                        }
+                    </select>
+                    <select name="sort">
+                        <option value="rcm_desc" @when(vm.Sort=="rcm_desc", "selected")>おすすめ順</option>
+                        <option value="rkg_asc" @when(vm.Sort=="rkg_asc", "selected")>ランキング順</option>
+                        <option value="prc_asc" @when(vm.Sort=="prc_asc", "selected")>価格が安い順</option>
+                        <option value="prc_desc" @when(vm.Sort=="prc_desc", "selected")>価格が高い順</option>
+                        <option value="new" @when(vm.Sort=="new", "selected")>新しい順</option>
+                        <option value="old" @when(vm.Sort=="old", "selected")>古い順</option>
+                    </select>
+                    <button type="submit" class="btn btn-default">🔍 絞り込む</button>
+                </div>
+            </dd>
+        </dl>
+    </form>
+    @TileList(vm.ProductPages, columns: 4, slot:(item, index) =>
+        ProductTile(
+            item.Code,
+            item.Name,
+            item.Thumbnail,
+            item.UnitPriceWithTax,
+            item.HasMultiplePrice,
+            gtm: new {
+                @event = "select_item",
+                ecommerce = new {
+                    items = new [] {
+                        new { 
+                            item_name = item.PriceProductName,
+                            item_id = item.PriceProductExternalId1,
+                            //item_category = item.Kind,
+                            item_list_name = vm.ListName,
+                            item_list_id = vm.ListName,
+                            price = item.UnitPriceWithTax?.ToString("F0"),
+                            index = index + 1,
+                        } 
+                    }
+                }
+            } 
+        )
+    )
+    @if (vm.IsEmpty) {
+        <div class="message-box">
+            <p class="message text-center lead">ご希望の条件に合致する商品が見つかりませんでした。条件を変更し再度お試しください。</p>
+        </div>
+    }
+    @if (vm.HasNextPage) {
+        <div class="block block-vertical">
+            <a href="@(Page.Request.Url.AbsolutePath)?@(vm.Condition)&page=@(vm.Page+1)" class="btn btn-default btn-next">次のページ</a>
+        </div>
+    }
 </main>

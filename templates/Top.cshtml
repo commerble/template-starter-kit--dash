@@ -75,15 +75,17 @@
                     Thumbnail = b.Thumbnail
                 }
             ).Take(4)).ToList();
+
         var notices =
             Database.Query(new { Now, Next, IsPreview }, (db, args) => (
                 from p in db.SitePages
                 join q in db.SitePagePriorities on p.Priority equals q.Priority
-                where p.Kind == "Notice" 
-                &&  p.DisplayStart <= args.Now
-                && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
-                && (p.IsPublished == true || args.IsPreview)
-                orderby p.Priority descending, p.DisplayStart descending
+                where p.Kind == "news"
+                  &&  p.IsListed
+                  &&  p.DisplayStart <= args.Now
+                  && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                  && (p.IsPublished == true || args.IsPreview)
+                orderby p.Priority descending, p.DisplayStart descending, p.DisplayOrder
                 select new NoticeViewModel {
                     Code = p.Code,
                     Kind = p.Kind,
@@ -97,36 +99,32 @@
             ).Take(3)).ToList();
         var tag =
             Database.Single(new { Now, Next, IsPreview, tag = GetConfigValue("TOP_TAG") }, (db, args) => (
-                from t in db.ProductTags
-                where t.Code == args.tag
+                from p in db.SitePages
+                where p.Code == args.tag
                 select new TagViewModel {
-                    Code = t.Code.ToLower(),
-                    Name = string.IsNullOrEmpty(t.DisplayName) ? t.Name : t.DisplayName,
-                    Title = t.Title,
+                    Code = p.Code.ToLower(),
+                    Name = p.Name,
+                    Title = p.Title,
                 }
             ).FirstOrDefault());
         var items =
             Database.Query(new { Now, Next, IsPreview, tag = tag?.Code }, (db, args) => (
-                from p in db.ProductPages
-                join r in db.ProductTagRelations on p.Code equals r.ProductPageCode
-                join rk in db.ProductKinds on p.Kind equals rk.Code into kinds
-                from k in kinds.DefaultIfEmpty()
-                join rs in db.Products on p.PriceProductId equals rs.Id into skus
+                from r in db.PageRelations
+                join p in db.SitePages on r.RelateCode equals p.Code
+                join m in db.Search on p.Code equals m.PageCode
+                join s in db.Products on m.PriceProductId equals s.Id into skus
                 from s in skus.DefaultIfEmpty()
-                where r.ProductTagCode == args.tag
+                where  r.PageCode == args.tag
                    &&  p.DisplayStart <= Now 
                    && (p.DisplayEnd == null || p.DisplayEnd > Now)
                    && (p.IsPublished || IsPreview)
-                orderby p.RecommendIndex descending
+                orderby m.RecommendIndex descending
                 select new ProductPageViewModel {
                     Code = p.Code,
-                    Kind = p.Kind,
-                    KindName = string.IsNullOrEmpty(k.DisplayName) ? k.Name : k.DisplayName,
-                    KindIcon = k.Icon,
                     Name = p.Name,
                     Thumbnail = p.Thumbnail,
-                    PriceProductId = p.PriceProductId,
-                    HasMultiplePrice = p.HasMultiplePrice,
+                    PriceProductId = m.PriceProductId,
+                    HasMultiplePrice = m.HasMultiplePrice,
                     PriceProductExternalId1 = s.ExternalId1,
                     PriceProductName = s.Name
                 }
@@ -142,7 +140,7 @@
             Notices = notices,
             ProductPages = items,
             TopTag = tag,
-            Tags = Tags.Take(20).Select(t => new TagViewModel { 
+            Tags = Tags.Where(t => t.IsListed).Take(20).Select(t => new TagViewModel { 
                 Code = t.Code,
                 Name = t.Name,
             }).ToList()
@@ -214,7 +212,6 @@
         @TileList(vm.Notices, columns: 3, slot:(notice, index) =>
             TopicTile(
                 notice.Code,
-                notice.Kind,
                 notice.Name,
                 notice.Thumbnail,
                 notice.PublishDate
@@ -234,8 +231,6 @@
             ProductTile(
                 item.Code,
                 item.Name,
-                item.KindName,
-                item.KindIcon,
                 item.Thumbnail,
                 item.UnitPriceWithTax,
                 item.HasMultiplePrice,
@@ -257,7 +252,7 @@
                 } 
             ))
         <div class="block">
-            <a href="@TagUrl(vm.TopTag.Code,"rcm_desc")" class="btn btn-ghost btn-primary btn-next">もっと見る</a>
+            <a href="@TagUrl(vm.TopTag.Code)" class="btn btn-ghost btn-primary btn-next">もっと見る</a>
         </div>
     </section>
 }
@@ -267,7 +262,7 @@
         <h1 class="h-border text-center">タグから探す</h1>
         <div class="block block-horizontal block-wrap">
             @foreach(var tag in vm.Tags) {
-                <a href="@TagUrl(tag.Code,"rcm_desc")" class="badge">#@tag.Name</a>
+                <a href="@TagUrl(tag.Code)" class="badge">#@tag.Name</a>
             }
         </div>
     </section>

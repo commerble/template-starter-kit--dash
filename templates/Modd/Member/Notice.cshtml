@@ -15,10 +15,10 @@
     ViewModel LoadViewModel() {
         var notice = Page.ViewData.Model as ReserveRequest; 
         var sku = Database.Single(new { Now, Next, notice.ProductId }, (db, args) => (
-            from p in db.ProductPages
-            join r in db.ProductRelations on p.Code equals r.ProductPageCode
-            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
-            join d in db.ProductDetails on r.ProductExternalId1 equals d.ExternalId1
+            from p in db.SitePages
+            join r in db.ProductRelations on p.Code equals r.PageCode
+            join s in db.Products on r.ExternalId1 equals s.ExternalId1
+            join d in db.ProductDetails on r.ExternalId1 equals d.ExternalId1
             where s.Id == args.ProductId
             select new {
                 p.Code,
@@ -29,7 +29,7 @@
 				s.Id,
 				s.ExternalId1,
 				ProductIcon = d.Icon,
-				PageIcon = p.Icon
+				PageIcon = p.Thumbnail
             }
         ).FirstOrDefault());
 

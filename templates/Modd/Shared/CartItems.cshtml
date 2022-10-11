@@ -14,7 +14,6 @@
         public decimal UsagePoint { get; set; }
         public decimal ChargePoint { get; set; }
         public int Qty { get; set; }
-        public string Kind { get; set; }
         public string ProductPageCode { get; set; }
         public string DisplayName { get; set; }
         public string Icon { get; set; }
@@ -24,7 +23,7 @@
             return new  {
                 item_name = Name,
                 item_id = ExternalId1,
-                item_category = Kind,
+                //item_category = Kind,
                 price = UnitPriceWithoutTax.ToString("F0"),
                 quantity = Qty,
             };
@@ -36,18 +35,17 @@
         var products = Database.Query(new { Now, Next }, (db, args)=> 
             from s in db.Products
             join d in db.ProductDetails on s.ExternalId1 equals d.ExternalId1
-            join r in db.ProductRelations on s.ExternalId1 equals r.ProductExternalId1
-            join p in db.ProductPages on r.ProductPageCode equals p.Code
+            join r in db.ProductRelations on s.ExternalId1 equals r.ExternalId1
+            join p in db.SitePages on r.PageCode equals p.Code
             where productIds.Contains(s.Id)
             select new {
                 ProductId = s.Id,
                 p.Code,
-                p.Kind,
                 s.Name,
                 d.DisplayName,
                 d.Size,
                 d.Color,
-                PageIcon = p.Icon,
+                PageIcon = p.Thumbnail,
                 ProductIcon = d.Icon
             }
         ).ToList();
@@ -70,7 +68,6 @@
                             UsagePoint = item.PointUsage,
                             ChargePoint = item.PointCharge,
                             Qty = item.OrderAmount,
-                            Kind = sku?.Kind,
                             ProductPageCode = sku?.Code,
                             DisplayName = sku?.DisplayName,
                             Icon = !string.IsNullOrEmpty(sku?.ProductIcon) ? sku.ProductIcon : sku?.PageIcon,

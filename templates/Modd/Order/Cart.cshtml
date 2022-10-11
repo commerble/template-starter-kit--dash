@@ -14,12 +14,11 @@
         public string Name { get; set; }
         public decimal UnitPriceWithoutTax { get; set; }
         public int Qty { get; set; }
-        public string Kind { get; set; }
         public object ToGtmItem() {
             return new  {
                 item_name = Name,
                 item_id = ExternalId1,
-                item_category = Kind,
+                //item_category = Kind,
                 price = UnitPriceWithoutTax.ToString("F0"),
                 quantity = Qty,
             };
@@ -30,13 +29,12 @@
         var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
         var productIds = cart.ExpandItems.Select(item => item.ProductId).ToArray();
         var productPages = Database.Query(new { Now, Next }, (db, args)=> 
-            from p in db.ProductPages
-            join r in db.ProductRelations on p.Code equals r.ProductPageCode
-            join s in db.Products on r.ProductExternalId1 equals s.ExternalId1
+            from p in db.SitePages
+            join r in db.ProductRelations on p.Code equals r.PageCode
+            join s in db.Products on r.ExternalId1 equals s.ExternalId1
             where productIds.Contains(s.Id)
             select new {
                 ProductId = s.Id,
-                p.Kind,
                 Name = string.IsNullOrEmpty(s.Name) ? p.Name : s.Name
             }
         ).ToList();
@@ -63,7 +61,6 @@
                             Name = productPage?.Name ?? item.Product.Name,
                             UnitPriceWithoutTax = item.UnitPrice,
                             Qty = item.OrderAmount,
-                            Kind = productPage?.Kind,
                         };
                     }).ToList()
         };
@@ -115,7 +112,7 @@
             @if (vm.HasErrors) {
                 <button class="btn btn-action btn-large btn-next" disabled>メッセージをご確認ください</button>
             } else {
-                <a href="@PurchaseUrl(vm.CartId, direct:true)" class="btn btn-action btn-large btn-next">注文手続きへ進む</a>
+                <a href="@PurchaseUrl(vm.CartId, direct:false)" class="btn btn-action btn-large btn-next">注文手続きへ進む</a>
             }
             <button type="submit" form="cart" name="recalc" value="recalc" class="btn btn-primary btn-large btn-next hide">数量変更して再計算</button>
             <a class="btn btn-primary btn-text btn-prev" ic-action="backToCheckPoint">お買い物を続ける</a>
