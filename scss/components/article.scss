@@ -13,8 +13,13 @@
     }
     h3 { font-size: $font-size-default * 1.2; }
     h4 { font-size: $font-size-default * 1.1; }
-    ul,dl,ol,table,figure,img,picture,video,p {
-        margin: 0 $unit * 2 $unit * 2;
+    ul,dl,ol,table,p {
+        box-sizing: border-box;
+        padding: 0 $unit * 2;
+        width: 100%;
+    }
+    ul,dl,ol,table,p,figure {
+        margin-bottom: $unit * 2;
     }
     ul {
         list-style-type: disc;
