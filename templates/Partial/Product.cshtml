@@ -279,29 +279,29 @@
                 <thead>
                     <tr>
                         <th></th>
-                        @foreach(var colorGroup in vm.Products.GroupBy(p => p.NamePart2)) {
+                        @foreach(var part2Group in vm.Products.GroupBy(p => p.NamePart2)) {
                             <th>
-                                @if (string.IsNullOrEmpty(colorGroup.First().Icon)){
-                                    <text>@colorGroup.Key</text>
+                                @if (string.IsNullOrEmpty(part2Group.First().Icon)){
+                                    <text>@part2Group.Key</text>
                                 }
                                 else {
                                     <div class="product-icon icon-small">
                                         <div class="image image-square">
-                                            <img src="@IconUrl(colorGroup.First().Icon)" alt="@colorGroup.Key" loading="lazy" decoding="async" crossorigin="anonymous">
+                                            <img src="@IconUrl(part2Group.First().Icon)" alt="@part2Group.Key" loading="lazy" decoding="async" crossorigin="anonymous">
                                         </div>
                                     </div>
-                                    @colorGroup.Key
+                                    @part2Group.Key
                                 }
                             </th>
                         }
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var sizeGroup in vm.Products.GroupBy(p => p.NamePart3)) {
+                    @foreach (var part3Group in vm.Products.GroupBy(p => p.NamePart3)) {
                         <tr>
-                            <th>@sizeGroup.Key</th>
-                            @foreach(var colorGroup in vm.Products.GroupBy(p => p.NamePart2)) {
-                                var sku = sizeGroup.Where(p => p.NamePart2 == colorGroup.Key).FirstOrDefault();
+                            <th>@part3Group.Key</th>
+                            @foreach(var part2Group in vm.Products.GroupBy(p => p.NamePart2)) {
+                                var sku = part3Group.Where(p => p.NamePart2 == part2Group.Key).FirstOrDefault();
                                 <td>
                                     @if (sku != null) {
                                         <text>@FormatPrice(sku.UnitPriceWithTax)<br></text>
