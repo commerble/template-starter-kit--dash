@@ -15,10 +15,10 @@
         public decimal ChargePoint { get; set; }
         public int Qty { get; set; }
         public string ProductPageCode { get; set; }
-        public string DisplayName { get; set; }
+        public string NamePart1 { get; set; }
         public string Icon { get; set; }
-        public string Size { get; set; }
-        public string Color { get; set; }
+        public string NamePart3 { get; set; }
+        public string NamePart2 { get; set; }
         public object ToGtmItem() {
             return new  {
                 item_name = Name,
@@ -42,9 +42,9 @@
                 ProductId = s.Id,
                 p.Code,
                 s.Name,
-                d.DisplayName,
-                d.Size,
-                d.Color,
+                d.NamePart1,
+                d.NamePart3,
+                d.NamePart2,
                 PageIcon = p.Thumbnail,
                 ProductIcon = d.Icon
             }
@@ -69,10 +69,10 @@
                             ChargePoint = item.PointCharge,
                             Qty = item.OrderAmount,
                             ProductPageCode = sku?.Code,
-                            DisplayName = sku?.DisplayName,
+                            NamePart1 = sku?.NamePart1,
+                            NamePart2 = sku?.NamePart2,
+                            NamePart3 = sku?.NamePart3,
                             Icon = !string.IsNullOrEmpty(sku?.ProductIcon) ? sku.ProductIcon : sku?.PageIcon,
-                            Size = sku?.Size,
-                            Color = sku?.Color,
                         };
                     }).ToList();
     }
@@ -110,7 +110,7 @@
                 </td>
                 <td align="center">
                     <dl>
-                        <dt><a href="@ItemUrl(line.ProductPageCode)">@SkuName(line.Name, line.DisplayName, line.Color, line.Size)</a></dt>
+                        <dt><a href="@ItemUrl(line.ProductPageCode)">@SkuName(line.Name, line.NamePart1, line.NamePart2, line.NamePart3)</a></dt>
                         <dd>
                             @PrintPrice(line.UnitPriceWithTax, del:line.DiscountPrice > 0)
                             @if (line.DiscountPrice > 0) {

@@ -317,11 +317,11 @@
             return _tags;
         }
     }
-    string SkuName(string name, string displayName, string color, string size) {
-        if (string.IsNullOrEmpty(displayName)) {
+    string SkuName(string name, string part1, string part2, string part3) {
+        if (string.IsNullOrEmpty(part1)) {
             return name;
         }
-        return $"{displayName} {$"{color}／{size}".Trim(new[]{'／'})}".Trim();
+        return $"{part1} {$"{part2}／{part3}".Trim(new[]{'／'})}".Trim();
     }
 }
 

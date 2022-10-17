@@ -18,15 +18,15 @@
         public int Id { get; set; }
         public string ExternalId1 { get; set; }
         public string Name { get; set; }
-        public string DisplayName { get; set; }
-        public string Size { get; set; }
-        public string Color { get; set; }
+        public string NamePart1 { get; set; }
+        public string NamePart2 { get; set; }
+        public string NamePart3 { get; set; }
         public string Icon { get; set; }
         public bool Stockout { get; set; }
         public decimal UnitPriceWithTax { get; set; }
         public decimal Point { get;set; }
         public string Valiation() {
-            return string.Join("／", new[] {Size, Color}.Where(text => !string.IsNullOrEmpty(text)));
+            return string.Join("／", new[] {NamePart3, NamePart2}.Where(text => !string.IsNullOrEmpty(text)));
         }
     }
 
@@ -91,9 +91,10 @@
                 select new ProductViewModel {
                     Id = p.Id,
                     ExternalId1 = p.ExternalId1,
-                    Name = string.IsNullOrEmpty(d.DisplayName) ? p.Name : d.DisplayName,
-                    Size = d.Size,
-                    Color = d.Color,
+                    Name = p.Name,
+                    NamePart1 = d.NamePart1,
+                    NamePart2 = d.NamePart2,
+                    NamePart3 = d.NamePart3,
                     Icon = d.Icon,
                     Stockout = p.Stockout,
                 }
@@ -278,7 +279,7 @@
                 <thead>
                     <tr>
                         <th></th>
-                        @foreach(var colorGroup in vm.Products.GroupBy(p => p.Color)) {
+                        @foreach(var colorGroup in vm.Products.GroupBy(p => p.NamePart2)) {
                             <th>
                                 @if (string.IsNullOrEmpty(colorGroup.First().Icon)){
                                     <text>@colorGroup.Key</text>
@@ -296,11 +297,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var sizeGroup in vm.Products.GroupBy(p => p.Size)) {
+                    @foreach (var sizeGroup in vm.Products.GroupBy(p => p.NamePart3)) {
                         <tr>
                             <th>@sizeGroup.Key</th>
-                            @foreach(var colorGroup in vm.Products.GroupBy(p => p.Color)) {
-                                var sku = sizeGroup.Where(p => p.Color == colorGroup.Key).FirstOrDefault();
+                            @foreach(var colorGroup in vm.Products.GroupBy(p => p.NamePart2)) {
+                                var sku = sizeGroup.Where(p => p.NamePart2 == colorGroup.Key).FirstOrDefault();
                                 <td>
                                     @if (sku != null) {
                                         <text>@FormatPrice(sku.UnitPriceWithTax)<br></text>
@@ -332,7 +333,7 @@
                                                     data-val="true"
                                                     data-val-required="商品を選択してください。"
                                                     data-gtm="@Jil.JSON.Serialize(gtm)"
-                                                    aria-label="@sku.Color @sku.Size">
+                                                    aria-label="@sku.NamePart2 @sku.NamePart3">
                                                 <span class="text"></span>
                                             </label>
                                         }

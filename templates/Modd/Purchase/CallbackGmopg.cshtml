@@ -3,10 +3,10 @@
         public int ProductId { get; set; }
         public string Name { get; set; }
         public int Qty { get; set; }
-        public string DisplayName { get; set; }
+        public string NamePart1 { get; set; }
+        public string NamePart2 { get; set; }
+        public string NamePart3 { get; set; }
         public string Icon { get; set; }
-        public string Size { get; set; }
-        public string Color { get; set; }
     }
 
     List<LineViewModel> LoadViewModel(PurchaseOrder order) {
@@ -23,8 +23,8 @@
                 ProductId = s.Id,
                 p.Code,
                 p.Name,
-                d.Size,
-                d.Color,
+                d.NamePart3,
+                d.NamePart2,
                 PageIcon = p.Thumbnail,
                 ProductIcon = d.Icon
             }
@@ -36,10 +36,10 @@
                             ProductId = item.ProductId,
                             Name = item.Product.Name,
                             Qty = item.OrderAmount,
-                            DisplayName = productPage?.Name,
+                            NamePart1 = productPage?.Name,
+                            NamePart2 = productPage?.NamePart2,
+                            NamePart3 = productPage?.NamePart3,
                             Icon = productPage?.ProductIcon ?? productPage?.PageIcon,
-                            Size = productPage?.Size,
-                            Color = productPage?.Color,
                         };
                     }).ToList();
     }
@@ -183,12 +183,12 @@
                     <td align="center">
                         <div class="product-icon">
                             <div class="image image-square">
-                                <img src="@IconUrl(line.Icon)" alt="@SkuName(line.Name, line.DisplayName, line.Color, line.Size)">
+                                <img src="@IconUrl(line.Icon)" alt="@SkuName(line.Name, line.NamePart1, line.NamePart2, line.NamePart3)">
                             </div>
                         </div>
                     </td>
                     <td align="center">
-                        @SkuName(line.Name, line.DisplayName, line.Color, line.Size)
+                        @SkuName(line.Name, line.NamePart1, line.NamePart2, line.NamePart3)
                     </td>
                     <td data-title="個数">
                         @line.Qty

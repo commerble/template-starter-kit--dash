@@ -3,10 +3,10 @@
         public int ProductId { get; set; }
         public string Code { get; set; }
 		public string Name { get; set; }
-		public string DisplayName { get; set; }
+		public string NamePart1 { get; set; }
 		public string Icon { get; set; }
-		public string Size { get; set; }
-		public string Color{ get; set; }
+		public string NamePart3 { get; set; }
+		public string NamePart2{ get; set; }
         public string ExternalId1 { get; set; }
         public decimal UnitPriceWithTax { get; set; }
         public int RequestQty { get; set; }
@@ -22,9 +22,9 @@
             select new {
 				p.Code,
 				s.Name,
-                d.DisplayName,
-				d.Size,
-				d.Color,
+                d.NamePart1,
+				d.NamePart3,
+				d.NamePart2,
 				s.Id,
 				s.ExternalId1,
 				ProductIcon = d.Icon,
@@ -41,10 +41,10 @@
             RequestQty = notice.RequestAmount,
             Code = sku?.Code,
             Name = sku?.Name,
-            DisplayName = sku?.DisplayName,
+            NamePart1 = sku?.NamePart1,
             Icon = !string.IsNullOrEmpty(sku?.ProductIcon) ? sku.ProductIcon : sku?.PageIcon,
-            Size = sku?.Size,
-            Color = sku?.Color,
+            NamePart3 = sku?.NamePart3,
+            NamePart2 = sku?.NamePart2,
             ExternalId1 = sku?.ExternalId1,
             UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(notice.ProductId),
         };
@@ -77,7 +77,7 @@
                     </td>
                     <td align="center">
                         <a href="@ItemUrl(vm.Code)" class="product-icon" title="@vm.Name">
-                            @SkuName(vm.Name, vm.DisplayName, vm.Color, vm.Size) <br>
+                            @SkuName(vm.Name, vm.NamePart1, vm.NamePart2, vm.NamePart3) <br>
                             @PrintPrice(vm.UnitPriceWithTax)
                         </a>
                     </td>
