@@ -98,7 +98,7 @@
 }
 .image-hero {
     position: relative;
-    padding-bottom: 30%;
+    padding-bottom: clamp(400px, 50%, 600px);
 
     img {
         position: absolute;
