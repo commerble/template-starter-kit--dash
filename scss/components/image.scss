@@ -113,6 +113,22 @@
         top: $unit * -2;
     }
 }
+.image-top {
+    position: relative;
+
+    img {
+        position: absolute;
+        top:0;
+        width:100%;
+        height:100%;
+        object-fit: cover;
+        object-position: center;
+    }
+    img:after {
+        margin-top: 15%;
+        top: $unit * -2;
+    }
+}
 .image-base {
     background-color: $color-base;
 }

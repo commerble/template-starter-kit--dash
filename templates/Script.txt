@@ -38,10 +38,6 @@ if (window.$) {
         })
     }
 
-    $.fn.setBgImage = function(url) {
-        $(this).get(0).style.backgroundImage = 'url(' + url + ')';
-    }
-
     $.fn.selectAddress = function () {
         const id = $(this).val();
         const addr = JSON.parse($('#member-addresses').html()).find(a => a.AddressId+"" == id);

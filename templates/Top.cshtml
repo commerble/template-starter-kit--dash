@@ -168,7 +168,8 @@
 }
 @if (vm.MainBanner != null) {
     <section class="section hero">
-        <div class="hero-bgimage" ic-action="setBgImage: '@vm.MainBanner.Thumbnail'" ic-trigger-on="load">
+        <div class="image image-top hero-bgimage">
+            <img src="@vm.MainBanner.Thumbnail">
             @if (!string.IsNullOrEmpty(vm.MainBanner.Title) 
                 || !string.IsNullOrEmpty(vm.MainBanner.Subtitle) 
                 || !string.IsNullOrEmpty(vm.MainBanner.LinkUrl)) {
