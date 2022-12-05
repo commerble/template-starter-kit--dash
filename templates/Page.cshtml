@@ -50,6 +50,9 @@
         var dirs = code.Split('/');
 
         if (dirs.Length > 1) { 
+            for(var i = 1; i < dirs.Length; i++) {
+                dirs[i] = $"{dirs[i-1]}/{dirs[i]}";
+            }
             vm.Breadcrumbs = Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
                     from p in db.SitePages
                     where dirs.Contains(p.Code)
@@ -62,6 +65,9 @@
                         p.Name,
                     }
                 )).Select(dir => (dir.Code, dir.Name)).ToList();
+        }
+        else {
+            vm.Breadcrumbs = new List<(string url, string name)> { (vm.Code, vm.Name) };
         }
         return vm;
     }
@@ -121,12 +127,6 @@
             ["item"] = Page.Template.SecuredHost(true) + Href("~/" + b.url)
         }));
     }
-    ViewBag.JsonLd[0]["itemListElement"].Add(new Dictionary<string, object> {
-            ["@type"] = "ListItem",
-            ["position"] = ViewBag.JsonLd[0]["itemListElement"].Count + 1,
-            ["name"] = vm.Name,
-            ["item"] = ViewBag.Canonical
-        });
     ViewBag.JsonLd = new List<object>(ViewBag.JsonLd);
 }
 @Include(vm.Partial, vm)
