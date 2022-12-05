@@ -361,6 +361,15 @@
         @Raw((Model.Body as string) ?? string.Empty)
     </article>
 </main>
+@if (vm.Tags.Count > 0) {
+    <section class="section content">
+        <div class="block block-horizontal block-wrap">
+            @foreach(var tag in vm.Tags) {
+                <a href="@TagUrl(tag.Code)" class="badge">#@tag.Name</a>
+            }
+        </div>
+    </section>
+}
 
 @if (vm.RelateProducts.Any()) {
 <aside class="section content">
