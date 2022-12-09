@@ -30,16 +30,15 @@
     </div>
     <form method="post">
         @Page.Html.SessionAntiForgeryToken()
-            <dl class="field">
-                <dt class="field-title">プレビュー時間</dt>
-                <dd class="field-body">
-                    <input type="datetime-local" name="time" value="@Now.ToString("yyyy-MM-ddTHH:mm")">
-                </dd>
-            </dl>
-            <div class="block block-horizontal">
-                <input type="submit" name="start" value="プレビュー開始" class="btn btn-action">
-                <input type="submit" name="end" value="プレビュー終了" class="btn btn-danger">
-            </div>
-        </section>
+        <dl class="field">
+            <dt class="field-title">プレビュー時間</dt>
+            <dd class="field-body">
+                <input type="datetime-local" name="time" value="@Now.ToString("yyyy-MM-ddTHH:mm")">
+            </dd>
+        </dl>
+        <div class="block block-horizontal">
+            <input type="submit" name="start" value="プレビュー開始" class="btn btn-action">
+            <input type="submit" name="end" value="プレビュー終了" class="btn btn-danger">
+        </div>
     </form>
 </main>
