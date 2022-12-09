@@ -151,7 +151,7 @@ function setup(root) {
         const parse = function(text, left, right) {
             left = left || '';
             right = right || '';
-            return JSON.parse(left + text.replace(/"/g,'\\"').replace(/'/g, '"') + right);
+            return JSON.parse(left + text.replace(/'/g, '"') + right);
         }
 
         const exec = function() {
