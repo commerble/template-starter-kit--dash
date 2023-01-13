@@ -111,7 +111,8 @@
             Database.Query(new { Now, Next, IsPreview, tag = tag?.Code }, (db, args) => (
                 from r in db.PageRelations
                 join p in db.SitePages on r.RelateCode equals p.Code
-                join m in db.Search on p.Code equals m.PageCode
+                join m in db.Search on p.Code equals m.PageCode into search
+                from m in search.DefaultIfEmpty()
                 join s in db.Products on m.PriceProductId equals s.Id into skus
                 from s in skus.DefaultIfEmpty()
                 where  r.PageCode == args.tag
