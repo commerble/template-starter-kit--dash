@@ -226,7 +226,7 @@
 @if (vm.TopTag != null) {
     <section class="section content">
         <h1 class="h-border text-center">
-            @Raw(vm.TopTag.Title)
+            @PrintTitleOrName(vm.TopTag.Title, vm.TopTag.Name)
         </h1>
         @TileList(vm.ProductPages, columns: 4, slot:(item, index) =>
             ProductTile(
