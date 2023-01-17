@@ -253,6 +253,7 @@
 
     /// -- Helpers
     string when(bool condition, string then, string @else = "") => condition ? then : @else;
+    string fallback(params string[] values) => values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
     string globalCacheKey(string name) => $"GlobalData:{name}:{Page.Template.RestartCounter}{(IsPreview ? TruncateDateTime(DateTime.Now, 1).Ticks.ToString() : string.Empty)}";
     Dictionary<PaymentMethod,string> PaymentMethodText = new Dictionary<PaymentMethod,string>{
         [PaymentMethod.CashOnDelivery] = "代引き",
@@ -350,15 +351,15 @@
     var requestUrl = Page.Template.SecuredHost(true) + Page.Request.Path;
 
     var title = string.IsNullOrWhiteSpace(ViewBag.MetaTitle) ? defaultTitle : $"{ViewBag.MetaTitle} | {brand}";
-    var description = string.IsNullOrWhiteSpace(ViewBag.MetaDescription) ? defaultDescription : (string)ViewBag.MetaDescription;
-    var image = string.IsNullOrWhiteSpace(ViewBag.MetaImage) ? defaultImage : (string)ViewBag.MetaImage;
+    var description = fallback(ViewBag.MetaDescription, defaultDescription);
+    var image = fallback(ViewBag.MetaImage, defaultImage);
     
-    var ogType = string.IsNullOrWhiteSpace(ViewBag.ogType) ? "article" : (string)ViewBag.ogType; 
-    var ogTitle = string.IsNullOrWhiteSpace(ViewBag.OgTitle) ? title : (string)ViewBag.OgTitle;
-    var ogDescription = string.IsNullOrWhiteSpace(ViewBag.OgDescription) ? description : (string)ViewBag.OgDescription;
-    var ogImage = string.IsNullOrWhiteSpace(ViewBag.OgImage) ? image : (string)ViewBag.OgImage;
-    var ogUrl = string.IsNullOrWhiteSpace(ViewBag.OgUrl) ? requestUrl : (string)ViewBag.OgUrl;
-    var canonical = string.IsNullOrWhiteSpace(ViewBag.Canonical) ? requestUrl : (string)ViewBag.Canonical;
+    var ogType = fallback(ViewBag.OgType, "article");
+    var ogTitle = fallback(ViewBag.OgTitle, title);
+    var ogDescription = fallback(ViewBag.OgDescription, description);
+    var ogImage = fallback(ViewBag.OgImage, image);
+    var ogUrl = fallback(ViewBag.OgUrl, requestUrl);
+    var canonical = fallback(ViewBag.Canonical, requestUrl);
 
     <title>@title</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
