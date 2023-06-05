@@ -1,0 +1,12 @@
+@{
+  Message.Subject = "メールアドレスの確認（再送）";
+
+  long userNo = long.Parse(ViewBag.Parameters["userNo"]);
+  var user = Database.EC.Single(db => 
+    db.UserProperties
+      .Include("UserAccount")
+      .Where(u => u.UserNo == userNo)
+      .Single()
+  );
+}
+/site/activate/@user.Token
