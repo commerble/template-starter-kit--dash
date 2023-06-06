@@ -23,6 +23,9 @@ module.exports = {
         loader: 'sass-loader'
       }],
       include: resolve(__dirname, '../')
+    }, {
+      test: /\.fn\.ejs$/i,
+      use: [{ loader: resolve(__dirname, './ejs-fn-loader.js') }],
     });
     return config;
   },
