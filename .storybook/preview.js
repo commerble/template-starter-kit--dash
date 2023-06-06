@@ -1,9 +1,6 @@
-import { addDecorator, addParameters } from '@storybook/html'
 import { withA11y } from '@storybook/addon-a11y'
 
 import '../scss/style.scss'
-
-addDecorator(withA11y)
 
 const customViewports = {
   iPhone5: {
@@ -43,10 +40,8 @@ const customViewports = {
   }
 }
 
-addParameters({
-  viewport: { viewports: customViewports }
-})
-
 export const parameters = {
+  viewport: { viewports: customViewports },
   actions: { argTypesRegex: "^on[A-Z].*" },
+  ...withA11y
 }

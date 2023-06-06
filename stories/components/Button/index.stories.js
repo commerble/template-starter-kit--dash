@@ -1,4 +1,3 @@
-import copyCodeBlock from '@pickra/copy-code-block'
 import {render} from './index.js'
 
 export default {
@@ -6,22 +5,25 @@ export default {
   argTypes: {
     label: { control: 'text' },
     color: {
-      control: { type: 'select', options: ['', 'primary', 'action', 'danger'] },
+      options: ['', 'primary', 'action', 'danger'],
+      control: { type: 'select' },
     },
     style: {
-      control: { type: 'select', options: ['', 'ghost', 'text'] },
+      options: ['', 'ghost', 'text'],
+      control: { type: 'select' },
     },
     size: {
-      control: { type: 'select', options: ['', 'small', 'large'] },
+      options: ['', 'small', 'large'],
+      control: { type: 'select' },
     },
     next: { control: 'boolean' },
     prev: { control: 'boolean' },
   },
+  tags: ['autodocs'],
 }
 
 const Template = ({...args }) => {
-  const html = render(args);
-  return html + '<hr>' + copyCodeBlock(html)
+  return render(args);
 };
 
 export const Default = Template.bind({});

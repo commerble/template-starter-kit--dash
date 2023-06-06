@@ -1,4 +1,4 @@
-import copyCodeBlock from '@pickra/copy-code-block'
+
 import {render} from './index.js'
 
 export default {
@@ -6,20 +6,22 @@ export default {
   argTypes: {
     removal: { control: 'boolean' },
     icon: { 
-      control: { type: 'select', options: ['', 'font', 'img'] },
+      options: ['', 'font', 'img'],
+      control: { type: 'select' },
     },
-    img: { control: 'text', defaultValue: 'https://via.placeholder.com/32x32?text=icon'},
+    img: { control: 'text' },
     notfound: { control: 'boolean'},
   },
+  tags: ['autodocs']
 }
 
 const Template = ({...args }) => {
-  const html = render(args);
-  return html + '<hr>' + copyCodeBlock(html)
+  return render(args);
 };
 
 export const Default = Template.bind({})
 Default.args = {
+  img: 'https://via.placeholder.com/32x32?text=icon'
 }
 
 export const FontIcon = Template.bind({})

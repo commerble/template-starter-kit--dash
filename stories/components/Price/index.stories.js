@@ -1,4 +1,3 @@
-import copyCodeBlock from '@pickra/copy-code-block'
 import {render} from './index.js'
 
 export default {
@@ -6,20 +5,19 @@ export default {
   argTypes: {
     price: { type: 'number' },
     yenMark: { type: 'boolean' },
-    tax: { control: { type: 'select', options: ['', 'include', 'notax', 'exclude'] } },
-    unit: { control: { type: 'select', options: ['yen', 'point'] } },
+    tax: { control: { type: 'select' }, options: ['', 'include', 'notax', 'exclude'] },
+    unit: { control: { type: 'select' }, options: ['yen', 'point'] },
     strong: { type: 'boolean' },
     attention: { type: 'boolean' },
     large: { type: 'boolean' },
     del: { type: 'boolean' },
   },
+  tags: ['autodocs']
 }
 
 const Template = ({...args }) => {
-  const html = render(args);
-  return html + '<hr>' + copyCodeBlock(html)
+  return render(args);
 };
-
 
 export const SimplePrice = Template.bind({});
 SimplePrice.args = {

@@ -1,7 +1,7 @@
 export const renderIcon = ({
     icon,
 }) => {
-    let klass = "icon-" + icon;
+    let klass = "icon-dash-" + icon;
 
     return `<i class="${klass}"></i>`
 }

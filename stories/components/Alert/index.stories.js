@@ -1,18 +1,41 @@
-import copyCodeBlock from '@pickra/copy-code-block'
 import {render} from './index.js'
 
 export default {
   title: 'Components/Alert',
   argTypes: {
-    color: { control: { type: 'select', options: ['', 'error', 'warning', 'info', 'success'] } }
+    color: { 
+      options: ['', 'error', 'warning', 'info', 'success'],
+      control: { type: 'select' }
+    }
   },
+  tags:['autodocs']
 }
 
 const Template = ({...args }) => {
-  const html = render(args);
-  return html + '<hr>' + copyCodeBlock(html)
+  return render(args);
 };
 
 export const Default = Template.bind({});
 Default.args = {
+  color: ''
+};
+
+export const Error = Template.bind({});
+Error.args = {
+  color: 'error'  
+};
+
+export const Warning = Template.bind({});
+Warning.args = {
+  color: 'warning'
+};
+
+export const Info = Template.bind({});
+Info.args = {
+  color: 'info'
+};
+
+export const Success = Template.bind({});
+Success.args = {
+  color: 'success'
 };

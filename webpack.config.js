@@ -1,10 +1,24 @@
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries")
+const TerserPlugin = require("terser-webpack-plugin")
+
 module.exports = {
-  entry: './scss/style.scss',
+  entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, 'templates')
+    path: path.resolve(__dirname, 'templates'),
+    filename: 'Script.txt'
+  },
+  optimization: {
+    minimize: true, 
+    minimizer: [
+      new TerserPlugin({
+        test: /Script.*\.txt$/,
+        extractComments: false,
+        terserOptions: {
+          compress: { drop_console: true },
+        }
+      })
+    ],
   },
   module: {
     rules: [
@@ -24,6 +38,5 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({ filename: 'Style.txt' }),
-    new FixStyleOnlyEntriesPlugin(),
   ]
 }

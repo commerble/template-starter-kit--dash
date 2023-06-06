@@ -6,5 +6,5 @@ export const render = ({
     if (wide)
         klass = "content-wide";
     
-    return `<div class="${klass}" style="background: red; height: 400px;"></div>`
+    return `<div class="${klass}" style="background: gray; height: 400px;"></div>`
 }

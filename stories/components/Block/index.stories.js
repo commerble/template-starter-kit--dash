@@ -1,24 +1,25 @@
-import copyCodeBlock from '@pickra/copy-code-block'
 import {render} from './index.js'
 
 export default {
   title: 'Components/Block',
   argTypes: {
     direction: { 
-      control: { type: 'select', options: ['vertical', 'horizontal'] },
+      options: ['vertical', 'horizontal'],
+      control: { type: 'select'},
     },
     end: { 
-      control: { type: 'select', options: ['', 'left', 'right'] },
+      options: ['', 'left', 'right'],
+      control: { type: 'select' },
     },
     wrap: { type: 'boolean' },
     full1: { type: 'boolean', name: 'full for Button1' },
     full2: { type: 'boolean', name: 'full for Button2' },
   },
+  tags: ['autodocs']
 }
 
 const Template = ({...args }) => {
-  const html = render(args);
-  return html + '<hr>' + copyCodeBlock(html)
+  return render(args);
 };
 
 export const Vertical = Template.bind({});

@@ -1,17 +1,16 @@
-import copyCodeBlock from '@pickra/copy-code-block'
 import {renderProduct,renderArticle} from './index.js'
 
 export default {
   title: 'Components/Tile',
   argTypes: {
-    columns : { control: { type: 'select', options: [2,3,4,5]}, defaultValue: 8},
-    items: { control: 'number', defaultValue: 6},
+    columns : { control: { type: 'select'}, options: [2,3,4,5] },
+    items: { control: 'number' },
   },
+  tags: ['autodocs']
 }
 
-const Template = render => ({...args }) => {
-  const html = render(args);
-  return html + '<hr>' + copyCodeBlock(html)
+const Template = ({...args }) => {
+  return render(args);
 };
 
 export const Product = Template(renderProduct).bind({});
