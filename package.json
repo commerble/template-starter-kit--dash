@@ -10,7 +10,7 @@
     "build": "webpack --mode production",
     "upload:watch": "node ./sync.js watch",
     "upload": "node ./sync.js all",
-    "publish": "npm-run-all -s build:sass upload",
+    "publish": "npm-run-all -s build upload",
     "start": "npm-run-all -p build:watch upload:watch"
   },
   "keywords": [],
