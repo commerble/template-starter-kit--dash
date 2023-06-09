@@ -1,4 +1,4 @@
-import {render} from './index.js'
+import render from './price.fn.ejs'
 
 export default {
   title: 'Components/Price',

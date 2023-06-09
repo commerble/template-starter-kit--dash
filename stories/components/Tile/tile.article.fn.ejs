@@ -1,0 +1,19 @@
+<% 
+    const {
+        columns,
+        items,
+    } = locals;
+%>
+<div class="tiles tiles-x<%=columns%>">
+    <% for (let i = 0; i < items; i++) { %>
+        <article class="tile">
+            <a href="javascript:void(0)" rel="bookmark">
+                <h1>Title of the article tile <%=i%></h1>
+                <time datetime="2021-01-01">2021.01.01</time>
+                <figure class="image image-golden">
+                    <img src="https://httpstat.us/404" alt="Tile Image ${i}">
+                </figure>
+            </a>
+        </article>
+    <% } %>
+</div>

@@ -1,4 +1,4 @@
-import {render} from './index.js'
+import render from './button.fn.ejs'
 
 export default {
   title: 'Components/Button',

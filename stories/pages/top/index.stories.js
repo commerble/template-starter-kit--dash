@@ -1,5 +1,6 @@
-import copyCodeBlock from '@pickra/copy-code-block'
-import {render} from './index.js'
+
+import components from '../components';
+import render from './index.fn.ejs'
 
 export default {
   title: 'Pages/Top',
@@ -8,8 +9,7 @@ export default {
 }
 
 const Template = ({...args }) => {
-  const html = render(args);
-  return html + '<hr>' + copyCodeBlock(html)
+  return render(args, null, components);
 };
 
 export const Default = Template.bind({});

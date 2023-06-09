@@ -1,0 +1,19 @@
+<%
+    const klass = ['badge'];
+    const src = locals.notfound ? 'https://httpstat.us/404' : locals.img;
+
+    if (locals.removal)
+        klass.push('badge-removal');
+%>
+<a class="<%= klass.join(' ') %>">
+    <% if (locals.icon === 'font') {%>
+        <i class="badge-icon icon-dash-heart"></i>
+    <% } else if (locals.icon === 'img') { %>
+        <div class="badge-icon">
+            <div class="image image-square">
+                <img src="<%= src %>" alt="">
+            </div>
+        </div>
+    <% } %>
+    Badge バッジ
+</a>

@@ -1,0 +1,16 @@
+<% 
+    const {
+        url,
+        small
+    } = locals;
+
+    const klass = ['product-icon']
+    if (small)
+        klass.push('icon-small')
+ %>
+
+<div class="<%= klass.join(' ') %>">
+    <div class="image image-square">
+        <img src="<%= url %>" alt="icon">
+    </div>
+</div>

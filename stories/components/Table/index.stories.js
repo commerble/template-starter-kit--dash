@@ -1,4 +1,4 @@
-import {render} from './index.js'
+import render from './table.fn.ejs'
 
 export default {
   title: 'Components/Table',

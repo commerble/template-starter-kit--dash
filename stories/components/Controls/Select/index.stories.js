@@ -1,4 +1,4 @@
-import {render} from './index.js'
+import render from './index.js'
 
 export default {
   title: 'Components/Controls/Select',
@@ -20,12 +20,6 @@ const Template = ({...args }) => {
 export const Default = Template.bind({});
 Default.args = {
 };
-
-export const Date = Template.bind({});
-Date.args = {
-  date: true
-};
-
 
 export const Wrap = Template.bind({});
 Wrap.args = {

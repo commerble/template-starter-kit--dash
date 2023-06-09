@@ -1,4 +1,6 @@
-import {renderProduct,renderArticle} from './index.js'
+import product from './tile.product.fn.ejs';
+import article from './tile.article.fn.ejs';
+import price from '../Price/price.fn.ejs';
 
 export default {
   title: 'Components/Tile',
@@ -9,17 +11,24 @@ export default {
   tags: ['autodocs']
 }
 
-const Template = ({...args }) => {
-  return render(args);
+function find(path, args) {
+  if (path === 'price') {
+      return price(args);
+  }
+  throw new Error('not supported');
+}
+
+const Template = (render) => {
+  return ({...args}) => `<div class="content">${render(args, null, find)}</div>`
 };
 
-export const Product = Template(renderProduct).bind({});
+export const Product = Template(product).bind({});
 Product.args = {
   columns: 4,
   items: 8
 };
 
-export const Article = Template(renderArticle).bind({});
+export const Article = Template(article).bind({});
 Article.args = {
   columns: 3,
   items: 6

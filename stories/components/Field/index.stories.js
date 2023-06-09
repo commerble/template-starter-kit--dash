@@ -1,4 +1,4 @@
-import {render} from './index.js'
+import render from './field.fn.ejs'
 
 export default {
   title: 'Components/Field',

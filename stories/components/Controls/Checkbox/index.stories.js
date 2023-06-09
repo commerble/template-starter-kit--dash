@@ -1,4 +1,4 @@
-import {render} from './index.js'
+import render from './index.js'
 
 export default {
   title: 'Components/Controls/Checkbox',

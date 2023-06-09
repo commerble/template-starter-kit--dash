@@ -1,0 +1,35 @@
+<%
+    const {
+        notfound,
+        additionalClassName,
+    } = locals;
+
+    let src = i => "https://via.placeholder.com/600x600?text=Image " + i;
+    let thumb = i=> "https://via.placeholder.com/64x64?text=" + i;
+
+    if (notfound) {
+        thumb = src = () => 'https://httpstat.us/404';
+    }
+%>
+<div class="carousel ${when(additionalClassName,additionalClassName)}">
+    <ul class="carousel-images">
+        <% for(let i = 0; i < 15; i++) { %>
+            <li id="carousel-frame-<%=i%>" class="carousel-frame image image-square">
+                <% if (i == 0) { %>
+                    <img src="<%=src(i+1)%>" alt="Image <%=i+1%>" loading="eager" decoding="sync">
+                <%  } else { %>
+                    <img src="<%=src(i+1)%>" alt="Image <%=i+1%>" loading="lazy" decoding="async">
+                <% } %>
+            </li>
+        <% } %>
+    </ul>
+    <div class="carousel-thumbnails">
+        <% for(let i = 0; i < 15; i++) { %>
+            <a href="#carousel-frame-<%=i%>" target="_self">
+                <div class="image image-square">
+                    <img src="<%=thumb(i+1)%>" width="64" height="64">
+                </div>
+            </a>
+        <% } %>
+    </div>
+</div>

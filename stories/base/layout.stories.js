@@ -125,3 +125,95 @@ export const Column1 = {
         `
     }
 }
+
+export const BlockVertical = {
+    name: 'ブロック 垂直',
+    render() {
+        return `
+<div class="block block-vertical">
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+</div>
+        `
+    }
+}
+
+export const BlockVerticalFull = {
+    name: 'ブロック 垂直 full',
+    render() {
+        return `
+<div class="block block-vertical">
+    <button class="btn">Button</button>
+    <button class="btn full">Button</button>
+</div>
+        `
+    }
+}
+
+
+export const BlockHorizontal = {
+    name: 'ブロック 水平',
+    render() {
+        return `
+<div class="block block-horizontal">
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+</div>
+        `
+    }
+}
+
+export const BlockHorizontalFull = {
+    name: 'ブロック 水平 full',
+    render() {
+        return `
+<div class="block block-horizontal">
+    <button class="btn full">Button</button>
+    <button class="btn full">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+</div>
+        `
+    }
+}
+
+export const BlockHorizontalWrap = {
+    name: 'ブロック 水平 Wrap',
+    render() {
+        return `
+<div class="block block-horizontal block-wrap">
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+    <button class="btn">Button</button>
+</div>
+        `
+    }
+}
+
+export const Content = {
+    name: 'コンテント',
+    render() {
+        return `
+<div class="content" style="background: gray; height: 400px;">
+</div>
+        `
+    }
+}
+
+export const ContentWide = {
+    name: 'コンテント wide',
+    render() {
+        return `
+<div class="content-wide" style="background: gray; height: 400px;">
+</div>
+        `
+    }
+}

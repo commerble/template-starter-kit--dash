@@ -1,0 +1,14 @@
+<%
+    const {
+        disabled, 
+        readonly, 
+        invalid,
+        label
+    } = locals;
+
+    const when = (condition, str) => condition ? str : '';  
+%>
+<label>
+    <input type="checkbox" name="example" <%= when(disabled, 'disabled') %> <%= when(readonly, 'readonly') %> <%= when(invalid, 'class="input-validation-error"') %>>
+    <span class="text"><%= label %></span>
+</label>

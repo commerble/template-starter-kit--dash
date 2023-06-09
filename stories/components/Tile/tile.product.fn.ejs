@@ -1,0 +1,21 @@
+<% 
+    const {
+        columns,
+        items,
+    } = locals;
+%>
+<div class="tiles tiles-x<%=columns%>">
+    <% for (let i = 0; i < items; i++) { %>
+        <article class="tile">
+            <a href="javascript:void(0)" rel="bookmark">
+                <h3>Product Name <%=i%> 商品名<%=i%> 商品名<%=i%></h3>
+                <figure class="image image-square">
+                    <img src="https://httpstat.us/404" alt="Tile Image <%=i%>">
+                </figure>
+                <div class="tile-info text-right">
+                    <%- include('price', { price: 1000, tax: 'include', yenMark: true }) %>
+                </div>
+            </a>
+        </article>
+    <% } %>
+</div>

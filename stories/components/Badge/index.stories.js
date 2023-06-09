@@ -1,5 +1,5 @@
 
-import {render} from './index.js'
+import render from './badge.fn.ejs'
 
 export default {
   title: 'Components/Badge',

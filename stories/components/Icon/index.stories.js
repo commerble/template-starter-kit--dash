@@ -1,4 +1,4 @@
-import {renderIcon, renderProductIcon} from './index.js'
+import render from './producticon.fn.ejs'
 
 export default {
   title: 'Components/Icon',
@@ -10,7 +10,7 @@ export default {
 }
 
 const TemplateProductIcon = ({...args }) => {
-  return renderProductIcon(args);
+  return render(args);
 };
 
 export const ProductIcon = TemplateProductIcon.bind({});

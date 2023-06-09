@@ -1,0 +1,19 @@
+<%
+    const {
+        disabled, readonly, invalid,
+        name, options
+    } = locals;
+
+    const when = (condition, str) => condition ? str : ''
+%>
+<select 
+    name="<%= name %>"
+    <%= when(disabled, 'disabled') %> 
+    <%= when(readonly, 'readonly') %> 
+    <%- when(invalid, 'class="input-validation-error"') %>
+>
+    <option value="">未選択</option>
+    <% for(let opt of options) { %>
+        <option value="<%= opt.value %>"><%= opt.text %></option>
+    <% } %>
+</select>

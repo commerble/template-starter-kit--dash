@@ -1,4 +1,4 @@
-import {render} from './index.js'
+import render from './gnav.fn.ejs'
 
 export default {
   title: 'Components/GlobalNav',

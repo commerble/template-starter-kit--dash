@@ -1,0 +1,47 @@
+<% 
+    const {
+     value,
+     text,
+     invalid
+    } = locals;
+
+    const when = (condition, str) => condition ? str : ''
+ %>
+<dl class="field">
+     <dt class="field-title">Control 1</dt>
+     <dd class="field-body">
+        <% if (text) { %>
+            <p class="field-text"><%= value %> <%= value %></p>
+        <% } else { %>
+            <input type="text" class="<%= when(invalid,'input-validation-error') %>" value="<%= value %>">
+            <input type="text" class="<%= when(invalid,'input-validation-error') %>" value="<%= value %>">
+            <p class="field-error" <%- when(!invalid,'style="display:none;"') %>><%= when(invalid,'エラーメッセージ') %></p>
+        <% } %>
+     </dd>
+ </dl>
+ <dl class="field">
+     <dt class="field-title">Control 2</dt>
+     <dd class="field-body">
+        <% if (text) { %>
+            <p class="field-text"><%= value %></p>
+        <% } else { %>
+            <input type="text" class="<%= when(invalid,'input-validation-error') %>" value="<%= value %>" size="100">
+            <p class="field-error" <%- when(!invalid,'style="display:none;"') %>><%= when(invalid,'エラーメッセージ') %></p>
+            <p class="field-note">フィールドの補足説明</p>
+        <% } %>
+     </dd>
+ </dl>
+ <dl class="field">
+     <dt class="field-title">Control</dt>
+     <dd class="field-body">
+        <% if (text) { %>
+            <p class="field-text"><%= value %></p>
+        <% } else { %>
+            <div class="field-group">
+                <input type="text" class="<%= when(invalid,'input-validation-error') %>" value="<%= value %>" size="7">
+                <button class="btn">検索</button>
+            </div>
+            <p class="field-error" <%- when(!invalid,'style="display:none;"') %>><%= when(invalid,'エラーメッセージ') %></p>
+        <% } %>
+     </dd>
+ </dl>

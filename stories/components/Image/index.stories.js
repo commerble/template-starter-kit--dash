@@ -1,4 +1,4 @@
-import {render} from './index.js'
+import render from './image.fn.ejs'
 
 export default {
   title: 'Components/Image',
@@ -12,7 +12,12 @@ export default {
   tags: ['autodocs']
 }
 
-const Template = ({...args }) => {
+const Template = ({wrap, wrapWidth, ...args }) => {
+  if (wrap) {
+    return `<div style="width:${wrapWidth}px">
+    ${render(args)}
+</div>`
+  }
   return render(args);
 };
 

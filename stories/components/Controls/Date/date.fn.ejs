@@ -1,0 +1,30 @@
+<%
+    const {
+        disabled, readonly, invalid,
+        nameY, nameM, nameD,
+    } = locals;
+%>
+<%- include('select', {
+    disabled, readonly, invalid,
+    name: nameY, options: [
+        { text: '1910', value: '1910' },
+        { text: '....', value: '....' },
+        { text: '2023', value: '2023' },
+    ]
+}) %>年
+<%- include('select', {
+    disabled, readonly, invalid,
+    name: nameM, options: [
+        { text: '1', value: '1' },
+        { text: '....', value: '....' },
+        { text: '12', value: '12' },
+    ]
+}) %>月
+<%- include('select', {
+    disabled, readonly, invalid,
+    name: nameD, options: [
+        { text: '1', value: '1' },
+        { text: '....', value: '....' },
+        { text: '31', value: '31' },
+    ]
+}) %>日
