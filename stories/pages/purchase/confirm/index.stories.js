@@ -10,7 +10,7 @@ export default {
 }
 
 export const Default = {
-  name: '/purchase/n/payment',
+  name: '/purchase/n/confirm',
   render(args) {
     return render(args, null, components);
   },
@@ -20,7 +20,7 @@ export const Default = {
 }
 
 export const ExternalPayment = {
-  name: '/purchase/n/payment - external payment',
+  name: '/purchase/n/confirm - external payment',
   render(args) {
     return render(args, null, components);
   },
