@@ -1,0 +1,47 @@
+<%
+    const {
+        serverError,
+    } = locals;
+%>
+<%- include('gnav') %>
+<main class="section content">
+    <h1 class="h-underline">お問い合わせ - 内容確認</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <form action="" method="post">
+        <dl class="field">
+            <dt class="field-title">氏名</dt>
+            <dd class="field-body">
+                <p class="field-note">山田太郎</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <p class="field-note">info@commerble.com</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">注文番号</dt>
+            <dd class="field-body">
+                <p class="field-note">未入力</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">お問い合わせ内容</dt>
+            <dd class="field-body">
+                <p class="field-note">
+                    ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト <br>
+                    ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト <br>
+                    ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト <br>
+                    ダミーテキストダミーテキストダミーテキストダミーテキストダミーテキスト <br>
+                </p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-large" name="create" value="create">この内容で送信する</button>
+            <button type="submit" class="btn btn-primary btn-text btn-prev">入力内容を変更する</button>
+        </div>
+    </form>
+</main>

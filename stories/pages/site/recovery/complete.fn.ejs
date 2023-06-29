@@ -1,0 +1,19 @@
+<%
+    const {
+        serverError,
+    } = locals;
+%>
+<main class="section content">
+    <h1 class="h-underline text-center">パスワードを再設定しました</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <div class="message-box">
+        <p class="message lead text-center">
+            パスワードを再設定しました。再度、ログインをお試しください。
+        </p>
+    </div>
+    <div class="block">
+        <a href="" class="btn btn-primary btn-next">ログインページへ</a>
+    </div>
+</main>

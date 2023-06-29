@@ -3,7 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require("terser-webpack-plugin")
 
 module.exports = {
-  entry: './src/main.js',
+  entry: './src/entry.js',
   output: {
     path: path.resolve(__dirname, 'templates'),
     filename: 'Script.txt'
@@ -23,6 +23,17 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        include: [
+          path.resolve(__dirname, "src") 
+        ],
+        use: [
+          {
+            loader: 'embedded-loader',
+          }
+        ]
+      },
+      {
         test: /\.(sa|sc|c)ss$/,
         use: [
           MiniCssExtractPlugin.loader,
@@ -38,5 +49,10 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({ filename: 'Style.txt' }),
-  ]
+  ],
+  resolveLoader: {
+    alias: {
+      'embedded-loader': path.resolve(__dirname, 'src/embedded-loader.js'),
+    },
+  },
 }

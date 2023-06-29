@@ -1,5 +1,14 @@
-<div class="alert alert-<%= locals.color %>">
-    <p>アラートメッセージ</p>
-    <p>アラートメッセージ</p>
-    <p>アラートメッセージ</p>
+<%
+    let {
+        color,
+        messages
+    } = locals;
+    if (!messages) {
+        messages = ['アラートメッセージ', 'アラートメッセージ', 'アラートメッセージ'];
+    }
+%>
+<div class="alert alert-<%= color %>">
+    <% for (let message of messages) { %>
+        <p><%= message %></p>
+    <% } %>
 </div>

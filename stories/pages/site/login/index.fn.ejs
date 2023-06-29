@@ -1,0 +1,52 @@
+<%
+    const {
+        serverError,
+        showGuestLogin
+    } = locals;
+%>
+<%- include('gnav') %>
+<aside class="section content">
+    <div class="message-box">
+        <h1 class="h-title text-center">サイトリニューアルに伴うパスワード再設定のお願い</h1>
+        <p class="lead">当サイトのリニューアルに伴い、ログインシステムを刷新いたしました。<br> セキュリティ向上のため、たいへんお手数をおかけいたしますが、再設定がお済みでない方はパスワードの再設定をお願いいたします。</p>
+        <div class="block">
+            <a href="" class="btn btn-primary btn-next">パスワードを再設定する</a>
+        </div>
+    </div>
+</aside>
+<main class="section content">
+    <h1 class="h-underline">会員登録がお済みのお客様</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <form action="" method="post">
+        <dl class="field">
+            <dt class="field-title"> メールアドレス</dt>
+            <dd class="field-body">
+                <input type="email" name="UserName">
+                <p class="field-error" data-valmsg-for="UserName" data-valmsg-replace="true"></p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title"> パスワード</dt>
+            <dd class="field-body">
+                <input type="password" name="Password">
+                <p class="field-error" data-valmsg-for="Password" data-valmsg-replace="true"></p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <button type="submit" class="btn btn-action btn-large">ログイン</button>
+            <a href="" class="btn btn-primary btn-text btn-next">パスワードをお忘れの場合はこちら</a>
+        </div>
+    </form>
+</main>
+<aside class="section content">
+    <h1 class="h-underline">まだ会員登録されていないお客様</h1>
+    <p class="lead text">会員登録をすると便利なマイページをご利用いただけます。<br>また、ログインするだけで、毎回お名前や住所などを入力することなくスムーズにお買い物をお楽しみいただけます。</p>
+    <div class="block block-vertical mt">
+        <a href="" class="btn btn-primary btn-next">会員登録をする（無料）</a>
+        <% if (showGuestLogin) { %>
+            <a href="" class="btn btn-primary btn-text">登録せずにレジへ進む</a>
+        <% } %>
+    </div>
+</aside>

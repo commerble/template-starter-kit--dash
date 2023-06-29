@@ -1,0 +1,32 @@
+<%
+    const {
+        serverError,
+        send
+    } = locals;
+%>
+<%- include('gnav') %>
+<main class="section content">
+    <h1 class="h-underline">パスワード再設定</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <% if (send) { %>
+        <%- include('alert', { color: 'success', messages: ['送信しました。'] }) %>
+    <% } %>
+    <form action="" method="post">
+        <dl class="field">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <input type="text" name="UserName" 
+                    data-val="true"
+                    data-val-required="メールアドレスは必須項目です。" 
+                    data-val-email="メールアドレスをご入力ください。"
+                >
+                <p class="field-error" data-valmsg-for="UserName" data-valmsg-replace="true"></p>
+            </dd>
+        </dl>
+        <div class="block">
+            <button type="submit" name="request" value="post" class="btn btn-primary btn-next">パスワード再設定メールを送信する</button>
+        </div>
+    </form>
+</main>

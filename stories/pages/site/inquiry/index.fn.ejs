@@ -1,0 +1,83 @@
+<%
+    const {
+        serverError,
+        send
+    } = locals;
+%>
+<%- include('gnav') %>
+<main class="section content">
+    <h1 class="h-underline">お問い合わせ</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <% if (send) { %>
+        <%- include('alert', { color: 'success', messages: ['お問い合わせを送信しました。'] }) %>
+    <% } %>
+    <form action="" method="post">
+        <dl class="field required">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <input type="text" 
+                    name="contact.CustomerEmail"
+                    placeholder="例）xxxxxx@commerble.com"
+                    data-val="true"
+                    data-val-required="メールアドレスは必須項目です。"
+                    data-val-email="メールアドレスをご入力ください。"
+                >
+                <p class="field-error" data-valmsg-for="contact.CustomerEmail" data-valmsg-replace="true"></p>
+                <p class="field-note">ドメイン受信拒否機能を設定されている方は&nbsp;commerble.com&nbsp;からの受信許可を設定してください。 </p>
+            </dd>
+        </dl>
+        <dl class="field required">
+            <dt class="field-title">氏名</dt>
+            <dd class="field-body">
+                <input type="text"
+                    name="contact.LastName"
+                    placeholder="例）山田"
+                    data-val="true"
+                    data-val-required="氏名（姓）は必須項目です。"
+                    data-val-length="氏名（姓）は64文字以内でご入力ください。"
+                    data-val-length-max="64"
+                >
+                <input type="text"
+                    name="contact.FirstName"
+                    placeholder = "例）太郎"
+                    data-val = "true"
+                    data-val-required="氏名（名）は必須項目です。"
+                    data-val-length="氏名（名）は64文字以内でご入力ください。"
+                    data-val-length_max="64"
+                >
+                <p class="field-error" data-valmsg-for="contact.LastName" data-valmsg-replace="true"></p>
+                <p class="field-error" data-valmsg-for="contact.FirstName" data-valmsg-replace="true"></p>
+            </dt>
+        </dl>
+        <dl class="field optional">
+            <dt class="field-title">注文番号</dt>
+            <dd class="field-body">
+                <input type="text"
+                    name="contact.OrderId"
+                    placeholder="例）10000000"
+                >
+                <p class="field-error" data-valmsg-for="contact.OrderId" data-valmsg-replace="true"></p>
+                <p class="field-note">注文に対するお問い合わせの場合はご記入ください。</p>
+            </dd>
+        </dl>
+        <dl class="field required">
+            <dt class="field-title">お問い合わせ内容</dt>
+            <dd class="field-body">
+                <textarea
+                    name="contact.Text"
+                    rows="10"
+                    data-val="true"
+                    data-val-required="お問い合わせ内容は必須項目です。"
+                    data-val-regex="お問い合わせ内容に半角の「<」「>」「&#」を含めることはできません。"
+                    data-val-regex-pattern="^(?!(.|\n|\r)*(&#|[<>]))(.|\n|\r)*$"
+                ></textarea>
+                <p class="field-error" data-valmsg-for="contact.Text" data-valmsg-replace="true"></p>
+            </dd>
+        </dl>
+        <div class="block">
+            <button type="submit" name="confirm" value="post" class="btn btn-primary btn-next">お問い合わせ内容を確認する</button>
+        </div>
+    </form>
+</main>

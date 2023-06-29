@@ -4,7 +4,7 @@
         required, title,
         disabled, readonly, invalid, 
         name, options,
-        date, nameY, nameM, nameD
+        date, nameY, nameM, nameD,
     } = locals;
 
     const when = (condition, str) => condition ? str : ''
@@ -19,7 +19,9 @@
                 nameM: nameM || 'M',
                 nameD: nameD || 'D',
             }) %>
-            <p class="field-error <%- when(invalid,'field-validation-error') %>" <%- when(!invalid,'style="display:none;"') %>><%= when(invalid,'エラーメッセージ') %></p>
+            <p class="field-error <%- when(invalid,'field-validation-error') %>" data-valmsg-for="<%= nameY || 'Y' %>" data-valmsg-replace="true"><%= when(invalid,'エラーメッセージ') %></p>
+            <p class="field-error <%- when(invalid,'field-validation-error') %>" data-valmsg-for="<%= nameM || 'M' %>" data-valmsg-replace="true"><%= when(invalid,'エラーメッセージ') %></p>
+            <p class="field-error <%- when(invalid,'field-validation-error') %>" data-valmsg-for="<%= nameD || 'D' %>" data-valmsg-replace="true"><%= when(invalid,'エラーメッセージ') %></p>
         </dd>
     </dl>
 <% } else { %>

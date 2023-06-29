@@ -1,5 +1,3 @@
-import '../scss/style.scss'
-
 if (window.$) {
     $.fn.showRecalc = function() {
         $('[name=recalc]').removeClass('hide').siblings().addClass('hide');

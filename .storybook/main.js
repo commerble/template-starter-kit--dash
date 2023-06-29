@@ -9,6 +9,7 @@ module.exports = {
     "@storybook/addon-a11y/register", 
     "@storybook/addon-viewport/register"
   ],
+  staticDirs: [{ from: '../src', to: '/public' }],
   webpackFinal: async config => {
     config.module.rules.push({
       test: /\.scss$/,
@@ -32,5 +33,5 @@ module.exports = {
   framework: {
     name: "@storybook/html-webpack5",
     options: {}
-  }
+  },
 };

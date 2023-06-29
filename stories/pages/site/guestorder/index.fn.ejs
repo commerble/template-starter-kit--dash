@@ -1,0 +1,24 @@
+<%
+    const {
+        serverError,
+    } = locals;
+%>
+<%- include('gnav') %>
+<main class="section content">
+    <h1 class="h-underline">ゲスト注文詳細</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <form action="" method="post">
+        <dl class="field">
+            <dt class="field-title">電話番号下4桁</dt>
+            <dd class="field-body">
+                <input type="tel" name="authCode">
+                <p class="field-error" data-valmsg-for="authCode" data-valmsg-replace="true"></p>
+            </dd>
+        </dl>
+        <div class="block">
+            <button type="submit" class="btn btn-primary">表示する</button>
+        </div>
+    </form>
+</main>
