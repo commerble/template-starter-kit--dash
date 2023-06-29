@@ -16,7 +16,7 @@
                 @Page.Html.TextBox("AddressName",address.AddressName ?? "", new {
                     data_val = "true",
                     data_val_length = "お届け先名は10文字以内で入力してください。",
-                    data_val_length_maxlength = "10"
+                    data_val_length_max = "10"
                 })
                 @ValidationMessageFor("AddressName")
             </dd>

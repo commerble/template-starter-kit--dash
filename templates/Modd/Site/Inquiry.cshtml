@@ -29,14 +29,14 @@
                     data_val = "true",
                     data_val_required = "氏名（姓）は必須項目です。",
                     data_val_length = "氏名（姓）は64文字以内でご入力ください。",
-                    data_val_length_maxlength = "64",
+                    data_val_length_max = "64",
                 })
                 @Page.Html.TextBox("contact.FirstName", general?.FirstName, new {
                     placeholder = "例）太郎",
                     data_val = "true",
                     data_val_required = "氏名（名）は必須項目です。",
                     data_val_length = "氏名（名）は64文字以内でご入力ください。",
-                    data_val_length_maxlength = "64",
+                    data_val_length_max = "64",
                 })
                 @ValidationMessageFor("contact.LastName")
                 @ValidationMessageFor("contact.FirstName")
