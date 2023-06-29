@@ -18,7 +18,7 @@
                         data_val = "true",
                         data_val_required = "新パスワードは必須項目です。",
                         data_val_regex = "新パスワードには英数字8文字以上必要です。",
-                        data_val_regex_pattern = @"^(?=.*?[a-zA-Z!#$%&^~])(?=.*?\d)[a-zA-Z\d!#$%&^~]{8,64}$"
+                        data_val_regex_pattern = @"^(?=.*?[a-zA-Z!""#$%&'\(\)\-=^~\\\|@`\[\{;\+:\*\]\},<\.>/\?_])(?=.*?\d)[a-zA-Z\d!""#$%&'\(\)\-=^~\\\|@`\[\{;\+:\*\]\},<\.>/\?_]{8,64}$"
                     })
                     <button class="btn" ic-action="togglePasswordMask" data-show="🙊 SHOW" data-hide="🙈 HIDE">🙊 SHOW</button>
                 </div>
