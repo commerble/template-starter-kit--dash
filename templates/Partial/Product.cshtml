@@ -272,7 +272,7 @@
             <time class="topicDate" datetime="@publishDate.ToString("o")">@publishDate.ToString("yyyy-MM-dd")</time>
         </p>
     }
-    <form action="@CartUrl()" method="get">
+    <form action="@CartUrl()" method="get" class="product-summary">
         @if (vm.Products.Count > 1) {
             <hr>
             <table class="product-skus">
