@@ -129,7 +129,6 @@
                     <%- include('price', {
                         price: lines.reduce((total, line) => total += line.discountPrice, 0),
                         yenMark: true,
-                        del: true
                     }) %>値引き)
                 <% } %>
             </td>
