@@ -24,7 +24,7 @@ export const Resend = {
 }
 
 export const Resent = {
-    name: '/site/recovery - send',
+    name: '/site/recovery - sent',
     render(args) {
         return layout({
             title: 'パスワード再設定',

@@ -35,7 +35,7 @@ export const Confirm = {
 }
 
 export const Send = {
-    name: '/site/inquiry - send',
+    name: '/site/inquiry - sent',
     render(args) {
         return layout({
             title: 'お問い合わせ',

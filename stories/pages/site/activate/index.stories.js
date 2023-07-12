@@ -36,7 +36,7 @@ export const Reactivate = {
 }
 
 export const Send = {
-    name: '/site/activate  - resend',
+    name: '/site/activate  - resent',
     render(args) {
         return layout({
             title: 'メールアドレス確認 - 再送',
