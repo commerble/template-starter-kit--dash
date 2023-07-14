@@ -1,0 +1,54 @@
+<%
+    const {
+        serverError,
+        empty,
+        complete
+    } = locals;
+    const status = ['入荷待ち', '引当済み', '購入済み', 'キャンセル	'];
+%>
+<%- include('gnav') %>
+<main class="content-wide columns">
+    <div class="col-3 col-order-2 col-order-1-sp">
+        <h1 class="h-underline">お届け先</h1>
+        <% if (serverError) { %>
+            <%- include('alert', { color: 'error' }) %>
+        <% } %>
+        <% if (complete) { %>
+            <%- include('alert', { color: 'success', messages: ['新規住所を保存しました', '編集を保存しました', '登録住所を保存しました'] }) %>
+        <% } %>
+        <div class="block block-horizontal block-right">
+            <a href="/?path=/story/pages-member-addresses--create" class="btn btn-primary btn-text btn-next">新規登録</a>
+        </div>
+        <% if (!empty) { %>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>登録名</th>
+                        <th>お届け先</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (let i = 0; i < 4; i++ ) { %>
+                        <tr>
+                            <td data-title="登録名">お届け先名 <%= i %></td>
+                            <td data-title="お届け先">
+                                山田太郎 / ヤマダタロウ<br>
+                                〒1030014 都道府県市区町村町丁番号 建物名・部屋番号<br>
+                                00000000000
+                            </td>
+                            <td align="center"><a href="/?path=/story/pages-member-addresses--edit">編集</a></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <div class="message-box">
+                <p class="message text-center lead">ご登録お届け先はまだありません。</p>
+            </div>
+        <% } %>
+    </div>
+    <div class="col-1 col-order-1 col-order-2-sp">
+        <%- include('memberMenu', { active: 'notice' }) %>
+    </div>
+</main>

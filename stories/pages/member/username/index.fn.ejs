@@ -1,0 +1,25 @@
+<%
+    const {
+        serverError,
+    } = locals;
+%>
+<%- include('gnav') %>
+<main class="section content">
+    <h2 class="h-underline">登録メールアドレス変更</h2>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <form action="@UserNameChangeUrl()" method="post">
+        <dl class="field">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <p class="field-text">info@commerble.com</p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <!-- <button type="submit" class="btn btn-action btn-large" name="update" value="post">メールアドレスを変更する</button> -->
+            <a href="/?path=/story/pages-member-index--complete" class="btn btn-action btn-large">メールアドレスを変更する</a>
+            <a href="/?path=/story/pages-member-account--index#email" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
+        </div>
+    </form>
+</main>

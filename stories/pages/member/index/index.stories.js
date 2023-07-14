@@ -3,20 +3,33 @@ import layout from '../../layout.fn.ejs';
 import render from './index.fn.ejs';
 
 export default {
-    title: 'Pages/Site/ExternalLogin',
+    title: 'Pages/Member/Index',
     argTypes: {
         serverError: { control: 'boolean' },
     },
 }
 
 export const Index = {
-    name: '/site/externallogin',
+    name: '/member/index',
     render(args) {
         return layout({
-            title: '認証失敗',
+            title: 'マイページ',
             body: render(args, null, components),
         }, null, components);
     },
     args: {
+    }
+}
+
+export const Complete = {
+    name: '/member/index - complete',
+    render(args) {
+        return layout({
+            title: 'マイページ',
+            body: render(args, null, components),
+        }, null, components);
+    },
+    args: {
+        complete: true
     }
 }

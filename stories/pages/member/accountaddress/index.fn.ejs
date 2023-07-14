@@ -1,0 +1,32 @@
+<%
+    const {
+        serverError
+    } = locals;
+%>
+<%- include('gnav') %>
+<main class="section content">
+    <h1 class="h-underline">会員住所編集</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <form action="@AccountAddressUrl()" method="post">
+        <dl class="field">
+            <dt class="field-title">住所</dt>
+            <dd class="field-body">
+                <p class="field-text">〒1030014 都道府県市区町村町丁番号 建物名・部屋番号</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">電話番号</dt>
+            <dd class="field-body">
+                <p class="field-text">00000000000</p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <!-- <button type="submit" class="btn btn-action btn-large" name="update" value="post">会員住所を変更する</button> -->
+            <a href="/?path=/story/pages-member-index--complete" class="btn btn-action btn-large">会員住所を変更する</a>
+
+            <a href="/?path=/story/pages-member-account--index#address" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
+        </div>
+    </form>
+</main>

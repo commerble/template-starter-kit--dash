@@ -1,0 +1,53 @@
+<%
+    const {
+        serverError
+    } = locals;
+%>
+<%- include('gnav') %>
+<main class="section content">
+    <h1 class="h-underline">会員情報編集</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <form action="@AccountUrl()" method="post">
+        <dl class="field">
+            <dt class="field-title">氏名</dt>
+            <dd class="field-body">
+                <p class="field-text">山田太郎</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">フリガナ</dt>
+            <dd class="field-body">
+                <p class="field-text">ヤマダタロウ</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">生年月日</dt>
+            <dd class="field-body">
+                <p class="field-text">2000年1月1日/p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">性別</dt>
+            <dd class="field-body">
+                <p class="field-text">未選択</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">メルマガ配信</dt>
+            <dd class="field-body">
+                <p class="field-text">希望しない</p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <!-- <button type="submit" class="btn btn-action btn-large" name="update" value="post">会員情報を変更する</button> -->
+            <a href="/?path=/story/pages-member-index--complete" class="btn btn-action btn-large">会員情報を変更する</a>
+
+            <!-- <button type="submit" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</button> -->
+            <a href="/?path=/story/pages-member-account--index#customer" class="btn btn-primary btn-text btn-prev">会員情報編集へ戻る</a>
+        </div>
+    </form>
+</main>
+
+

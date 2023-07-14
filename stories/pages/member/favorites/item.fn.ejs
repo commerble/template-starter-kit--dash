@@ -1,0 +1,45 @@
+<%
+    const {
+    } = locals;
+    const i = 1;
+%>
+<%- include('gnav') %>
+<main class="section content">
+    <h1 class="h-underline">お気に入りの登録削除</h1>
+    <form action="@FavoriteUrl(vm.ProductId)" method="post">
+        <!-- @Page.Html.HttpMethodOverride("delete") -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th colspan="2">商品</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td align="center">
+                        <a href="/?path=/story/pages-item--default" class="product-icon" title="商品名 <%=i%>">
+                            <div class="image image-square">
+                                <img src="https://httpstat.us/404" alt="商品サムネ <%=i%>">
+                            </div>
+                        </a>
+                    </td>
+                    <td align="center">
+                        <a href="/?path=/story/pages-item--default" class="product-icon" title="商品名 <%=i%>">
+                            商品名 <%=i%><br>
+                            <%- include('price', {
+                                price: 1000,
+                                tax: 'include',
+                                yenMark: true,
+                            }) %>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="block block-vertical">
+            <!-- <button type="submit" class="btn btn-danger btn-text">お気に入りの登録を削除する</button> -->
+            <a href="/?path=/story/pages-member-favorites--complete" class="btn btn-danger btn-text">お気に入りの登録を削除する</a>
+            <a href="/?path=/story/pages-member-favorites--index" class="btn btn-default">お気に入り一覧へもどる</a>
+        </div>
+    </form>
+</main>

@@ -25,6 +25,7 @@ import price from '../components/Price/price.fn.ejs';
 import tileProduct from '../components/Tile/tile.product.fn.ejs';
 import tileArticle from '../components/Tile/tile.article.fn.ejs';
 import cartLines from './order/cart/lines.fn.ejs';
+import memberMenu from './member/menu.fn.ejs';
 
 export default function find(path, args) {
     switch(path) {
@@ -55,6 +56,7 @@ export default function find(path, args) {
         case 'tile.product': return tileProduct(args, null, find);
         case 'tile.article': return tileArticle(args, null, find);
         case 'cartLines': return cartLines(args, null, find);
+        case 'memberMenu': return memberMenu(args, null, find);
         default: throw new Error('not supported');
     }
 }

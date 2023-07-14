@@ -15,7 +15,8 @@
     border-radius:3px;
     padding: $unit ($unit * 2);
     margin: $unit;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     line-height: normal;
     cursor:pointer;
     &:hover {
