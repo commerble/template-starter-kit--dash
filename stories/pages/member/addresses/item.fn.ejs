@@ -222,15 +222,15 @@
         <div class="block block-vertical">
             <% if(create) { %> 
                 <!-- <button type="submit" class="btn btn-action btn-large" name="create" value="post">登録する</button> -->
-                <a href="/?path=/story/pages-member-addresses--complete" class="btn btn-action btn-large">登録する</a>
+                <a href="./?path=/story/pages-member-addresses--complete" class="btn btn-action btn-large">登録する</a>
             <% } else { %>
                 <!-- <button type="submit" class="btn btn-action btn-large" name="update" value="post">変更する</button> -->
-                <a href="/?path=/story/pages-member-addresses--complete" class="btn btn-action btn-large">変更する</a>
+                <a href="./?path=/story/pages-member-addresses--complete" class="btn btn-action btn-large">変更する</a>
 
                 <!-- <button type="submit" class="btn btn-danger btn-text" name="delete" value="post">削除する</button> -->
-                <a href="/?path=/story/pages-member-addresses--complete" class="btn btn-danger btn-text">削除する</a>
+                <a href="./?path=/story/pages-member-addresses--complete" class="btn btn-danger btn-text">削除する</a>
             <% } %>
-            <a href="/?path=/story/pages-member-addresses--index" class="btn btn-primary btn-text btn-prev">お届け先一覧へもどる</a>
+            <a href="./?path=/story/pages-member-addresses--index" class="btn btn-primary btn-text btn-prev">お届け先一覧へもどる</a>
         </div>
     </form>
 </main>
@@ -239,7 +239,7 @@
     <div id="Address_szipsearch">
         <form action="@MemberZipSearch(addressId)" method="post">
             <!-- <button type="submit" class="btn btn-primary btn-ghost">選択</button> -->
-            <a href="/?path=/story/pages-member-addresses--<%= create?'create':'edit'%>&args=zipSelected:!true" class="btn btn-primary btn-ghost">選択</a>
+            <a href="./?path=/story/pages-member-addresses--<%= create?'create':'edit'%>&args=zipSelected:!true" class="btn btn-primary btn-ghost">選択</a>
             〒 4980000 愛知県 弥富市 
             <input type="hidden" name="ZipCode" value="4980000">
             <input type="hidden" name="Pref" value="愛知県">
@@ -250,7 +250,7 @@
         </form>
         <form action="@MemberZipSearch(addressId)" method="post">
             <!-- <button type="submit" class="btn btn-primary btn-ghost">選択</button> -->
-            <a href="/?path=/story/pages-member-addresses--<%= create?'create':'edit'%>&args=zipSelected:!true" class="btn btn-primary btn-ghost">選択</a>
+            <a href="./?path=/story/pages-member-addresses--<%= create?'create':'edit'%>&args=zipSelected:!true" class="btn btn-primary btn-ghost">選択</a>
             〒 4980000 三重県 桑名郡木曽岬町
             <input type="hidden" name="ZipCode" value="4980000">
             <input type="hidden" name="Pref" value="三重県">

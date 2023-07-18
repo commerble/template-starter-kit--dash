@@ -31,14 +31,14 @@
                     <% for (let i = 0; i < 4; i++ ) { %>
                         <tr>
                             <td align="center">
-                                <a href="/?path=/story/pages-item--default" class="product-icon" title="SKU名 <%=i%>">
+                                <a href="./?path=/story/pages-item--default" class="product-icon" title="SKU名 <%=i%>">
                                     <div class="image image-square">
                                         <img src="https://httpstat.us/404" alt="SKUサムネ <%=i%>">
                                     </div>
                                 </a>
                             </td>
                             <td align="center">
-                                <a href="/?path=/story/pages-item--default" class="product-icon" title="SKU名 <%=i%>">
+                                <a href="./?path=/story/pages-item--default" class="product-icon" title="SKU名 <%=i%>">
                                     SKU名 <%=i%><br>
                                     <%- include('price', {
                                         price: 1000,
@@ -55,10 +55,10 @@
 							</td>
                             <td align="center">
                                 <% if(i % 4 == 1) { %> 
-                                    <a href="/?path=/story/pages-order-cart--default" class="btn btn-action">カートイン</a>
+                                    <a href="./?path=/story/pages-order-cart--default" class="btn btn-action">カートイン</a>
                                 <% } %>
                                 <% if(i % 4 <= 1) { %> 
-									<a href="/?path=/story/pages-member-notices--item" class="btn btn-primary btn-text">予約をキャンセル</a>
+									<a href="./?path=/story/pages-member-notices--item" class="btn btn-primary btn-text">予約をキャンセル</a>
                                 <% } %>
                             </td>
                         </tr>
@@ -67,7 +67,7 @@
 			</table>
             <% if (!last) { %>
                 <div class="block">
-                    <a href="/?path=/story/pages-member-notices--last" class="btn btn-primary btn-text btn-next">次のページ</a>
+                    <a href="./?path=/story/pages-member-notices--last" class="btn btn-primary btn-text btn-next">次のページ</a>
                 </div>
             <% } %>
         <% } else { %>

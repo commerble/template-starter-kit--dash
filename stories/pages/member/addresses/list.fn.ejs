@@ -17,7 +17,7 @@
             <%- include('alert', { color: 'success', messages: ['新規住所を保存しました', '編集を保存しました', '登録住所を保存しました'] }) %>
         <% } %>
         <div class="block block-horizontal block-right">
-            <a href="/?path=/story/pages-member-addresses--create" class="btn btn-primary btn-text btn-next">新規登録</a>
+            <a href="./?path=/story/pages-member-addresses--create" class="btn btn-primary btn-text btn-next">新規登録</a>
         </div>
         <% if (!empty) { %>
             <table class="table">
@@ -37,7 +37,7 @@
                                 〒1030014 都道府県市区町村町丁番号 建物名・部屋番号<br>
                                 00000000000
                             </td>
-                            <td align="center"><a href="/?path=/story/pages-member-addresses--edit">編集</a></td>
+                            <td align="center"><a href="./?path=/story/pages-member-addresses--edit">編集</a></td>
                         </tr>
                     <% } %>
                 </tbody>

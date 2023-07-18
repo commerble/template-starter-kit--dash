@@ -28,14 +28,14 @@
                     <% for (let i = 0; i < 5; i++ ) { %>
                         <tr>
                             <td align="center">
-                                <a href="/?path=/story/pages-item--default" class="product-icon" title="商品ページ名 <%=i%>">
+                                <a href="./?path=/story/pages-item--default" class="product-icon" title="商品ページ名 <%=i%>">
                                     <div class="image image-square">
                                         <img src="https://httpstat.us/404" alt="商品ページサムネ <%=i%>">
                                     </div>
                                 </a>
                             </td>
                             <td align="center">
-                                <a href="/?path=/story/pages-item--default" class="product-icon" title="商品ページ名 <%=i%>">
+                                <a href="./?path=/story/pages-item--default" class="product-icon" title="商品ページ名 <%=i%>">
                                     商品ページ名 <%=i%><br>
                                     <%- include('price', {
                                         price: 1000,
@@ -45,7 +45,7 @@
                                 </a>
                             </td>
                             <td align="center">
-                                <a class="btn btn-primary btn-text" href="/?path=/story/pages-member-favorites--item">お気に入りから削除</a>
+                                <a class="btn btn-primary btn-text" href="./?path=/story/pages-member-favorites--item">お気に入りから削除</a>
                             </td>
                         </tr>
                     <% } %>
@@ -53,7 +53,7 @@
             </table>
             <% if (!last) { %>
                 <div class="block">
-                    <a href="/?path=/story/pages-member-favorites--last" class="btn btn-primary btn-text btn-next">次のページ</a>
+                    <a href="./?path=/story/pages-member-favorites--last" class="btn btn-primary btn-text btn-next">次のページ</a>
                 </div>
             <% } %>
         <% } else { %>
