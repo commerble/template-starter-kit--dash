@@ -1,0 +1,136 @@
+<%
+    const {
+        serverError,
+        hasChanges,
+        campaign,
+    } = locals;
+    const when = (condition, text) => condition ? text : '';    
+%>
+<main class="section content">
+    <h1 class="h-underline">購入履歴</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <% if (hasChanges) { %>
+        <div class="alert alert-success">
+            <p><strong>注文変更はまだ確定されていません。他の項目を編集し、「注文を変更する」ボタンから変更を確定してください。</strong></p>
+        </div>
+        <form action="@HistoryUrl(cart.OrderId)" method="post">
+            <!-- @Page.Html.SessionAntiForgeryToken() -->
+            <!-- @Page.Html.HttpMethodOverride("put") -->
+            <div class="block block-vertical">
+                <button type="submit" name="commit" value="commit" class="btn btn-action btn-large">注文を変更する</button>
+            </div>
+        </form>
+    <% } %>
+    <form action="@HistoryUrl(cart.OrderId)" method="post">
+        <%- include('cartLines', { items: 3, campaign, action: false }) %>
+        <h2 class="h-title">お客様情報</h3>
+        <dl class="field">
+            <dt class="field-title">氏名（フリガナ）</dt>
+            <dd class="field-body">
+                <p class="field-text">山田太郎 / ヤマダタロウ</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">住所</dt>
+            <dd class="field-body">
+                <p class="field-text">〒1030014 都道府県市区町村町丁番号 建物名・部屋番号</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">電話番号</dt>
+            <dd class="field-body">
+                <p class="field-text">00000000000</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">メールアドレス</dt>
+            <dd class="field-body">
+                <p class="field-text">info@commerble.com</p>
+            </dd>
+        </dl>
+            <div class="block block-horizontal block-right">
+                <!-- <button type="submit" name="customer" value="post" class="btn btn-primary btn-text btn-next">お客様情報を変更する</button> -->
+                <a href="/?path=/story/pages-order-history--delivery" class="btn btn-primary btn-text btn-next">お客様情報を変更する</a>
+            </div>
+        <h2 class="h-title">お届け先</h3>
+        <dl class="field">
+            <dt class="field-title">氏名 / フリガナ</dt>
+            <dd class="field-body">
+                <p class="field-text">山田太郎 / ヤマダタロウ</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">住所</dt>
+            <dd class="field-body">
+                <p class="field-text">〒1030014 都道府県市区町村町丁番号 建物名・部屋番号</p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">電話番号</dt>
+            <dd class="field-body">
+                <p class="field-text">00000000000</p>
+            </dd>
+        </dl>
+            <div class="block block-horizontal block-right">
+                <!-- <button type="submit" name="shipping" value="post" class="btn btn-primary btn-text btn-next">お届け先を変更する</button> -->
+                <a href="/?path=/story/pages-order-history--shipping" class="btn btn-primary btn-text btn-next">お届け先を変更する</a>
+            </div>
+        <h2 class="h-title">お届け日時</h3>
+        <dl class="field">
+            <dt class="field-title">お届け日</dt>
+            <dd class="field-body">
+                <p class="field-text">
+                    2023年8月1日(火) <br>
+                    -- or -- <br>
+                    発売日が異なる商品を同時（同一ご注文番号の場合）にご予約いただいた場合、<br/>
+                    発売日が最も遅い商品に合わせて全ての商品をお届けいたします。<br/>
+                    -- or -- <br>
+                    最短でお届け
+                </p>
+            </dd>
+        </dl>
+        <dl class="field">
+            <dt class="field-title">お届け時間</dt>
+            <dd class="field-body">
+                <p class="field-text">
+                    指定なし
+                </p>
+            </dd>
+        </dl>
+            <div class="block block-horizontal block-right">
+                <!-- <button type="submit" name="delivery" value="post" class="btn btn-primary btn-text btn-next">お届け日時を変更する</button> -->
+                <a href="/?path=/story/pages-order-history--delivery" class="btn btn-primary btn-text btn-next">お届け日時を変更する</a>
+            </div>
+        <h2 class="h-title">お支払方法</h3>
+        <dl class="field">
+            <dt class="field-title">決済方法</dt>
+            <dd class="field-body">
+                <p class="field-text">外部決済（カード・コンビニ・キャリア）</p>
+            </dd>
+        </dl>
+            <div class="block block-horizontal block-right">
+                <!-- <button type="submit" name="payment" value="post" class="btn btn-primary btn-text btn-next">お支払方法を変更する</button> -->
+                <a href="/?path=/story/pages-order-history--shipping" class="btn btn-primary btn-text btn-next">お支払方法を変更する</a>
+            </div>
+        <h2 class="h-title">備考</h3>
+        <dl class="field">
+            <dt class="field-title">備考内容</dt>
+            <dd class="field-body">
+                <p class="field-text">なし</p>
+            </dd>
+        </dl>
+    </form>
+    <form action="@HistoryUrl(cart.OrderId)" method="post">
+        <!-- @Page.Html.SessionAntiForgeryToken() -->
+        <!-- @Page.Html.HttpMethodOverride("put") -->
+        <div class="block block-vertical">
+            <% if (hasChanges) { %>
+                <button type="submit" name="commit" value="commit" class="btn btn-action btn-large">注文を変更する</button>
+            <% } %>
+            <a href="/?path=/story/pages-order-history--default" class="btn btn-primary btn-text btn-prev">購入履歴一覧へもどる</a>
+            <a href="/?path=/story/pages-order-history--cancel" class="btn btn-danger btn-text">注文をキャンセルする</a>
+        </div>
+    </form>
+</main>

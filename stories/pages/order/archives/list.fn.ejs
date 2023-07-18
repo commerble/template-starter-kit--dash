@@ -1,29 +1,14 @@
 <%
     const {
         empty,
-        message,
         lastPage
     } = locals;
     const when = (condition, text) => condition ? text : '';
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>購入履歴</title>
-</head>
-<body>
-    <%- include('gheader') %>
-    <%- include('gnav') %>
-    <section class="section content">
-        <h1 class="h-border">購入履歴</h1>
-        <% if (message) { %> 
-            <div class="alert alert-success">
-                <p>注文内容を変更しました。</p>
-            </div>
-        <% } %>
+<%- include('gnav') %>
+<main class="content-wide columns">
+    <div class="col-3 col-order-2 col-order-1-sp">
+        <h1 class="h-underline">購入履歴</h1>
         <% if (empty) { %> 
             <div class="message-box">
                 <p class="message text-center lead">アーカイブされたご注文はまだありません。</p>
@@ -83,18 +68,18 @@
             </table>
             <% if (!lastPage) { %>
                 <dvi class="block block-vertical">
-                    <a href="#next" class="btn btn-primary btn-text btn-next">次のページ</a>
+                    <a href="/?path=/story/pages-order-archives--last-page" class="btn btn-primary btn-text btn-next">次のページ</a>
                 </dvi>
             <% } %>
             <hr>
             <dvi class="block block-horizontal block-wrap">
-                <a href="#2021" class="btn btn-primary btn-text">2021年</a>
-                <a href="#2020" class="btn btn-primary btn-text">2020年</a>
-                <a href="#2019" class="btn btn-primary btn-text">2019年</a>
-                <a href="#archive" class="btn btn-primary btn-text">さらに前のご注文</a>
+                <a href="#2018" class="btn btn-primary btn-text">2018年</a>
+                <a href="#2017" class="btn btn-primary btn-text">2017年</a>
+                <a href="#2016" class="btn btn-primary btn-text">2016年</a>
             </dvi>
         <% } %>
-    </section>
-    <%- include('gfooter') %>
-</body>
-</html>
+    </div>    
+    <div class="col-1 col-order-1 col-order-2-sp">
+        <%- include('memberMenu', { active: 'history' }) %>
+    </div>
+</main>

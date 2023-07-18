@@ -1,0 +1,33 @@
+<%
+    const {
+        serverError,
+    } = locals;
+    const when = (condition, text) => condition ? text : '';
+%>
+<main class="section content">
+    <h1 class="h-underline">注文編集 - お支払い方法</h1>
+    <% if (serverError) { %>
+        <%- include('alert', { color: 'error' }) %>
+    <% } %>
+    <form action="@HistoryUrl(payment.Cart.OrderId)" method="post">
+        <!-- @Page.Html.HttpMethodOverride("put") -->
+        <dl class="field required">
+            <dt class="field-title">決済方法</dt>
+            <dd class="field-body">
+                <select name="PaymentMethod" ic-action="changePaymentDetail;openAccordion;" data-val="true" data-val-required="決済方法は必須項目です。">
+                    <option value="CashOnDelivery" selected>代引き</option>
+                    <option value="Offsite">銀行振込</option>
+                </select>
+                <input type="hidden" name="OrderCustomer.PaymentDetail" value="">
+                <p class="field-error" data-valmsg-for="PaymentMethod" data-valmsg-replace="true"></p>
+                <p class="field-note" data-accordion="CashOnDelivery">商品到着時に『商品代金』 ＋ 『荷造り送料』をお支払いください。<br>代金引換でのご注文の場合は、手数料一律330円(税込)がかかります。</p>
+                <p class="field-note hide" data-accordion="Offsite">振込先銀行口座は注文確定メールにてお知らせいたします。</p>
+            </dd>
+        </dl>
+        <div class="block block-vertical">
+            <!-- <button type="submit" class="btn btn-action btn-large btn-next" name="payment" value="put">お支払い方法を変更</button> -->
+            <a href="/?path=/story/pages-order-history--changed" class="btn btn-action btn-large btn-next">お支払い方法を変更</a>
+            <a href="/?path=/story/pages-order-history--item" class="btn btn-primary btn-text btn-prev">注文詳細へもどる</a>
+        </div>
+    </form>
+</main>
