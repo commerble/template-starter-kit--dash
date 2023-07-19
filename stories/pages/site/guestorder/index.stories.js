@@ -10,7 +10,7 @@ export default {
     },
 }
 
-export const Complete = {
+export const Form = {
     name: '/site/guestorder',
     render(args) {
         return layout({
