@@ -15,7 +15,7 @@
     <%- include('gheader') %>
     <section class="section content">
         <h1 class="h-underline">購入</h1>
-        <form>
+        <form action="@PurchaseUrl()" method="post">
             <%- include('cartLines', { items: 2, error: false, campaign:true, action: false }) %>
             <h2 class="h-centerline mt"><span>ご注文詳細情報</span></h2>
             <h3 class="h-title">お客様情報</h3>
@@ -96,7 +96,13 @@
                 </dd>
             </dl>
             <div class="block block-vertical">
-                <a class="btn btn-action btn-large"><%= external?'注文を確定して決済へ進む':'注文を完了する' %></a>
+                <% if(external) { %>
+                    <!-- <button class="btn btn-action btn-large">注文を確定して決済へ進む</button> -->
+                    <a href="./?path=/story/pages-purchase-external--default" class="btn btn-action btn-large">注文を確定して決済へ進む</a>
+                <% } else { %>
+                    <!-- <button class="btn btn-action btn-large">注文を完了する</button> -->
+                    <a href="./?path=/story/pages-purchase-complete--default" class="btn btn-action btn-large">注文を完了する</a>
+                <% } %>
             </div>
         </form>
     </section>

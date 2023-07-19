@@ -1,4 +1,5 @@
 import components from '../../components';
+import layout from '../../layout.fn.ejs';
 import render from './index.fn.ejs'
 
 export default {
@@ -13,7 +14,10 @@ export default {
 export const Default = {
     name: '/order/cart - any items',
     render(args) {
-      return render(args, null, components);
+      return layout({
+        title: 'カート',
+        body: render(args, null, components)
+      }, null, components);
     },
     args: {
       items: 2,
@@ -23,7 +27,10 @@ export const Default = {
 export const HasError = {
   name: '/order/cart - error',
   render(args) {
-    return render(args, null, components);
+    return layout({
+      title: 'カート',
+      body: render(args, null, components)
+    }, null, components);
   },
   args: {
     items: 2,
@@ -34,7 +41,10 @@ export const HasError = {
 export const Campaign = {
   name: '/order/cart - campaign',
   render(args) {
-    return render(args, null, components);
+    return layout({
+      title: 'カート',
+      body: render(args, null, components)
+    }, null, components);
   },
   args: {
     items: 2,
@@ -45,7 +55,10 @@ export const Campaign = {
 export const Empty = {
   name: '/order/cart - empty',
   render(args) {
-    return render(args, null, components);
+    return layout({
+      title: 'カート',
+      body: render(args, null, components)
+    }, null, components);
   },
   args: {
     items: 0,

@@ -20,46 +20,34 @@
         error: error && i == 1
     }))
 %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カート</title>
-</head>
-<body>
-    <%- include('gheader') %>
-    <%- include('gnav') %>
-    <section class="section content">
-        <h1 class="h-border">ショッピングカート</h1>
-        <% if (items === 0) { %>
-            <div class="message-box">
-                <p class="message text-center lead">カートに商品が入っていません。</p>
-                <div class="block">
-                    <a class="btn btn-primary btn-prev">お買い物を続ける</a>
-                </div>
+
+<%- include('gnav') %>
+<section class="section content">
+    <h1 class="h-border">ショッピングカート</h1>
+    <% if (items === 0) { %>
+        <div class="message-box">
+            <p class="message text-center lead">カートに商品が入っていません。</p>
+            <div class="block">
+                <a class="btn btn-primary btn-prev">お買い物を続ける</a>
             </div>
-        <% } else { %>
-            <% if (error) { %>
-                <div class="alert alert-error">
-                    <p>「明細２」の在庫がありません。</p>
-                    <p>「明細２」は販売期間外です。</p>
-                </div>
-            <% } %>
-            <%- include('cartLines', { items, error, campaign, action: true }) %>
-            <% if (error) { %>
-                <div class="alert alert-error">
-                    <p>「明細２」の在庫がありません。</p>
-                    <p>「明細２」は販売期間外です。</p>
-                </div>
-            <% } %>
-            <div class="block block-vertical">
-                <a class="btn btn-action btn-large btn-next" <%= when(error, 'disabled') %>>注文手続きへ進む</a>
-                <button class="btn btn-primary btn-text btn-prev">お買い物を続ける</button>
+        </div>
+    <% } else { %>
+        <% if (error) { %>
+            <div class="alert alert-error">
+                <p>「明細２」の在庫がありません。</p>
+                <p>「明細２」は販売期間外です。</p>
             </div>
         <% } %>
-    </section>
-    <%- include('gfooter') %>
-</body>
-</html>
+        <%- include('cartLines', { items, error, campaign, action: true }) %>
+        <% if (error) { %>
+            <div class="alert alert-error">
+                <p>「明細２」の在庫がありません。</p>
+                <p>「明細２」は販売期間外です。</p>
+            </div>
+        <% } %>
+        <div class="block block-vertical">
+            <a href="./?path=/story/pages-site-login--before-checkout" class="btn btn-action btn-large btn-next" <%= when(error, 'disabled') %>>注文手続きへ進む</a>
+            <a href="javascript:history.back()" class="btn btn-primary btn-text btn-prev">お買い物を続ける</a>
+        </div>
+    <% } %>
+</section>

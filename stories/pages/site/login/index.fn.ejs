@@ -19,7 +19,7 @@
     <% if (serverError) { %>
         <%- include('alert', { color: 'error' }) %>
     <% } %>
-    <form action="" method="post">
+    <form action="@LoginUrl()" method="post">
         <dl class="field">
             <dt class="field-title"> メールアドレス</dt>
             <dd class="field-body">
@@ -35,8 +35,9 @@
             </dd>
         </dl>
         <div class="block block-vertical">
-            <button type="submit" class="btn btn-action btn-large">ログイン</button>
-            <a href="" class="btn btn-primary btn-text btn-next">パスワードをお忘れの場合はこちら</a>
+            <!-- <button type="submit" class="btn btn-action btn-large">ログイン</button> -->
+            <a href="./?path=/story/pages-purchase-shipping--member-first" class="btn btn-action btn-large">ログイン</a>
+            <a href="./?path=/story/pages-site-recovery--resend" class="btn btn-primary btn-text btn-next">パスワードをお忘れの場合はこちら</a>
         </div>
     </form>
 </main>
@@ -46,7 +47,7 @@
     <div class="block block-vertical mt">
         <a href="" class="btn btn-primary btn-next">会員登録をする（無料）</a>
         <% if (showGuestLogin) { %>
-            <a href="" class="btn btn-primary btn-text">登録せずにレジへ進む</a>
+            <a href="./?path=/story/pages-purchase-shipping--default" class="btn btn-primary btn-text">登録せずにレジへ進む</a>
         <% } %>
     </div>
 </aside>

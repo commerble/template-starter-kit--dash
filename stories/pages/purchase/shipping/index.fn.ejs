@@ -16,7 +16,7 @@
     <%- include('gheader') %>
     <section class="section content">
         <h1 class="h-underline">購入</h1>
-        <form>
+        <form action="@PurchaseShippingUrl()" method="post">
             <h2 class="h-title">お客様情報</h2>
             <% if (customer === 'guest') { %>
                 <dl class="field required">
@@ -239,13 +239,17 @@
                     </dd>
                 </dl>
                 <div class="block block-vertical">
-                    <button class="btn btn-action btn-large">お支払方法の指定に進む</button>
-                    <button class="btn btn-primary btn-text btn-large">お客様住所に届ける</button>
+                    <!-- <button class="btn btn-action btn-large" name="next" value="exec">お支払方法の指定に進む</button> -->
+                    <a href="./?path=/story/pages-purchase-payment--default" class="btn btn-action btn-large">お支払方法の指定に進む</a>
+
+                    <!-- <button class="btn btn-primary btn-text btn-large" name="next_copy" value="exec">お客様住所に届ける</button> -->
+                    <a href="./?path=/story/pages-purchase-payment--default" class="btn btn-primary btn-text btn-large">お客様住所に届ける</a>
                 </div>
             <% } else { %>
                 <div class="block block-vertical">
-                    <button class="btn btn-action btn-large">お客様住所に届ける</button>
-                    <button class="btn btn-primary btn-text btn-large">別のお届け先を指定する</button>
+                    <!-- <button class="btn btn-action btn-large" name="next_copy" value="exec">お客様住所に届ける</button> -->
+                    <a href="./?path=/story/pages-purchase-payment--default" class="btn btn-action btn-large">お客様住所に届ける</a>
+                    <button type="button" class="btn btn-primary btn-text btn-large">別のお届け先を指定する</button>
                 </div>
             <% } %>
         </form>

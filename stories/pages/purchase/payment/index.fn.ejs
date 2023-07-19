@@ -16,7 +16,7 @@
     <%- include('gheader') %>
     <section class="section content">
         <h1 class="h-underline">購入</h1>
-        <form>
+        <form action="@PurchasePaymentUrl()" method="post">
             <h2 class="h-title">お届け日時</h2>
             <dl class="field optional">
                 <dt class="field-title">お届け日</dt>
@@ -93,8 +93,9 @@
                 </dd>
             </dl>
             <div class="block block-vertical">
-                <a class="btn btn-action btn-large">内容の確認に進む</a>
-                <a class="btn btn-primary btn-text btn-prev">配送情報を変更する</a>
+                <!-- <button class="btn btn-action btn-large">内容の確認に進む</button> -->
+                <a href="./?path=/story/pages-purchase-confirm--default" class="btn btn-action btn-large">内容の確認に進む</a>
+                <a href="./?path=/story/pages-purchase-shipping--other-dest" class="btn btn-primary btn-text btn-prev">配送情報を変更する</a>
             </div>
         </form>
     </section>
