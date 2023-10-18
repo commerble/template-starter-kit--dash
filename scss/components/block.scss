@@ -28,6 +28,7 @@
     }
 }
 .block-horizontal {
+    padding: 0 $unit;
     flex-direction: row;
     &.block-left {
         justify-content: flex-start;
