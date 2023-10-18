@@ -351,7 +351,7 @@
         }
         <hr>
         <div class="block block-vertical">
-            <button type="submit" class="btn btn-primary btn-large full" @when(!vm.Products.Any(sku => !sku.Stockout), "disabled")>カートに入れる</button>
+            <button type="submit" class="btn btn-primary btn-large full" @when(!vm.Products.Any(sku => !sku.Stockout), "disabled") data-gtm-radio="item">カートに入れる</button>
             @if (vm.PriceProductId.HasValue) {
                 <a href="@FavoriteCreateUrl(vm.PriceProductId.Value)" class="btn btn-primary btn-text">お気に入りに追加する</a>
             }
