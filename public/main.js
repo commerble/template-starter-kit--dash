@@ -68,12 +68,9 @@ if (window.$) {
         const href = $(this).attr('href');
         const json = $(this).attr('data-gtm');
         const data = JSON.parse(json);
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push(Object.assign(data, {
-            eventCallback: function() {
-                document.location = href;
-            }
-        }));
+        pushDataLayer(data).finally(function() {
+            document.location = href;
+        });
     })
 
     $('body').on('click', '[type="submit"][data-gtm]', function(e) {
@@ -85,17 +82,14 @@ if (window.$) {
         const form = $(this).closest('form');
         const json = $(this).attr('data-gtm');
         const data = JSON.parse(json);
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push(Object.assign(data, {
-            eventCallback: function() {
-                const input = document.createElement('input');
-                input.type = "hidden";
-                input.name = name,
-                input.value = value;
-                form.append(input);
-                form.submit();
-            }
-        }));
+        pushDataLayer(data).finally(function() {
+            const input = document.createElement('input');
+            input.type = "hidden";
+            input.name = name,
+            input.value = value;
+            form.append(input);
+            form.submit();
+        });
     })
 
     $('body').on('click', '[type="submit"][data-gtm-radio]', function(e) {
@@ -110,17 +104,14 @@ if (window.$) {
             const form = $(this).closest('form');
             const json = checked.attr('data-gtm');
             const data = JSON.parse(json);
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push(Object.assign(data, {
-                eventCallback: function() {
-                    const input = document.createElement('input');
-                    input.type = "hidden";
-                    input.name = name,
-                    input.value = value;
-                    form.append(input);
-                    form.submit();
-                }
-            }));
+            pushDataLayer(data).finally(function() {
+                const input = document.createElement('input');
+                input.type = "hidden";
+                input.name = name,
+                input.value = value;
+                form.append(input);
+                form.submit();
+            });
         }
     })
 
@@ -217,6 +208,30 @@ function setup(root) {
         else {
             $(el).on(event, exec);
         }
+    })
+}
+
+function pushDataLayer() {
+    const data = Array.from(arguments);
+    if (!window.google_tag_manager) {
+        return Promise.resolve();
+    }
+    window.dataLayer = window.dataLayer || [];
+    return new Promise(function(resolveAll, reject) {
+        let timeoutId = setTimeout(reject, 3000);
+        Promise.all(data.map(function(arg){
+            return new Promise(function(resolve) {
+                window.dataLayer.push(Object.assign(arg, {
+                    eventCallback: resolve
+                }))
+            });
+        })).then(function() {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+                resolveAll();
+            }
+        }).catch(reject);
     })
 }
 
