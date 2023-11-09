@@ -99,6 +99,13 @@
     string SearchUrl() {
         return Href($"~/search/");
     }
+    string ImageUrl(string url, int w, int h, string noimg = "") {
+        if (string.IsNullOrEmpty(url)) {
+            url = noimg;
+        }
+        var sep = url.Contains("?") ? "&" : "?";
+        return url + sep + $"_rc={Page.Template.RestartCounter}&width={w}&height={h}";
+    }
     string ImageUrl(string url, string noimg = "") {
         if (string.IsNullOrEmpty(url)) {
             url = noimg;
@@ -107,19 +114,19 @@
         return url + sep + $"_rc={Page.Template.RestartCounter}";
     }
     string IconUrl(string url) {
-        return ImageUrl(url, "https://fakeimg.pl/270x270/?text=NO%20IMG");
+        return ImageUrl(url, 270, 270, "https://fakeimg.pl/270x270/?text=NO%20IMG");
     }
     string ThumbnailUrl(string url) {
-        return ImageUrl(url, "https://fakeimg.pl/270x270/?text=NO%20IMG");
+        return ImageUrl(url, 270, 270, "https://fakeimg.pl/270x270/?text=NO%20IMG");
     }
     string TopicThumbnailUrl(string url) {
-        return ImageUrl(url, "https://fakeimg.pl/270x135/?text=NO%20IMG");
+        return ImageUrl(url, 270, 135, "https://fakeimg.pl/270x135/?text=NO%20IMG");
     }
     string LargeImageUrl(string url) {
-        return ImageUrl(url, "https://fakeimg.pl/640x640/?text=NO%20IMG");
+        return ImageUrl(url, 640, 640, "https://fakeimg.pl/640x640/?text=NO%20IMG");
     }
     string SmallImageUrl(string url) {
-        return ImageUrl(url, "https://fakeimg.pl/64x64/?text=NO%20IMG");
+        return ImageUrl(url, 64, 64, "https://fakeimg.pl/64x64/?text=NO%20IMG");
     }
     string PageUrl(string code) {
         return Href($"~/{code.ToLower()}");
