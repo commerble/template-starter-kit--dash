@@ -17,8 +17,12 @@
     }
 
     ViewModel LoadViewModel() {
-        var path = ((string)(ViewBag.Code))?.ToLower().TrimEnd('/');
-        var code = (((string)ViewBag.RouteName)?.ToLower() + "/" + path).TrimEnd('/');
+        var prefix = Href("~/");
+        var path = Page.Request.Url.AbsolutePath;
+        if (path.StartsWith(prefix)) {
+            path = path.Substring(prefix.Length).Trim('/');
+        }
+        var code = fallback(path, "top");
 
         var vm = Database.Single(new { Now, Next, IsPreview, code }, (db, args) => (
                 from p in db.SitePages
