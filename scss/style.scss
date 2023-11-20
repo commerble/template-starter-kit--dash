@@ -40,3 +40,8 @@
 @import "./components/controls/radio.scss";
 @import "./components/controls/number.scss";
 @import "./components/controls/textarea.scss";
+
+p {
+    font-size: round($font-size-default * 1.3);
+    line-height: round($line-height-default * 1.3);
+}
