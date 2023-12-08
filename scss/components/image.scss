@@ -18,7 +18,8 @@
         height: auto;
         display: block;
         position: relative;
-        overflow: visible;
+        // https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md
+        // overflow: visible;
     }
     
     img:before { 
