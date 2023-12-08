@@ -37,7 +37,7 @@
                 join s in db.Products on m.PriceProductId equals s.Id into sku
                 from s in sku.DefaultIfEmpty()
                 where r.PageCode == args.code
-                  &&  p.Kind == "product"
+                  && (p.Kind == "product" || p.Kind == "productc")
                   &&  p.DisplayStart <= args.Now
                   && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
                   && (p.IsPublished || args.IsPreview)
@@ -59,6 +59,7 @@
                 join p in db.SitePages on r.RelateCode equals p.Code
                 where r.PageCode == args.code
                   &&  p.Kind != "product"
+                  &&  p.Kind != "productc"
                   &&  p.DisplayStart <= args.Now
                   && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
                   && (p.IsPublished || args.IsPreview)
