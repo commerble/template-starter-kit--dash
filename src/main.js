@@ -118,7 +118,15 @@ if (window.$) {
     $('link[rel=stylesheet][media=print]').each(function(i, el) { el.media = 'all'; });
 
     $(window).on('DOMContentLoaded', function(e){setup(document.body)});
-    $(document.body).on('DOMNodeInserted', function(e){setup(e.target)});
+    // https://w3c.github.io/uievents/#legacy-event-types
+    //$(document.body).on('DOMNodeInserted', function(e){setup(e.target)});
+    new MutationObserver(function(mutations) {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                setup(node);
+            }
+        }
+    }).observe(document.body, {attributes:false,childList:true,subtree:true});
 }
 
 function setup(root) {
