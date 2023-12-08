@@ -1,0 +1,9 @@
+.announce {
+  text-align: center;
+  font-weight: bold;
+  background-color: $color-aside;
+  margin-bottom: 2 * $unit;
+  p, a {
+    font-size: $font-size-default;
+  }
+}

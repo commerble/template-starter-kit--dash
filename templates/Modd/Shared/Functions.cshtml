@@ -494,22 +494,29 @@
                 orderby b.DisplayStart descending, b.DisplayOrder
                 select new {
                     b.Title,
-                    b.Subtitle,
                     b.LinkText,
                     b.LinkUrl,
                 }
             ).FirstOrDefault()));
 
     if (banner != null) {
-        <div class="announce">
-            <div class="inner">
+        <aside class="announce">
+            <div class="content-wide">
                 <p>
-                    <a href="@(string.IsNullOrEmpty(banner.LinkUrl) ? "#" : Href(banner.LinkUrl))")">
+                    @if (string.IsNullOrEmpty(banner.LinkUrl)) {
                         @Raw(banner.Title ?? string.Empty)
-                    </a>
+                    }
+                    else if (string.IsNullOrEmpty(banner.LinkText)) {
+                        <a href="@Href(banner.LinkUrl)">
+                            @Raw(banner.Title ?? string.Empty)
+                        </a>
+                    }
+                    else {
+                        @Raw(banner.Title ?? string.Empty) <a href="@Href(banner.LinkUrl)">@banner.LinkText</a>
+                    }
                 </p>
             </div>
-        </div>
+        </aside>
     }
 }
 
