@@ -10,7 +10,7 @@
     @DisplayViewMessages(viewData)
     <form action="@PurchaseUrl(cart.CartDefinition.CartId)" method="post">
         @Page.Html.SessionAntiForgeryToken()
-        @Page.Html.PartialEx("ModdSharedCartItems", cart, new { action=false })
+        @Page.Html.PartialEx("ModdSharedCartItems", cart, new { total=true, action=false })
         <h2 class="h-centerline mt"><span>ご注文詳細情報</span></h2>
         <h3 class="h-title">お客様情報</h3>
         <dl class="field">
