@@ -117,7 +117,7 @@
                                 <br> @PrintPrice(line.LinePrice / line.Qty)
                             }
                             @PrintPoint(line.ChargePoint / line.Qty) <br>
-                            <a href="@CartOutUrl(line.ProductId)" class="btn btn-primary btn-text btn-small" data-gtm="@Jil.JSON.Serialize(gtmRemove)">カートから削除</a>
+                            <a href="@CartOutUrl(line.ProductId)" class="btn @when(line.HasErrors, "btn-danger", "btn-primary") btn-text btn-small" data-gtm="@Jil.JSON.Serialize(gtmRemove)">カートから削除</a>
                         </dd>
                     </dl>
                 </td>
