@@ -25,11 +25,10 @@
             const suffix = document.querySelector('meta[name="resource-suffix"]').content;
             const el = document.createElement('script');
             el.src = "//" + location.host + prefix + 'bundle/script.js' + suffix;
+            el.integrity = "sha256-GWjht6rjxCHOV1CwzttW/yTv5MkoJvlFOnT4CAImEmk=";
             document.body.appendChild(el);
         }())
     </script>
-j.src=;
-f.parentNode.insertBefore(j,f);})(document,'script');</script>
     @RenderSection("ScriptBlock", false)    
     @RenderParts("BodyBottom")
 </body>
