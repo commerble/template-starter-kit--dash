@@ -133,7 +133,6 @@ $('body').on('click', '[type="submit"][data-gtm-radio]', function(e) {
 
 $('link[rel=stylesheet][media=print]').each(function(i, el) { el.media = 'all'; });
 
-$(window).on('DOMContentLoaded', function(e){setup(document.body)});
 // https://w3c.github.io/uievents/#legacy-event-types
 //$(document.body).on('DOMNodeInserted', function(e){setup(e.target)});
 new MutationObserver(function(mutations) {
@@ -272,3 +271,5 @@ function pushDataLayer() {
         }).catch(reject);
     })
 }
+
+setup(document.body);
