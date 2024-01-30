@@ -1,86 +1,124 @@
-if (window.$) {
-    $.fn.showRecalc = function() {
-        $('[name=recalc]').removeClass('hide').siblings().addClass('hide');
-    }
+import '../scss/style.scss'
 
-    $.fn.toZenkaku = function() {
-        $(this).val(($(this).val() || '').replace(/[A-Za-z0-9&\(\)\- ]/g, function (s) {
-            return s === ' ' ? '　' : String.fromCharCode(s.charCodeAt(0) + 65248);
-        }));
-    }
+// embedded ../node_modules/jquery/dist/jquery.slim.min.js
+// embedded ../node_modules/jquery-validation/dist/jquery.validate.min.js
+// embedded ../node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js
 
-    $.fn.removeSpace = function() {
-        $(this).val(($(this).val() || '').replace(/\s/g, ''));
-    }
+window.$ = $;
 
-    $.fn.validateForce = function() {
-        $(this).closest('form').validate().element(this);
+const allowedHosts = [
+    /^\/[^/]/,
+];
+function validateHost(url) {
+    if (!url || !allowedHosts.some(r => r.test(url))) {
+        throw new Error(url + ' is not allowed');
     }
+}
 
-    $.fn.changePaymentDetail = function() {
-        const value = $(this).val();
-        const $target = $('[name="OrderCustomer.PaymentDetail"]');
-        $target.val($target.attr('data-' + value.toLowerCase()));
-    }
-    $.fn.openAccordion = function() {
-        const value = $(this).val();
-        const $target = $('[data-accordion="' + value + '"]');
-        $target.siblings('.field-note').addClass('hide');
-        $target.removeClass('hide');
-    }
+$.fn.showRecalc = function() {
+    $('[name=recalc]').removeClass('hide').siblings().addClass('hide');
+}
 
-    $.fn.togglePasswordMask = function () {
-        const show = $(this).attr('data-show');
-        const hide = $(this).attr('data-hide');
-        $(this).text($(this).text() == show ? hide : show);
-        $(this).siblings('input').each(function(i,input){
-            input.type = input.type == 'password' ? 'text' : 'password';
-        })
-    }
+$.fn.toZenkaku = function() {
+    $(this).val(($(this).val() || '').replace(/[A-Za-z0-9&\(\)\- ]/g, function (s) {
+        return s === ' ' ? '　' : String.fromCharCode(s.charCodeAt(0) + 65248);
+    }));
+}
 
-    $.fn.selectAddress = function () {
-        const id = $(this).val();
-        const addr = JSON.parse($('#member-addresses').html()).find(a => a.AddressId+"" == id);
-            
-        if(addr == null)
-            return;
-            
-        $('#DeliveryOrderAddress_Recipientfirstname').val(addr.Recipientfirstname || '');
-        $('#DeliveryOrderAddress_Recipientlastname').val(addr.Recipientlastname || '');
-        $('#DeliveryOrderAddress_Recipientfirstnamekana').val(addr.Recipientfirstnamekana || '');
-        $('#DeliveryOrderAddress_Recipientlastnamekana').val(addr.Recipientlastnamekana || '');
-        $('#DeliveryOrderAddress_ZipCode').val(addr.ZipCode || '');
-        $('#DeliveryOrderAddress_Pref').val(addr.Pref || '');
-        $('#DeliveryOrderAddress_City').val(addr.City || '');
-        $('#DeliveryOrderAddress_Street').val(addr.Street || '');
-        $('#DeliveryOrderAddress_Building').val(addr.Building || '');
-        $('#DeliveryOrderAddress_Tel').val(addr.Tel || '');
-    }
+$.fn.removeSpace = function() {
+    $(this).val(($(this).val() || '').replace(/\s/g, ''));
+}
 
-    $.fn.backToCheckPoint = function () {
-        window.backToCheckPoint();
-    }
+$.fn.validateForce = function() {
+    $(this).closest('form').validate().element(this);
+}
 
-    $('body').on('click', 'a[data-gtm]', function(e) {
-        if (window.google_tag_manager) {
-            e.preventDefault();
-        }
-        const href = $(this).attr('href');
-        const json = $(this).attr('data-gtm');
-        const data = JSON.parse(json);
-        pushDataLayer(data).finally(function() {
-            document.location = href;
-        });
+$.fn.changePaymentDetail = function() {
+    const value = $(this).val();
+    const $target = $('[name="OrderCustomer.PaymentDetail"]');
+    $target.val($target.attr('data-' + value.toLowerCase()));
+}
+$.fn.openAccordion = function() {
+    const value = $(this).val();
+    const $target = $('[data-accordion="' + value + '"]');
+    $target.siblings('.field-note').addClass('hide');
+    $target.removeClass('hide');
+}
+
+$.fn.togglePasswordMask = function () {
+    const show = $(this).attr('data-show');
+    const hide = $(this).attr('data-hide');
+    $(this).text($(this).text() == show ? hide : show);
+    $(this).siblings('input').each(function(i,input){
+        input.type = input.type == 'password' ? 'text' : 'password';
     })
+}
 
-    $('body').on('click', '[type="submit"][data-gtm]', function(e) {
+$.fn.selectAddress = function () {
+    const id = $(this).val();
+    const addr = JSON.parse($('#member-addresses').html()).find(a => a.AddressId+"" == id);
+        
+    if(addr == null)
+        return;
+        
+    $('#DeliveryOrderAddress_Recipientfirstname').val(addr.Recipientfirstname || '');
+    $('#DeliveryOrderAddress_Recipientlastname').val(addr.Recipientlastname || '');
+    $('#DeliveryOrderAddress_Recipientfirstnamekana').val(addr.Recipientfirstnamekana || '');
+    $('#DeliveryOrderAddress_Recipientlastnamekana').val(addr.Recipientlastnamekana || '');
+    $('#DeliveryOrderAddress_ZipCode').val(addr.ZipCode || '');
+    $('#DeliveryOrderAddress_Pref').val(addr.Pref || '');
+    $('#DeliveryOrderAddress_City').val(addr.City || '');
+    $('#DeliveryOrderAddress_Street').val(addr.Street || '');
+    $('#DeliveryOrderAddress_Building').val(addr.Building || '');
+    $('#DeliveryOrderAddress_Tel').val(addr.Tel || '');
+}
+
+$.fn.backToCheckPoint = function () {
+    window.backToCheckPoint();
+}
+
+$('body').on('click', 'a[data-gtm]', function(e) {
+    if (window.google_tag_manager) {
+        e.preventDefault();
+    }
+    const href = $(this).attr('href');
+    const json = $(this).attr('data-gtm');
+    const data = JSON.parse(json);
+    pushDataLayer(data).finally(function() {
+        document.location = href;
+    });
+})
+
+$('body').on('click', '[type="submit"][data-gtm]', function(e) {
+    if (window.google_tag_manager) {
+        e.preventDefault();
+    }
+    const name = $(this).attr('name');
+    const value = $(this).val();
+    const form = $(this).closest('form');
+    const json = $(this).attr('data-gtm');
+    const data = JSON.parse(json);
+    pushDataLayer(data).finally(function() {
+        const input = document.createElement('input');
+        input.type = "hidden";
+        input.name = name,
+        input.value = value;
+        form.append(input);
+        form.submit();
+    });
+})
+
+$('body').on('click', '[type="submit"][data-gtm-radio]', function(e) {
+    const radio = $(this).attr('data-gtm-radio');
+    const checked = $('[name="' + radio + '"]:checked');
+    if (checked.length > 0) {
         if (window.google_tag_manager) {
             e.preventDefault();
         }
         const name = $(this).attr('name');
         const value = $(this).val();
         const form = $(this).closest('form');
-        const json = $(this).attr('data-gtm');
+        const json = checked.attr('data-gtm');
         const data = JSON.parse(json);
         pushDataLayer(data).finally(function() {
             const input = document.createElement('input');
@@ -90,44 +128,22 @@ if (window.$) {
             form.append(input);
             form.submit();
         });
-    })
+    }
+})
 
-    $('body').on('click', '[type="submit"][data-gtm-radio]', function(e) {
-        const radio = $(this).attr('data-gtm-radio');
-        const checked = $('[name="' + radio + '"]:checked');
-        if (checked.length > 0) {
-            if (window.google_tag_manager) {
-                e.preventDefault();
-            }
-            const name = $(this).attr('name');
-            const value = $(this).val();
-            const form = $(this).closest('form');
-            const json = checked.attr('data-gtm');
-            const data = JSON.parse(json);
-            pushDataLayer(data).finally(function() {
-                const input = document.createElement('input');
-                input.type = "hidden";
-                input.name = name,
-                input.value = value;
-                form.append(input);
-                form.submit();
-            });
+$('link[rel=stylesheet][media=print]').each(function(i, el) { el.media = 'all'; });
+
+$(window).on('DOMContentLoaded', function(e){setup(document.body)});
+// https://w3c.github.io/uievents/#legacy-event-types
+//$(document.body).on('DOMNodeInserted', function(e){setup(e.target)});
+new MutationObserver(function(mutations) {
+    for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+            setup(node);
         }
-    })
+    }
+}).observe(document.body, {attributes:false,childList:true,subtree:true});
 
-    $('link[rel=stylesheet][media=print]').each(function(i, el) { el.media = 'all'; });
-
-    $(window).on('DOMContentLoaded', function(e){setup(document.body)});
-    // https://w3c.github.io/uievents/#legacy-event-types
-    //$(document.body).on('DOMNodeInserted', function(e){setup(e.target)});
-    new MutationObserver(function(mutations) {
-        for (const mutation of mutations) {
-            for (const node of mutation.addedNodes) {
-                setup(node);
-            }
-        }
-    }).observe(document.body, {attributes:false,childList:true,subtree:true});
-}
 
 function setup(root) {
     $('[ic-action],[ic-get-from],[ic-post-to],[ic-put-to]', root).each(function(i, el) {
@@ -170,6 +186,18 @@ function setup(root) {
                 if (src.startsWith('#')) {
                     target.replaceWith($(src).html())
                 }
+                else {
+                    validateHost(src);
+                    fetch(src, {
+                        method: 'get'
+                    }).then(res => {
+                        if (res.ok) {
+                            res.text().then(html => {
+                                target.empty().append(html);
+                            })
+                        }
+                    })
+                }
             }
             if (el.hasAttribute('ic-post-to')) {
                 const src = el.getAttribute('ic-post-to');
@@ -179,14 +207,15 @@ function setup(root) {
                         data.append(kv[0], kv[1]);
                     });
                 }
-                $.ajax({
+                fetch(src, {
                     method: 'post',
-                    url: src,
-                    data: data,
-                    contentType: false,
-                    processData: false
-                }).then(function(html){
-                    target.empty().append(html);
+                    body: data,
+                }).then(res => {
+                    if (res.ok) {
+                        res.text().then(html => {
+                            target.empty().append(html);
+                        })
+                    }
                 })
             }
             if (el.hasAttribute('ic-put-to')) {
@@ -198,15 +227,16 @@ function setup(root) {
                         data.append(kv[0], kv[1]);
                     });
                 }
-                $.ajax({
+                fetch(src, {
                     method: 'post',
-                    url: src,
-                    data: data,
-                    contentType: false,
-                    processData: false
-                }).then(function(html){
-                    target.empty().append(html);
-                })
+                    body: data,
+                }).then(res => {
+                    if (res.ok) {
+                        res.text().then(html => {
+                            target.empty().append(html);
+                        })
+                    }
+                });
             }
         }
 
@@ -241,15 +271,4 @@ function pushDataLayer() {
             }
         }).catch(reject);
     })
-}
-
-window.backToCheckPoint = function() {
-    const url = decodeURIComponent(document.cookie.split(';').filter(str => str.startsWith('checkpoint')).map(str => str.substring('checkpoint='.length))[0] || '')
-    const root = document.querySelector('meta[name=x-root]').content;
-    location = url ? url : root;
-}
-
-window.updateCheckPoint = function() {
-    const root = document.querySelector('meta[name=x-root]').content;
-    document.cookie = 'checkpoint=' + encodeURIComponent(location.href) + ';path=' + root + ';samesite=Strict'; 
 }

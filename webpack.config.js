@@ -3,10 +3,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require("terser-webpack-plugin")
 
 module.exports = {
-  entry: './src/entry.js',
+  entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, 'templates'),
-    filename: 'Script.txt'
+    filename: 'Bundle/Script.txt'
   },
   optimization: {
     minimize: true, 
@@ -44,11 +44,26 @@ module.exports = {
             loader: 'sass-loader'
           }
         ]
+      },
+      {
+        test: /\.(jpg|png|gif|svg|webp)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              generator: (content, mimetype, encoding, resourcePath) => {
+                const localPrefix = path.join(__dirname,'./local/asset/filepath/prefix/');
+                const remotePrefix = 'https://cdn/url/prefix/';
+                return resourcePath.replace(localPrefix, remotePrefix).replaceAll('\\', '/');
+              },
+            },
+          },
+        ],
       }
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin({ filename: 'Style.txt' }),
+    new MiniCssExtractPlugin({ filename: 'Bundle/Style.txt' }),
   ],
   resolveLoader: {
     alias: {

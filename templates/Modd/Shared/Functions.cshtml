@@ -527,13 +527,6 @@
     </footer>
 }
 
-@helper RenderCheckPoint() {
-    var routes = new [] { "Top", "Search", "Tag", "Category", "Landing", "Notice" };
-    if (routes.Contains((string)ViewBag.RouteName)) {
-        <script>window.updateCheckPoint();</script>
-    }
-}
-
 @helper FormatPrice(decimal? price) {
     if (price.HasValue) {
         <text>&yen;@price.Value.ToString("N0")</text>

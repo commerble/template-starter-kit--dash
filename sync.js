@@ -19,8 +19,8 @@ const config = {
         'ModdSharedFunctions',
     ],
     escapeTemplates: [
-        'Style',
-        'Script',
+        'BundleStyle',
+        'BundleScript',
     ]
 }
 
