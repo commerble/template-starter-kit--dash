@@ -2,17 +2,25 @@
 @using PointBank = Crosswarp.Modd.PointBank;
 @using System.Text;
 @using Commerble.Sandbox.CmsDb;
+
 @{
-    var isSystemRoute = ViewBag.RouteName == "ModdDefault" || ViewBag.RouteName == "ModdPurchase";
-    if (isSystemRoute) {
-        Page.Response.Headers.Add("X-Robots-Tag", "noindex");
-    }
-    else {
-        Page.Response.Cache.SetExpires(Next);
-        Page.Response.Cache.SetMaxAge(Next - DateTime.Now);
-    }
+    InitOnce();
 }
+
 @functions {
+    void InitOnce () {
+        if (ViewBag.InitOnce == null) {
+            var isSystemRoute = ViewBag.RouteName == "ModdDefault" || ViewBag.RouteName == "ModdPurchase";
+            if (isSystemRoute) {
+                Page.Response.Headers.Add("X-Robots-Tag", "noindex");
+            }
+            else {
+                Page.Response.Cache.SetExpires(Next);
+                Page.Response.Cache.SetMaxAge(Next - DateTime.Now);
+            }
+            ViewBag.InitOnce = true;
+        }
+    }
     // -- プレビュー
     static string PREVIEW_KEY = "G2OJzTlzsfin8QGMOSjgbgYMEuS68GX8";
     bool? _isPreview = null;

@@ -7,4 +7,12 @@
     ViewBag.IsStage =  Page.Request.Url.Host == "stage.cbpaas.com";
     ViewBag.IsNotProduction = ViewBag.IsLocal == true || ViewBag.IsDev == true || ViewBag.IsStage == true;
     ViewBag.ResourceSuffix  =  $"?_rc={Page.Template.RestartCounter}" + (ViewBag.IsNotProduction == true ? $"&_rq={Guid.NewGuid()}" : string.Empty);
+    if (ViewBag.RouteName == null)
+    {
+        var __controller__ = Page.Request.RequestContext.RouteData.Values["controller"] as string;
+        ViewBag.RouteName
+            = (__controller__ == "Purchase") ? "ModdPurchase"
+            : (__controller__ == "Errors") ? "ModdErrors"
+            : "ModdDefault";
+    }
 }
