@@ -341,8 +341,23 @@
     var root = Href("~/");
     var cacheKey = globalCacheKey("SiteParts");
     var siteParts = Page.Template.Cache(cacheKey, NextLongLong, () => 
-                        Database.Query(Now, db => db.SiteParts)
-                        .Select(p => new KeyValuePair<Regex, SiteParts>(new Regex(("^" + root + p.Pattern + "$").Replace("//","/"), RegexOptions.IgnoreCase), p)));
+                        Database.Query(new { Now, IsPreview }, db => 
+                            db.SiteParts.Where(p => p.Html != null).Select(p => new { 
+                                Pattern =  p.Pattern, 
+                                Position = p.Position,
+                                DisplayOrder = p.DisplayOrder,
+                                Html = p.Html,
+                            })
+                        )
+                        .Select(p => {
+                            return new KeyValuePair<Regex, SiteParts>(new Regex(("^" + root + p.Pattern + "$").Replace("//","/"), RegexOptions.IgnoreCase), new SiteParts
+                            {
+                                Pattern = p.Pattern,
+                                Position = p.Position,
+                                DisplayOrder = p.DisplayOrder,
+                                Html = p.Html,
+                            });
+                        }));
 
     var path = Page.Request.Url.AbsolutePath;
     if (root.Equals(path + "/", StringComparison.OrdinalIgnoreCase)) {
