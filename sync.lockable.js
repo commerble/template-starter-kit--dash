@@ -228,7 +228,7 @@ async function getLockPhrase(type) {
     if (type === 'cshtml' || type === 'mail') {
         return `@* ${text} *@`
     }
-    else if (type === 'csx') {
+    else if (type === 'csx' || type === 'template') {
         return `/* ${text} */`
     }
     else {
