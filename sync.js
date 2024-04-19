@@ -251,7 +251,7 @@ async function upsertTemplate(template) {
 }
 function ep() {
     const url = process.env[config.apiEndpointEnvKey]
-    return url.endsWith('/') ? url.splice(0, url.length - 1) : url
+    return url.endsWith('/') ? url.slice(0, url.length - 1) : url
 }
 function auth() {
     return 'Basic ' + Buffer.from(`${process.env[config.apiUsernameEnvKey]}:${process.env[config.apiPasswordEnvKey]}`).toString('base64')
