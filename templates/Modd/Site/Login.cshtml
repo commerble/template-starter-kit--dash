@@ -18,6 +18,7 @@
     <h1 class="h-underline">会員登録がお済みのお客様</h1>
     @DisplayViewMessages(viewData)
     <form action="@LoginChallengeUrl()" method="post">
+        <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
         @Page.Html.Hidden("returnUrl")
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field">
@@ -35,7 +36,7 @@
             </dd>
         </dl>
         <div class="block block-vertical">
-            <button type="submit" class="btn btn-action btn-large">ログイン</button>
+            <button type="submit" class="btn btn-action btn-large" data-cb-recaptcha="trigger">ログイン</button>
             <a href="@RecoveryUrl()" class="btn btn-primary btn-text btn-next">パスワードをお忘れの場合はこちら</a>
         </div>
     </form>
@@ -50,3 +51,6 @@
         }
     </div>
 </aside>
+@section ScriptBlock {
+    @Page.Template.RecaptchaRenderInclude()
+}

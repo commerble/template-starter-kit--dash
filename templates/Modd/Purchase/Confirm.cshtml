@@ -9,6 +9,7 @@
     <h1 class="h-underline">購入</h1>
     @DisplayViewMessages(viewData)
     <form action="@PurchaseUrl(cart.CartDefinition.CartId)" method="post">
+        <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
         @Page.Html.SessionAntiForgeryToken()
         @Page.Html.PartialEx("ModdSharedCartItems", cart, new { total=true, action=false })
         <h2 class="h-centerline mt"><span>ご注文詳細情報</span></h2>
@@ -103,11 +104,14 @@
         </dl>
         <div class="block block-vertical">
             @if (cart.PaymentMethod == PaymentMethod.External) {
-                <button type="submit" class="btn btn-action btn-large btn-next">注文を確定して決済へ進む</button>
+                <button type="submit" class="btn btn-action btn-large btn-next" data-cb-recaptcha="trigger">注文を確定して決済へ進む</button>
             } else {
-                <button type="submit" class="btn btn-action btn-large">注文を完了する</button>
+                <button type="submit" class="btn btn-action btn-large" data-cb-recaptcha="trigger">注文を完了する</button>
             }
             <a href="@PurchasePaymentUrl(cart.CartDefinition.CartId)" class="btn btn-primary btn-text btn-prev">お支払い方法を変更する</a>
         </div>
     </form>
 </main>
+@section ScriptBlock {
+    @Page.Template.RecaptchaRenderInclude()
+}
