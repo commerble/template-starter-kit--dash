@@ -1,4 +1,4 @@
-﻿@{
+@{
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     var returnUrl = Page.ViewData.Eval("returnUrl") as string ?? string.Empty;
     var showGuestLogin = returnUrl.StartsWith(Href("~/Purchase/"), StringComparison.OrdinalIgnoreCase);
@@ -18,7 +18,6 @@
     <h1 class="h-underline">会員登録がお済みのお客様</h1>
     @DisplayViewMessages(viewData)
     <form action="@LoginChallengeUrl()" method="post">
-        <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
         @Page.Html.Hidden("returnUrl")
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field">
@@ -39,6 +38,7 @@
             <button type="submit" class="btn btn-action btn-large" data-cb-recaptcha="trigger">ログイン</button>
             <a href="@RecoveryUrl()" class="btn btn-primary btn-text btn-next">パスワードをお忘れの場合はこちら</a>
         </div>
+        <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
     </form>
 </main>
 <aside class="section content">
