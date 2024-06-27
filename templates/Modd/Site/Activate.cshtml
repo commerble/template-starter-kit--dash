@@ -1,8 +1,15 @@
+@{
+    ViewBag.MetaTitle = "認証完了";
+}
 <main class="section content">
     <h1 class="h-underline">メールアドレスの認証が完了しました。</h1>
     <div class="message-box">
         <p class="message text-center">
             お買い物をお楽しみください。
         </p>
+        @RenderParts("Message")
+        <div class="block block-vertical">
+            <a href="@CartUrl()" class="btn btn-primary btn-next">カートを確認する</a>
+        </div>
     </div>
 </main>

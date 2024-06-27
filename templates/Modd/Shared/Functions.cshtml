@@ -192,6 +192,9 @@
     string RecoveryUrl(string token = null) {
         return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="Recovery", id=token});
     }
+    string ActivateUrl(string token = null) {
+        return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="Activate", id=token});
+    }
     string InquiryUrl(string id) {
         return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="Inquiry", id});
     }
