@@ -13,6 +13,7 @@
     <h1 class="h-underline">新規会員登録</h1>
     @DisplayViewMessages(viewData)
     <form action="@RegisterUrl()" method="post">
+        <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
         @Page.Html.SessionAntiForgeryToken()
         <dl class="field required">
             <dt class="field-title">氏名</dt>
@@ -159,7 +160,10 @@
         </dl>
         <p class="text-center"><a href="@Href("~/page/privacy")" target="_blank">プライバシーポリシー</a>、<a href="@Href("~/page/terms")" target="_blank">ご利用規約</a>をお読みください。</p>
         <div class="block">
-            <button type="submit" name="confirm" value="confirm" class="btn btn-primary btn-next">同意して登録内容を確認する</button>
+            <button type="submit" name="confirm" value="confirm" class="btn btn-primary btn-next" data-cb-recaptcha="trigger">同意して登録内容を確認する</button>
         </div>
     </form>
 </main>
+@section ScriptBlock {
+    @Page.Template.RecaptchaRenderInclude("Site/Account/Confirm")
+}

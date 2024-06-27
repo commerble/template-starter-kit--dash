@@ -53,8 +53,12 @@
             </dd>
         </dl>
         <div class="block block-vertical">
-            <button type="submit" class="btn btn-action btn-large" name="create" value="create">この内容で登録する</button>
+            <button type="submit" class="btn btn-action btn-large" name="create" value="create" data-cb-recaptcha="trigger">この内容で登録する</button>
             <button type="submit" class="btn btn-primary btn-text btn-prev">登録内容を変更する</button>
         </div>
+        <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
     </form>
 </main>
+@section ScriptBlock {
+    @Page.Template.RecaptchaRenderInclude("Site/Account/Create")
+}

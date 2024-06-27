@@ -26,7 +26,11 @@
             </dd>
         </dl>
         <div class="block">
-            <button type="submit" name="request" value="post" class="btn btn-primary btn-next">認証メールを再送信する</button>
+            <button type="submit" name="request" value="post" class="btn btn-primary btn-next" data-cb-recaptcha="trigger">認証メールを再送信する</button>
         </div>
+        <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
     </form>
 </main>
+@section ScriptBlock {
+    @Page.Template.RecaptchaRenderInclude("Site/Activate/Request")
+}

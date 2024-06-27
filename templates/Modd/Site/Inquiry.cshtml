@@ -66,7 +66,11 @@
             </dd>
         </dl>
         <div class="block">
-            <button type="submit" name="confirm" value="post" class="btn btn-primary btn-next">お問い合わせ内容を確認する</button>
+            <button type="submit" name="confirm" value="post" class="btn btn-primary btn-next" data-cb-recaptcha="trigger">お問い合わせ内容を確認する</button>
         </div>
+        <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
     </form>
 </main>
+@section ScriptBlock {
+    @Page.Template.RecaptchaRenderInclude("Site/Inquiry/Confirm")
+}
