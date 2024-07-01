@@ -1,0 +1,72 @@
+@functions {
+    public class ViewModel {
+		public ViewMessages ViewMessages { get; set; }
+		public IEnumerable<Commerble.Sandbox.Services.ComaPay> Payments { get; set; }
+	}
+    ViewModel LoadViewModel() {
+        return new ViewModel {
+            ViewMessages = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages,
+            Payments = Page.ViewData.Model as IEnumerable<Commerble.Sandbox.Services.ComaPay>,
+        };
+    }
+}
+
+@{
+    var vm = LoadViewModel();
+
+    ViewBag.MetaTitle = "登録コマペイ";
+}
+
+<main class="content-wide columns">
+    <div class="col-3 col-order-2 col-order-1-sp">
+		<h1 class="h-underline">登録コマペイ</h1>
+		@DisplayViewMessages(vm.ViewMessages)
+		@if (vm.Payments.Any()) {
+			<table class="table">
+				<thead>
+					<tr>
+						<th>コマペイ</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var pay in vm.Payments) {
+						<tr>
+                            <td align="center">
+                                @pay
+                            </td>
+                        </tr>
+					}
+				</tbody>
+			</table>
+		} else {
+			<div class="message-box">
+                <p class="message text-center lead">登録されたコマペイはありません</p>
+            </div>
+		}
+        
+        <form class="block" action="@Page.Template.SecuredLink("ModdDefault", new {controller="Member", action="Payments", id="ComaPay"})" method="post">
+            @Page.Html.SessionAntiForgeryToken()
+
+            <dl class="field required">
+                <dt class="field-title">トークン</dt>
+                <dd class="field-body">
+                    <div class="formItem">
+                        @Page.Html.TextBox("ComaPay.Token")
+                    </div>
+                    @ValidationMessageFor("ComaPay.Token")
+                </dd>
+            </dl>
+            <div class="block block-horizontal">
+                <input type="submit" class="btn" name="create" value="登録" data-cb-recaptcha="trigger:Member/Payments/Create"/>
+                <input type="submit" class="btn" name="delete" value="削除" data-cb-recaptcha="trigger:Member/Payments/Delete"/>
+            </div>
+            <input type="hidden" name="CAPTCHA" data-cb-recaptcha="token">
+        </form>
+    </div>
+    <div class="col-1 col-order-1 col-order-2-sp">
+        @Page.Html.Partial("ModdSharedMemberNav", null)
+    </div>
+</main>
+@section ScriptBlock {
+    @Page.Template.RecaptchaRenderInclude("Member/Payments/Create", "Member/Payments/Delete")
+}
