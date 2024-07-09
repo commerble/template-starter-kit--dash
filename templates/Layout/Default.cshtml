@@ -5,6 +5,14 @@
     <meta name="resource-prefix" content="@Href("~/")">
     <meta name="resource-suffix" content="@ViewBag.ResourceSuffix">
     <link rel="stylesheet" href="@Href("~/bundle/style.css" + ViewBag.ResourceSuffix)">
+    <script>
+    function addConsentListenerExample(callback) {
+        window.updateConsent = function (consent) {
+            document.cookie = `myconsent=${JSON.stringify(consent)}; path=/` ;
+            callback(consent);
+        };
+    }
+    </script>
     @RenderParts("Head")
     @RenderJsonLD()
     @RenderDataLayer()
@@ -18,6 +26,92 @@
     @RenderBody()
     @RenderFooter()
     @RenderPreviewFooter()
+    <aside class="block">
+        <button id="consent-open" class="btn btn-default">Manage consent</button>
+    </aside>
+    <dialog id="consent">
+        <h2 class="h-underline text-center">Consent</h2>
+        <form>
+            <dl class="field">
+                <dt class="field-title">Ad</dt>
+                <dd class="field-body">
+                    <label><input name="adConsentGranted" type="radio" value="false" checked><span class="text">Denied</span></label>
+                    <label><input name="adConsentGranted" type="radio" value="true"><span class="text">Granted</span></label>
+                </dd>
+            </dl>
+            <dl class="field">
+                <dt class="field-title">Ad User Data</dt>
+                <dd class="field-body">
+                    <label><input name="adUserDataConsentGranted" type="radio" value="false" checked><span class="text">Denied</span></label>
+                    <label><input name="adUserDataConsentGranted" type="radio" value="true"><span class="text">Granted</span></label>
+                </dd>
+            </dl>
+            <dl class="field">
+                <dt class="field-title">Ad Personalization</dt>
+                <dd class="field-body">
+                    <label><input name="adPersonalizationConsentGranted" type="radio" value="false" checked><span class="text">Denied</span></label>
+                    <label><input name="adPersonalizationConsentGranted" type="radio" value="true"><span class="text">Granted</span></label>
+                </dd>
+            </dl>
+            <dl class="field">
+                <dt class="field-title">Personalization</dt>
+                <dd class="field-body">
+                    <label><input name="personalizationConsentGranted" type="radio" value="false" checked><span class="text">Denied</span></label>
+                    <label><input name="personalizationConsentGranted" type="radio" value="true"><span class="text">Granted</span></label>
+                </dd>
+            </dl>
+            <dl class="field">
+                <dt class="field-title">Analytics</dt>
+                <dd class="field-body">
+                    <label><input name="analyticsConsentGranted" type="radio" value="false" checked><span class="text">Denied</span></label>
+                    <label><input name="analyticsConsentGranted" type="radio" value="true"><span class="text">Granted</span></label>
+                </dd>
+            </dl>
+            <dl class="field">
+                <dt class="field-title">Functionality</dt>
+                <dd class="field-body">
+                    <label><input name="functionalityConsentGranted" type="radio" value="false" checked><span class="text">Denied</span></label>
+                    <label><input name="functionalityConsentGranted" type="radio" value="true"><span class="text">Granted</span></label>
+                </dd>
+            </dl>
+            <dl class="field">
+                <dt class="field-title">Security Consent</dt>
+                <dd class="field-body">
+                    <label><input name="securityConsentGranted" type="radio" value="false" checked><span class="text">Denied</span></label>
+                    <label><input name="securityConsentGranted" type="radio" value="true"><span class="text">Granted</span></label>
+                </dd>
+            </dl>
+            <div class="block">
+                <button id="consent-close" type="button" class="btn btn-action">Save &amp; Close</button>
+            </div>
+        </form>
+    </dialog>
+    <script>
+        (function(){
+            const cookieValue = document.cookie.split(';').map(s => s.split('=',2)).filter(arr => arr[0].trim() === 'myconsent').map(arr => arr[1])[0];
+            if (cookieValue) {
+                const settings = JSON.parse(cookieValue);
+                for (let key in settings) {
+                    inputs = document.querySelectorAll(`#consent [name="${key}"]`);
+                    for (let input of inputs) {
+                        input.checked = input.value === settings[key].toString();
+                    }
+                }
+            }
+            else  {
+                document.querySelector('#consent').showModal();
+            }
+            document.querySelector('#consent-open').addEventListener('click', function() {
+                document.querySelector('#consent').showModal();
+            })
+            document.querySelector('#consent-close').addEventListener('click', function() {
+                const settings = Object.fromEntries(Array.from(document.querySelectorAll(`#consent [type="radio"]:checked`)).map(el => [el.name, el.value === 'true']));
+                window.updateConsent(settings);
+                document.querySelector('#consent').close();
+                window.location.reload();
+            })
+        }())
+    </script>
     @*@Page.Template.MiniProfilerRenderIncludes()*@
     <script>
         (function(){
