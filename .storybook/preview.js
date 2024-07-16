@@ -42,6 +42,7 @@ const customViewports = {
 
 export const parameters = {
   viewport: { viewports: customViewports },
-  actions: { argTypesRegex: "^on[A-Z].*" },
+  // actions: { argTypesRegex: "^on[A-Z].*" },
   ...withA11y
 }
+export const tags = ['autodocs'];
