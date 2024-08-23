@@ -31,9 +31,6 @@
         public bool Stockout { get; set; }
         public decimal UnitPriceWithTax { get; set; }
         public decimal Point { get;set; }
-        public string Valiation() {
-            return string.Join("／", new[] {NamePart3, NamePart2}.Where(text => !string.IsNullOrEmpty(text)));
-        }
     }
 
     public class TagViewModel{
