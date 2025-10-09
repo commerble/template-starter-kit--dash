@@ -15,7 +15,7 @@
         System.Web.Helpers.AntiForgery.Validate();
 
         Page.Response.Cookies.Add(new System.Web.HttpCookie(PREVIEW_KEY, Page.Request.Form["time"]){ Secure = true, HttpOnly = true, Expires = Page.Request.Form["end"] != null ? DateTime.Now.AddSeconds(-1) : default(DateTime) });
-        Page.Response.Redirect("~/");
+        Page.Response.Redirect(fallback(Page.Request.QueryString["returnUrl"], TopUrl()));
     }
 
     ViewBag.MetaTitle = "プレビュー";

@@ -28,9 +28,20 @@
         public string NamePart2 { get; set; }
         public string NamePart3 { get; set; }
         public string Icon { get; set; }
-        public bool Stockout { get; set; }
+        public int LimitAmount { get; set; }
         public decimal UnitPriceWithTax { get; set; }
+        public decimal Tax { get; set; }
         public decimal Point { get;set; }
+        public bool Stockout => LimitAmount <= 0;
+        
+        public int TaxRoundMode { private get; set; }
+        public decimal UnitPrice { private get; set; }
+        public decimal TaxationPrice { private get; set; }
+
+        public void CalcTax() {
+            Tax = Crosswarp.Modd.Services.Pipelines.Tax.CalcTax((TaxRoundMode)TaxRoundMode, TaxationPrice);
+            UnitPriceWithTax = UnitPrice + Tax;
+        }
     }
 
     public class TagViewModel{
@@ -50,8 +61,20 @@
         public bool? HasMultiplePrice { get; set; }
 
         public decimal? UnitPriceWithTax { get; set; }
+        public decimal? Tax { get; set; }
         public string PriceProductExternalId1 { get; set; }
         public string PriceProductName { get; set; }
+
+        public int? TaxRoundMode { private get; set; }
+        public decimal? UnitPrice { private get; set; }
+        public decimal? TaxationPrice { private get; set; }
+
+        public void CalcTax() {
+            if (TaxRoundMode.HasValue && TaxationPrice.HasValue) {
+                Tax = Crosswarp.Modd.Services.Pipelines.Tax.CalcTax((TaxRoundMode)TaxRoundMode.Value, TaxationPrice.Value);
+                UnitPriceWithTax = UnitPrice + Tax;
+            }
+        }
     }
 
     public class RelatePageViewModel {
@@ -124,7 +147,10 @@
                     NamePart2 = d.NamePart2,
                     NamePart3 = d.NamePart3,
                     Icon = d.Icon,
-                    Stockout = p.Stockout,
+                    LimitAmount = p.LimitAmount,
+                    TaxRoundMode = p.TaxRoundMode,
+                    UnitPrice = p.UnitPrice,
+                    TaxationPrice = p.TaxationPrice,
                 }
             )).ToList();
 
@@ -162,12 +188,13 @@
             Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
                 from r in db.PageRelations
                 join p in db.SitePages on r.RelateCode equals p.Code
+                join k in db.SitePageKinds on p.Kind equals k.Code
                 join m in db.Search on p.Code equals m.PageCode into meta
                 from m in meta.DefaultIfEmpty()
                 join s in db.Products on m.PriceProductId equals s.Id into sku
                 from s in sku.DefaultIfEmpty()
                 where r.PageCode == args.code
-                  &&  p.Kind == "product"
+                  &&  k.GroupCode == "product"
                   &&  p.DisplayStart <= args.Now
                   && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
                   && (p.IsPublished || args.IsPreview)
@@ -180,6 +207,9 @@
                     PriceProductId = m.PriceProductId,
                     PriceProductExternalId1 =  s.ExternalId1,
                     PriceProductName = s.Name,
+                    TaxRoundMode = s.TaxRoundMode,
+                    UnitPrice = s.UnitPrice,
+                    TaxationPrice = s.TaxationPrice,
                 }
             )).ToList();
 
@@ -202,12 +232,10 @@
             )).ToList();
         
         foreach (var p in vm.Products) {
-            p.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(p.Id);
+            p.CalcTax();
         }
         foreach (var p in vm.RelateProducts) {
-            if (p.PriceProductId.HasValue) {
-                p.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(p.PriceProductId.Value);
-            }
+            p.CalcTax();
         }
 
         if (vm.PriceProductId.HasValue) {

@@ -32,12 +32,13 @@
             Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
                 from r in db.PageRelations
                 join p in db.SitePages on r.RelateCode equals p.Code
+                join k in db.SitePageKinds on p.Kind equals k.Code
                 join m in db.Search on p.Code equals m.PageCode into meta
                 from m in meta.DefaultIfEmpty()
                 join s in db.Products on m.PriceProductId equals s.Id into sku
                 from s in sku.DefaultIfEmpty()
                 where r.PageCode == args.code
-                  && (p.Kind == "product" || p.Kind == "productc")
+                  &&  k.GroupCode == "product"
                   &&  p.DisplayStart <= args.Now
                   && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
                   && (p.IsPublished || args.IsPreview)

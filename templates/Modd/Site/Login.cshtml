@@ -1,7 +1,7 @@
 ﻿@{
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     var returnUrl = Page.ViewData.Eval("returnUrl") as string ?? string.Empty;
-    var showGuestLogin = returnUrl.StartsWith(Href("~/Purchase/"), StringComparison.OrdinalIgnoreCase);
+    var showGuestLogin = returnUrl.StartsWith(Resolve("/purchase/"), StringComparison.OrdinalIgnoreCase);
 
     ViewBag.MetaTitle = "ログイン";
 }

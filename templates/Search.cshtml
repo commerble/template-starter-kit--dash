@@ -71,9 +71,10 @@
         var builder = string.IsNullOrEmpty(filter) 
             ? Database.Builder(db => 
                 from p in db.SitePages
+                join k in db.SitePageKinds on p.Kind equals k.Code
                 join m in db.Search on p.Code equals m.PageCode into meta
                 from m in meta.DefaultIfEmpty()
-                where  p.Kind == "product"
+                where  k.GroupCode == "product"
                    &&  p.DisplayStart <= Now 
                    && (p.DisplayEnd == null || p.DisplayEnd > Now)
                    && (p.IsPublished || IsPreview)
@@ -88,10 +89,11 @@
             : Database.Builder(db => 
                 from r in db.PageRelations
                 join p in db.SitePages on r.RelateCode equals p.Code
+                join k in db.SitePageKinds on p.Kind equals k.Code
                 join m in db.Search on p.Code equals m.PageCode into meta
                 from m in meta.DefaultIfEmpty()
                 where  r.PageCode == filter
-                   &&  p.Kind == "product"
+                   &&  k.GroupCode == "product"
                    &&  p.DisplayStart <= Now 
                    && (p.DisplayEnd == null || p.DisplayEnd > Now)
                    && (p.IsPublished || IsPreview)
@@ -192,13 +194,13 @@
                     ["@type"] = "ListItem",
                     ["position"] = 1,
                     ["name"] = "Top",
-                    ["item"] = Page.Template.SecuredHost(true) + Href("~/")
+                    ["item"] = TopUrl()
                 },
                 new Dictionary<string, object> {
                     ["@type"] = "ListItem",
                     ["position"] = 2,
                     ["name"] = "商品検索",
-                    ["item"] = Page.Template.SecuredHost(true) + Page.Request.Url.AbsolutePath
+                    ["item"] = SearchUrl()
                 },
             }
         }

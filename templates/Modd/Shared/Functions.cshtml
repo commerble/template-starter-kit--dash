@@ -4,21 +4,31 @@
 @using Commerble.Sandbox.CmsDb;
 
 @{
-    InitOnce();
+    Initialize(() => {
+        Layout = "LayoutDefault";
+        ViewBag.IsLocal =  Page.Request.Url.Host.StartsWith("localhost") || Page.Request.Url.Host.StartsWith("172.") || Page.Request.Url.Host.StartsWith("192.168.");
+        ViewBag.IsDev   =  Page.Request.Url.Host == "dev.cbpaas.com" || Page.Request.Url.Host == "demo.cbpaas.com";
+        ViewBag.IsStage =  Page.Request.Url.Host == "stage.cbpaas.com";
+        ViewBag.IsProduction = ViewBag.IsLocal == false && ViewBag.IsDev == false && ViewBag.IsStage == false;
+        ViewBag.IsNotProduction = ViewBag.IsProduction == false;
+        ViewBag.ResourceSuffix  =  $"?_rc={Page.Template.RestartCounter}" + (ViewBag.IsNotProduction == true ? $"&_rq={Guid.NewGuid()}" : string.Empty);
+        ViewBag.RouteController = Page.Request.RequestContext.RouteData.Values["controller"] as string;
+        if (ViewBag.RouteName == null && ViewBag.RouteController != "ModdErrors")
+        {
+            Page.Response.Headers.Add("X-Robots-Tag", "noindex");
+        }
+        else {
+            Page.Response.Cache.SetExpires(Next);
+            Page.Response.Cache.SetMaxAge(Next - DateTime.Now);
+        }
+    });
 }
 
 @functions {
-    void InitOnce () {
-        if (ViewBag.InitOnce == null) {
-            var isSystemRoute = ViewBag.RouteName == "ModdDefault" || ViewBag.RouteName == "ModdPurchase";
-            if (isSystemRoute) {
-                Page.Response.Headers.Add("X-Robots-Tag", "noindex");
-            }
-            else {
-                Page.Response.Cache.SetExpires(Next);
-                Page.Response.Cache.SetMaxAge(Next - DateTime.Now);
-            }
-            ViewBag.InitOnce = true;
+    void Initialize (Action action) {
+        if (Page.Context.Items["__TenantTemplateInit__"] == null) {
+            action();
+            Page.Context.Items["__TenantTemplateInit__"] = true;
         }
     }
     // -- プレビュー
@@ -26,22 +36,33 @@
     bool? _isPreview = null;
     bool IsPreview { get { if (!_isPreview.HasValue) { _isPreview = Page.Request.Cookies.AllKeys.Contains(PREVIEW_KEY); } return _isPreview.Value; } }
 
-    // -- プレビュー時間を加味した現在日時
+    // -- 現在日時、最初に取得した値を使いまわす
+    DateTime JustNow {
+        get {
+            var value = ViewBag._justNow as DateTime?;
+            if (value == null) {
+                value = DateTime.Now;
+                ViewBag._justNow = value;
+            }
+            return value.Value;
+        }
+    }
+
+    // -- プレビュー時間を加味した5分刻みの現在日時
     DateTime? _now = null;
-    DateTime Now { get { if (!_now.HasValue) { _now = DateTime.TryParse(Page.Request.Cookies[PREVIEW_KEY]?.Value, out var datetime) ? datetime : TruncateDateTime(DateTime.Now, 300); } return _now.Value; } }
+    DateTime Now { get { if (!_now.HasValue) { _now = DateTime.TryParse(Page.Request.Cookies[PREVIEW_KEY]?.Value, out var datetime) ? datetime : TruncateDateTime(JustNow, 300); } return _now.Value; } }
 
     // -- 次の5分刻みの時間、プレビュー時には1秒後
     DateTime? _next = null;
-    DateTime Next { get { if (!_next.HasValue) { _next =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(DateTime.Now, 300).AddSeconds(300); } return _next.Value; } }
+    DateTime Next { get { if (!_next.HasValue) { _next =  IsPreview ? DateTime.Now.AddSeconds(5) : TruncateDateTime(JustNow, 300).AddSeconds(300); } return _next.Value; } }
 
     // -- 次の30分刻みの時間、プレビュー時には1秒後
     DateTime? _nextLong = null;
-    DateTime NextLong { get { if (!_nextLong.HasValue) { _nextLong =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(DateTime.Now, 1800).AddSeconds(1800); } return _nextLong.Value; } }
+    DateTime NextLong { get { if (!_nextLong.HasValue) { _nextLong =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(JustNow, 1800).AddSeconds(1800); } return _nextLong.Value; } }
 
     // -- 次の1日刻みの時間、プレビュー時には1秒後
     DateTime? _nextLongLong = null;
-    DateTime NextLongLong { get { if (!_nextLong.HasValue) { _nextLongLong =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(DateTime.Now, 86400).AddSeconds(86400); } return _nextLongLong.Value; } }
-
+    DateTime NextLongLong { get { if (!_nextLong.HasValue) { _nextLongLong =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(JustNow, 86400).AddSeconds(86400); } return _nextLongLong.Value; } }
 
     // -- 時刻を指定秒で丸める
     DateTime TruncateDateTime(DateTime datetime, int seconds) {
@@ -68,40 +89,38 @@
     }
     string GetConfigValue(string configKey, string defaultValue = null) => Configs.ContainsKey(configKey) ? Configs[configKey] ?? defaultValue : defaultValue;
 
-    // -- サイトページのルーティング規則をランタイムキャッシュで保持する。更新サイクルは1日（NextLongLong）
-    Dictionary<string, string> _sitePageKindRoutes = null;
-    Dictionary<string, string> SitePageKindRoutes {
-        get {
-            if (_sitePageKindRoutes == null) {
-                var cacheKey = globalCacheKey("SitePageKindRoutes");
-                _sitePageKindRoutes = Page.Template.Cache(cacheKey, NextLongLong, () => {
-                    return Database.Query(new { Now, NextLongLong }, db => 
-                        from k in db.SitePageKinds
-                        select new {
-                            k.Code,
-                            RouteName = k.Code
-                        }).ToDictionary(c => c.Code, c => c.RouteName);
-                });
-            }
-            return _sitePageKindRoutes;
-        }
-    }
-
     // -- URLヘルパー
+    string Resolve(string urlOrPath, bool full = false) {
+        if (urlOrPath == null) {
+            return string.Empty;
+        }
+        if (urlOrPath.StartsWith("/") && !urlOrPath.StartsWith("//")) {
+            var prefix = full ? Page.Template.SecuredHost(true).TrimEnd('/') : string.Empty;
+            return prefix + Href("~" + urlOrPath);
+        }
+        if (urlOrPath.StartsWith("~")) {
+            var prefix = full ? Page.Template.SecuredHost(true).TrimEnd('/') : string.Empty;
+            return prefix + Href(urlOrPath);
+        }
+        return urlOrPath;
+    }
+    string TopUrl(bool full = false) {
+        return Resolve("/", full);
+    }
     string ItemUrl(string code) {
-        return Href($"~/{(code?.ToLower())}");
+        return Resolve(code?.ToLower());
     }
     string EmbedUrl(string code) {
         return Page.Template.SecuredLink("ItemEmbed", new { Code = code }).Replace("http:","https:");
     }
     string KindUrl(string code, string sort = "new") {
-        return Href($"~/{(code?.ToLower())}?sort={sort}");
+        return Resolve($"/{(code?.ToLower())}?sort={sort}");
     }
     string TagUrl(string code, string sort = "new") {
-        return Href($"~/{(code?.ToLower())}");
+        return Resolve($"/{(code?.ToLower())}");
     }
     string SearchUrl() {
-        return Href($"~/search/");
+        return Resolve("/search");
     }
     string ImageUrl(string url, int w, int h, string noimg = "") {
         if (string.IsNullOrEmpty(url)) {
@@ -133,7 +152,7 @@
         return ImageUrl(url, 64, 64, "https://fakeimg.pl/64x64/?text=NO%20IMG");
     }
     string PageUrl(string code) {
-        return Href($"~/{code.ToLower()}");
+        return Resolve(code.ToLower());
     }
     string CallbacksGMOPGUrl() {
         return Page.Template.SecuredLink("CallbacksGMOPG", new {}).Replace("http://", "https://");
@@ -181,7 +200,7 @@
         return Page.Url.RouteUrl("ModdDefault", new {controller = "Site", action = "Login"});    
     }
     string LogoutUrl() {
-        return Page.Url.RouteUrl("ModdDefault", new {controller = "Site", action = "Logout", returnUrl = Href("~/")});    
+        return Page.Url.RouteUrl("ModdDefault", new {controller = "Site", action = "Logout", returnUrl = TopUrl() });    
     }
     string NewGuestUrl(string returnUrl){
         return Page.Template.SecuredLink("ModdDefault", new { controller="Site", action="NewGuest", returnUrl });
@@ -269,7 +288,7 @@
     string when(bool condition, string then, string @else = "") => condition ? then : @else;
     string fallback(params string[] values) => values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v));
     string globalCacheKey(string name) => $"GlobalData:{name}:{Page.Template.RestartCounter}{(IsPreview ? TruncateDateTime(DateTime.Now, 1).Ticks.ToString() : string.Empty)}";
-    Dictionary<PaymentMethod,string> PaymentMethodText = new Dictionary<PaymentMethod,string>{
+    Dictionary<PaymentMethod,string> PaymentMethodText = new Dictionary<PaymentMethod,string> {
         [PaymentMethod.CashOnDelivery] = "代引き",
         [PaymentMethod.Cvs]            = "コンビニ",
         [PaymentMethod.Offsite]        = "銀行振込",
@@ -314,7 +333,8 @@
                 _tags = Page.Template.Cache(cacheKey, Next, () => {
                     return Database.Query(new { Now, Next, IsPreview }, (db, args) => (
                         from p in db.SitePages
-                        where p.Kind == "tag"
+                        join k in db.SitePageKinds on p.Kind equals k.Code
+                        where k.GroupCode == "tag"
                           &&  p.DisplayStart <= Now 
                           && (p.DisplayEnd == null || p.DisplayEnd > Now)
                           && (p.IsPublished || IsPreview)
@@ -341,7 +361,7 @@
 }
 
 @helper RenderParts(string position) {
-    var root = Href("~/");
+    var root = TopUrl();
     var cacheKey = globalCacheKey("SiteParts");
     var siteParts = Page.Template.Cache(cacheKey, NextLongLong, () => 
                         Database.Query(new { Now, IsPreview }, db => 
@@ -395,7 +415,6 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1; IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone=no">
-    <meta name="x-root" content="@Href("~/")">
     <meta name="description" content="@description">
     <meta name="twitter:card" content="summary_large_image">
     <meta property="og:title" content="@ogTitle">
@@ -426,7 +445,7 @@
 
 @helper RenderPreviewFooter() {
     if (IsPreview) {
-        <a href="@Href("~/preview")" style="background: red; color: white; padding: 0 1rem; width: 100%; height: 48px; line-height: 48px; position: fixed; text-align: right; bottom:0; z-index:9999;">
+        <a href="/preview?returnUrl=@System.Web.HttpUtility.UrlEncode(Page.Request.Url.AbsolutePath)" style="background: red; color: white; padding: 0 1rem; width: 100%; height: 48px; line-height: 48px; position: fixed; text-align: right; bottom:0; z-index:9999;">
             プレビュー中 &nbsp;&nbsp;&nbsp;&nbsp; プレビュー時間 @Now
         </a>
     }
@@ -434,7 +453,7 @@
 
 @helper RenderHeader() {
     <header class="gheader content-wide">
-        <h1 class="logo"><a href="@Href("~/")" class="image image-base"><img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22" crossorigin="anonymous"></a></h1>
+        <h1 class="logo"><a href="@TopUrl()" class="image image-base"><img src="@GetConfigValue("BRAND_LOGO_URL")" alt="@GetConfigValue("BRAND_NAME")" width="140" height="22" crossorigin="anonymous"></a></h1>
         <a href="@FavoriteUrl()" title="お気に入り" class="gheader-link"><i class="icon-dash-heart"></i><span class="sp-hide">お気に入り</span></a>
         <a href="@MyPageUrl()" title="マイページ" class="gheader-link"><i class="icon-dash-user"></i><span class="sp-hide">マイページ</span></a>
         <a href="@CartUrl()" title="カート" class="gheader-link"><i class="icon-dash-cart"></i><span class="sp-hide">カート</span></a>
@@ -529,12 +548,12 @@
                         @Raw(banner.Title ?? string.Empty)
                     }
                     else if (string.IsNullOrEmpty(banner.LinkText)) {
-                        <a href="@Href(banner.LinkUrl)">
+                        <a href="@Resolve(banner.LinkUrl)">
                             @Raw(banner.Title ?? string.Empty)
                         </a>
                     }
                     else {
-                        @Raw(banner.Title ?? string.Empty) <a href="@Href(banner.LinkUrl)">@banner.LinkText</a>
+                        @Raw(banner.Title ?? string.Empty) <a href="@Resolve(banner.LinkUrl)">@banner.LinkText</a>
                     }
                 </p>
             </div>
@@ -598,7 +617,7 @@
 @helper ProductTile(string code, string name, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
     <article class="tile">
         <a href="@ItemUrl(code)" rel="bookmark" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
-            <h1>@name</h1>
+            <h3>@name</h3>
             <figure class="image image-square">
                 <img src="@ThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
             </figure>
@@ -612,7 +631,7 @@
 @helper TopicTile(string code, string name, string thumbnail, DateTime? publishDate) {
     <article class="tile">
         <a href="@PageUrl(code)" rel="bookmark" title="@name">
-            <h1>@name</h1>
+            <h3>@name</h3>
             @if (publishDate.HasValue) {
                 <time datetime="@publishDate.Value.ToString("o")">@publishDate.Value.ToString("yyyy.MM.dd")</time>
             } else {

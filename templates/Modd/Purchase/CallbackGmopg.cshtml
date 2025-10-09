@@ -153,7 +153,7 @@
 
     ViewBag.MetaTitle = "お支払いキャンセル";
     var vm = LoadViewModel(order);
-    var cartinUrl = Href("~/Order/Cart?") + string.Join("&", vm.Select(line => $"item={line.ProductId}&qty={line.Qty}"));
+    var cartinUrl = CartUrl() + string.Join("&", vm.Select(line => $"item={line.ProductId}&qty={line.Qty}"));
 }
 <main class="section content">
     <h1 class="h-underline">お支払いが完了されませんでした</h1>
@@ -199,6 +199,6 @@
     </table>
     <div class="block block-vertical">
         <a href="@cartinUrl" class="btn btn-action btn-large">もう一度カートにいれる</a>
-        <a href="@Href("~/")" class="btn btn-primary btn-text btn-prev">トップページへ戻る</a>
+        <a href="@TopUrl()" class="btn btn-primary btn-text btn-prev">トップページへ戻る</a>
     </div>
 </main>

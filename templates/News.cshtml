@@ -21,7 +21,8 @@
             Database.Query(new { Now, Next, IsPreview }, (db, args) => (
                 from p in db.SitePages
                 join q in db.SitePagePriorities on p.Priority equals q.Priority
-                where p.Kind == "news" 
+                join k in db.SitePageKinds on p.Kind equals k.Code
+                where k.GroupCode == "news" 
                   &&  p.IsListed
                   &&  p.DisplayStart <= args.Now
                   && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
@@ -41,10 +42,12 @@
         var total = 
             Database.Single(new { Now, Next, IsPreview }, (db, args) => (
                 from p in db.SitePages
-                where p.Kind == "Notice" 
-                &&  p.DisplayStart <= args.Now
-                && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
-                && (p.IsPublished == true || args.IsPreview)
+                join k in db.SitePageKinds on p.Kind equals k.Code
+                where k.GroupCode == "news" 
+                  &&  p.IsListed
+                  &&  p.DisplayStart <= args.Now
+                  && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                  && (p.IsPublished == true || args.IsPreview)
                 select p.Code
             ).Count());
         var pageCount = total / eachPage + ((total % eachPage == 0) ? 0 : 1);

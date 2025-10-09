@@ -2,9 +2,7 @@
 <html lang="ja">
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
     @RenderMeta()
-    <meta name="resource-prefix" content="@Href("~/")">
-    <meta name="resource-suffix" content="@ViewBag.ResourceSuffix">
-    <link rel="stylesheet" href="@Href("~/bundle/style.css" + ViewBag.ResourceSuffix)">
+    <link rel="stylesheet" href="@Resolve("/bundle/style.css" + ViewBag.ResourceSuffix)">
     @RenderParts("Head")
     @RenderJsonLD()
     @RenderDataLayer()
@@ -19,17 +17,8 @@
     @RenderFooter()
     @RenderPreviewFooter()
     @*@Page.Template.MiniProfilerRenderIncludes()*@
-    <script>
-        (function(){
-            const prefix = document.querySelector('meta[name="resource-prefix"]').content;
-            const suffix = document.querySelector('meta[name="resource-suffix"]').content;
-            const el = document.createElement('script');
-            el.src = "//" + location.host + prefix + 'bundle/script.js' + suffix;
-            el.integrity = "sha256-ImTWIeX6C/OH7HWi54dg6hYSNugL1+wtbaeyIxgOT2s=";
-            document.body.appendChild(el);
-        }())
-    </script>
-    @RenderSection("ScriptBlock", false)    
+    <script src="@Resolve("/bundle/script.js" + ViewBag.ResourceSuffix)"></script>
+    @RenderSection("ScriptBlock", false)
     @RenderParts("BodyBottom")
 </body>
 </html>

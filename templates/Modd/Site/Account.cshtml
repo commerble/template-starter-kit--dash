@@ -158,7 +158,7 @@
                 @ValidationMessageFor("Subscribe")
             </dd>
         </dl>
-        <p class="text-center"><a href="@Href("~/page/privacy")" target="_blank">プライバシーポリシー</a>、<a href="@Href("~/page/terms")" target="_blank">ご利用規約</a>をお読みください。</p>
+        <p class="text-center"><a href="@Resolve("/page/privacy")" target="_blank">プライバシーポリシー</a>、<a href="@Resolve("/page/terms")" target="_blank">ご利用規約</a>をお読みください。</p>
         <div class="block">
             <button type="submit" name="confirm" value="confirm" class="btn btn-primary btn-next" data-cb-recaptcha="trigger">同意して登録内容を確認する</button>
         </div>

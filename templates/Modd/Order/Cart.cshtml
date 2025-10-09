@@ -123,7 +123,7 @@
 @section ScriptBlock {
 <script>
     if (location.href.indexOf('?') != -1) {
-        history.replaceState(null, null, '@Href($"~/Order/Cart")')
+        history.replaceState(null, null, '@CartUrl()')
     }
 </script>
 }

@@ -79,8 +79,9 @@
         var notices =
             Database.Query(new { Now, Next, IsPreview }, (db, args) => (
                 from p in db.SitePages
+                join k in db.SitePageKinds on p.Kind equals k.Code
                 join q in db.SitePagePriorities on p.Priority equals q.Priority
-                where p.Kind == "news"
+                where k.GroupCode == "news"
                   &&  p.IsListed
                   &&  p.DisplayStart <= args.Now
                   && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
@@ -183,7 +184,7 @@
                     }
                     @if (!string.IsNullOrEmpty(vm.MainBanner.LinkUrl)) {
                         <div class="block">
-                            <a href="@Href(vm.MainBanner.LinkUrl)" class="btn btn-ghost btn-primary btn-large">@(vm.MainBanner.LinkText ?? "詳細を見る")</a>
+                            <a href="@Resolve(vm.MainBanner.LinkUrl)" class="btn btn-ghost btn-primary btn-large">@(vm.MainBanner.LinkText ?? "詳細を見る")</a>
                         </div>
                     }
                 </div>
@@ -194,7 +195,7 @@
                 <div class="tiles tiles-x4">
                     @foreach(var banner in vm.SubBanners) {
                         <article class="tile">
-                            <a href="@Href(banner.LinkUrl)" rel="bookmark" title="@banner.Title">
+                            <a href="@Resolve(banner.LinkUrl)" rel="bookmark" title="@banner.Title">
                                 <h1>@banner.Title</h1>
                                 <figure class="image image-square">
                                     <img src="@ThumbnailUrl(banner.Thumbnail)" alt="@banner.Title" loading="lazy" decoding="async">
@@ -219,7 +220,7 @@
                 notice.PublishDate
             ))
         <div class="block">
-            <a href="@Href("~/news/")" class="btn btn-text btn-primary btn-next">すべてのお知らせを見る</a>
+            <a href="@Resolve("/news/")" class="btn btn-text btn-primary btn-next">すべてのお知らせを見る</a>
         </div>
     </section>
 }

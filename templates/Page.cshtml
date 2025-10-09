@@ -16,13 +16,42 @@
         public List<(string url, string name)> Breadcrumbs { get; set; }
     }
 
+    string[] ParseDirs(string path)
+    {
+        var dirs = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+        if (dirs.Length == 0)
+        {
+            return new[] { "/" };
+        }
+
+        if (dirs.Length == 1)
+        {
+            return new[] { "/", path };
+        }
+
+        for (var i = 1; i < dirs.Length; i++)
+        {
+            dirs[i] = $"{dirs[i - 1]}/{dirs[i]}";
+        }
+
+        for (var i = 0; i < dirs.Length; i++)
+        {
+            dirs[i] = $"/{dirs[i]}";
+        }
+
+        dirs[dirs.Length - 1] = path;
+
+        return new[] {"/"}.Concat(dirs).ToArray();
+    }
+
     ViewModel LoadViewModel() {
         var prefix = Href("~/");
-        var path = Page.Request.Url.AbsolutePath;
-        if (path.StartsWith(prefix)) {
-            path = path.Substring(prefix.Length).Trim('/');
+        var code = Page.Request.Url.AbsolutePath.TrimEnd('/');
+        if (code.StartsWith(prefix)) {
+            code = code.Substring(prefix.Length);
         }
-        var code = fallback(path, "top");
+        code = "/" + code;
 
         var vm = Database.Single(new { Now, Next, IsPreview, code }, (db, args) => (
                 from p in db.SitePages
@@ -51,44 +80,26 @@
         if (vm == null)
             return null;
 
-        var dirs = code.Split('/');
+        var dirs = ParseDirs(vm.Code);
+        vm.Breadcrumbs = 
+            Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
+                from p in db.SitePages
+                where dirs.Contains(p.Code)
+                    &&  p.DisplayStart <= args.Now
+                    && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
+                    && (p.IsPublished || args.IsPreview)
+                orderby p.Code
+                select new {
+                    p.Code,
+                    p.Name,
+                }
+            )).Select(dir => (dir.Code, dir.Name)).ToList();
 
-        if (dirs.Length > 1) { 
-            for(var i = 1; i < dirs.Length; i++) {
-                dirs[i] = $"{dirs[i-1]}/{dirs[i]}";
-            }
-            vm.Breadcrumbs = Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
-                    from p in db.SitePages
-                    where dirs.Contains(p.Code)
-                      &&  p.DisplayStart <= args.Now
-                      && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
-                      && (p.IsPublished || args.IsPreview)
-                    orderby p.Code
-                    select new {
-                        p.Code,
-                        p.Name,
-                    }
-                )).Select(dir => (dir.Code, dir.Name)).ToList();
-        }
-        else {
-            vm.Breadcrumbs = new List<(string url, string name)> { (vm.Code, vm.Name) };
-        }
         return vm;
     }
 }
 
 @{
-    var exts = new [] { ".html", ".txt" };
-    if (!Page.Request.Url.AbsolutePath.EndsWith("/") && exts.All(ext => !Page.Request.Url.AbsolutePath.EndsWith(ext))) {
-        Page.Response.RedirectPermanent(Page.Request.Url.AbsolutePath + "/" + Page.Request.Url.Query);
-    }
-    if (exts.Any(ext => Page.Request.Url.AbsolutePath.EndsWith(ext + "/"))) {
-        Page.Response.RedirectPermanent(Page.Request.Url.AbsolutePath.TrimEnd('/') + Page.Request.Url.Query);
-    }
-    if (Page.Request.Url.AbsolutePath.EndsWith("/index.html")) {
-        Page.Response.RedirectPermanent(Page.Request.Url.AbsolutePath.Substring(0, Page.Request.Url.AbsolutePath.Length - "/index.html".Length) + Page.Request.Url.Query);
-    }
-
     var vm = LoadViewModel();
 
     if (vm == null) {
@@ -108,7 +119,9 @@
     ViewBag.MetaDescription = vm.MetaDescription;
     ViewBag.MetaImage = vm.MetaImage;
 
-    ViewBag.Canonical = Page.Template.SecuredHost(true) + Page.Request.Url.AbsolutePath;
+    var urlPrefix = TopUrl(true);
+
+    ViewBag.Canonical = urlPrefix + vm.Code;
 
     ViewBag.JsonLd = new[] {
         new Dictionary<string, object> {
@@ -117,20 +130,12 @@
             ["itemListElement"] = new List<Dictionary<string, object>>()
         }
     };
-    ViewBag.JsonLd[0]["itemListElement"].Add(new Dictionary<string, object> {
-            ["@type"] = "ListItem",
-            ["position"] = 1,
-            ["name"] = "HOME",
-            ["item"] = Page.Template.SecuredHost(true) + Href("~/")
-        });
-    if (vm.Breadcrumbs != null) {
-        ViewBag.JsonLd[0]["itemListElement"].AddRange(vm.Breadcrumbs.Select((b,i) => new Dictionary<string, object> {
-            ["@type"] = "ListItem",
-            ["position"] = i + 2,
-            ["name"] = b.name,
-            ["item"] = Page.Template.SecuredHost(true) + Href("~/" + b.url)
-        }));
-    }
+    ViewBag.JsonLd[0]["itemListElement"].AddRange(vm.Breadcrumbs.Select((b,i) => new Dictionary<string, object> {
+        ["@type"] = "ListItem",
+        ["position"] = i + 1,
+        ["name"] = b.name,
+        ["item"] = urlPrefix + b.url
+    }));
     ViewBag.JsonLd = new List<object>(ViewBag.JsonLd);
 }
 @Include(vm.Partial, vm)

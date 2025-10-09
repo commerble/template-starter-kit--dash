@@ -1,0 +1,13 @@
+@functions {
+    string FormatPrice(decimal price) => price.ToString("N0");
+    Dictionary<int,string> PaymentMethodText = new Dictionary<int,string>{
+        [0] = "代引き",
+        [2] = "全額ポイント",
+        [3] = "コンビニ",
+        [4] = "銀行振込",
+        [5] = "オフライン",
+        [6] = "クレジットカード",
+        [100] = "外部決済 （カード・コンビニ・キャリア）",
+        [-1] = "決済方法なし",
+    };
+}
