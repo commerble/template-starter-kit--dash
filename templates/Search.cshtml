@@ -41,18 +41,18 @@
             Sort = sort,
             Page = page,
             Tags = new List<TagViewModel>{ 
-                new TagViewModel { Code = "category", Name = "カテゴリ", Children = new List<TagViewModel>() },
-                new TagViewModel { Code = "tag", Name = "タグ", Children = new List<TagViewModel>() },
+                new TagViewModel { Code = "/category", Name = "カテゴリ", Children = new List<TagViewModel>() },
+                new TagViewModel { Code = "/tag", Name = "タグ", Children = new List<TagViewModel>() },
             },
         };
 
         foreach (var t in Tags.OrderBy(o => o.Code)) {
-            var segments = t.Code.Split('/');
+            var segments = t.Code.TrimStart('/').Split('/');
             var tree = vm.Tags;
             var path = "";
             foreach (var segment in segments) {
                 path = path + "/" + segment;
-                var node = tree.FirstOrDefault(o => "/" + o.Code == path);
+                var node = tree.FirstOrDefault(o => o.Code == path);
                 if (node != null) {
                     tree = node.Children;
                     continue;

@@ -155,7 +155,7 @@
             )).ToList();
 
         vm.Category =
-            Database.Single(new { Now, Next, IsPreview, code, prefix = GetConfigValue("CATEGORY_PREFIX", "category/") }, (db, args) => (
+            Database.Single(new { Now, Next, IsPreview, code, prefix = GetConfigValue("CATEGORY_PREFIX", "/category/") }, (db, args) => (
                 from r in db.PageRelations
                 join t in db.SitePages on r.PageCode equals t.Code
                 where r.RelateCode == args.code
@@ -170,7 +170,7 @@
             ).FirstOrDefault());
         
         vm.Tags =
-            Database.Query(new { Now, Next, IsPreview, code, prefix = GetConfigValue("TAG_PREFIX", "tag/") }, (db, args) => (
+            Database.Query(new { Now, Next, IsPreview, code, prefix = GetConfigValue("TAG_PREFIX", "/tag/") }, (db, args) => (
                 from r in db.PageRelations
                 join t in db.SitePages on r.PageCode equals t.Code
                 where r.RelateCode == args.code

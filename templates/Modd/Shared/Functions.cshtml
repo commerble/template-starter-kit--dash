@@ -110,14 +110,11 @@
     string ItemUrl(string code) {
         return Resolve(code?.ToLower());
     }
-    string EmbedUrl(string code) {
-        return Page.Template.SecuredLink("ItemEmbed", new { Code = code }).Replace("http:","https:");
-    }
     string KindUrl(string code, string sort = "new") {
-        return Resolve($"/{(code?.ToLower())}?sort={sort}");
+        return Resolve($"{(code?.ToLower())}?sort={sort}");
     }
     string TagUrl(string code, string sort = "new") {
-        return Resolve($"/{(code?.ToLower())}");
+        return Resolve(code?.ToLower());
     }
     string SearchUrl() {
         return Resolve("/search");
