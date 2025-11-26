@@ -36,6 +36,18 @@
         public decimal? UnitPriceWithTax { get; set; }
         public string PriceProductExternalId1 {get; set;}
         public string PriceProductName {get; set;}
+
+        public int? TaxRoundMode { private get; set; }
+        public decimal? UnitPrice { private get; set; }
+        public decimal? TaxationPrice { private get; set; }
+        public decimal? Tax { private get; set; }
+
+        public void CalcTax() {
+            if (TaxRoundMode.HasValue && TaxationPrice.HasValue) {
+                Tax = Crosswarp.Modd.Services.Pipelines.Tax.CalcTax((TaxRoundMode)TaxRoundMode.Value, TaxationPrice.Value);
+                UnitPriceWithTax = UnitPrice + Tax;
+            }
+        }
     }
     public class TagViewModel {
         public string Code { get; set; }
@@ -132,9 +144,7 @@
                 }
             ).Take(12)).ToList();
         foreach (var item in items) {
-            if (item.PriceProductId.HasValue) {
-                item.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(item.PriceProductId.Value);
-            }
+            item.CalcTax();
         }
         return new ViewModel {
             MainBanner = mainBanner,
