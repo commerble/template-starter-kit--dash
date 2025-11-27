@@ -1,5 +1,6 @@
-﻿@{
-    var address = Page.ViewData.Model as VM.AccountAddress;
+﻿@model VM.AccountAddress
+@{
+    var address = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
 
     ViewBag.MetaTitle = "会員住所編集 - 確認";

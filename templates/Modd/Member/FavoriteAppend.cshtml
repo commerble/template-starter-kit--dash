@@ -1,4 +1,5 @@
-﻿@functions {
+﻿@model VM.FavoriteAppend
+@functions {
     public class ViewModel {
         public int ProductId { get; set; }
         public string Code { get; set; }
@@ -8,7 +9,7 @@
         public bool? HasMultiplePrice { get; set; }
     }
     ViewModel LoadViewModel() {
-        var favorite = Page.ViewData.Model as VM.FavoriteAppend; 
+        var favorite = Model;
         var page = Database.Single(new { Now, Next, favorite.ProductId }, (db, args) => (
             from p in db.SitePages
             join r in db.ProductRelations on p.Code equals r.PageCode

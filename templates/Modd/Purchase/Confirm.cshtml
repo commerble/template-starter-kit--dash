@@ -1,5 +1,6 @@
-﻿@{
-    var cart = Page.ViewData.Model as ShoppingCartBase;
+﻿@model ShoppingCartBase
+@{
+    var cart = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     var hasErrors = viewData.Errors.Any();
 

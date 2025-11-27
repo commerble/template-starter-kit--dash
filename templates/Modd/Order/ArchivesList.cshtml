@@ -1,5 +1,6 @@
+@model IEnumerable<HistoryCart>
 @{
-     var orders = (Page.ViewData.Model as IEnumerable<HistoryCart>).ToList();
+     var orders = Model.ToList();
 
     int page, eachPage = 10;
     if( !Int32.TryParse((Page.Request.QueryString["page"] ?? "0"), out page)){

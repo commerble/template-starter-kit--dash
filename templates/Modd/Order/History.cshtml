@@ -1,5 +1,6 @@
-﻿@{
-    var cart = Page.ViewData.Model as HistoryCart; 
+﻿@model HistoryCart
+@{
+    var cart = Model; 
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     var canPaymentMethodChange = cart.CanModifyPaymentMethod();
     var hasChanges = cart.Original != null && (

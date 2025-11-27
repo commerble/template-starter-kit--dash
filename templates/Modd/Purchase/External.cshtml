@@ -1,8 +1,9 @@
-﻿@using System;
+﻿@model PurchaseOrder
+@using System;
 @using System.Web;
 @using System.Text;
 @{
-    var order = Page.ViewData.Model as PurchaseOrder;
+    var order = Model;
     var postTo = GetConfigValue("GMOPG_SHOP_LINK");
     var shopPass = GetConfigValue("GMOPG_SHOP_PASSWORD");
     var payload = new Dictionary<string, string> {

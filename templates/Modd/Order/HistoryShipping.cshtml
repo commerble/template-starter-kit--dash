@@ -1,5 +1,6 @@
-﻿@{
-    var shipping = Page.ViewData.Model as VM.HistoryShipping;
+﻿@model VM.HistoryShipping
+@{
+    var shipping = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
 
     ViewBag.MetaTitle = "注文編集 - お届け先";

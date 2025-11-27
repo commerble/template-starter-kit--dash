@@ -1,4 +1,5 @@
-﻿@functions {
+﻿@model IEnumerable<ReserveRequest>
+@functions {
 	public class ViewModel {
 		public ViewMessages ViewMessages { get; set; }
 		public bool HasNextPage { get; set; }
@@ -22,7 +23,7 @@
 		public bool CanCancel { get; set; }
 	}
 	ViewModel LoadViewModel() {
-		var notices = Page.ViewData.Model as IEnumerable<ReserveRequest>;
+		var notices = Model;
 		var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
 		int page, eachPage = 5;
 		if( !Int32.TryParse((Page.Request.QueryString["page"] ?? "0"), out page)){

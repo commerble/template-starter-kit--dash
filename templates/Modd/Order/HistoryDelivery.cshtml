@@ -1,5 +1,6 @@
-﻿@{
-    var delivery = Page.ViewData.Model as VM.HistoryDelivery;
+﻿@model VM.HistoryDelivery
+@{
+    var delivery = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     delivery.Cart.SpecifiableDeliveryDateRangeStart = DateTime.Now.Date.AddDays(Commerble.Sandbox.Services.AppSettings.DeliveryDateRangeStartOffset);
     delivery.Cart.SpecifiableDeliveryDateRangeEnd = DateTime.Now.Date.AddDays(Commerble.Sandbox.Services.AppSettings.DeliveryDateRangeEndOffset);

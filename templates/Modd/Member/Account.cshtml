@@ -1,6 +1,7 @@
-﻿@{
+﻿@model VM.Account
+@{
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
-    var account = Page.ViewData.Model as VM.Account;
+    var account = Model;
 
     ViewBag.MetaTitle = "会員情報編集";
 }

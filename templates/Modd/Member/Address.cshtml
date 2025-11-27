@@ -1,5 +1,6 @@
-﻿@{
-    var address = Page.ViewData.Model as UserAddress;
+﻿@model UserAddress
+@{
+    var address = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     var action = address.AddressId == 0 ? AddressCreateUrl() : AddressUrl(address.AddressId);
     

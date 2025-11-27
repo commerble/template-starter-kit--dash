@@ -1,6 +1,7 @@
-﻿@{
+﻿@model VM.HistoryPayment
+@{
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-    var payment = Page.ViewData.Model as VM.HistoryPayment;
+    var payment = Model;
 
     var paymentMethods = new [] {
         new SelectListItem  { Text = PaymentMethodText[PaymentMethod.CashOnDelivery], Value = "CashOnDelivery", Selected = payment.PaymentMethod == PaymentMethod.CashOnDelivery },

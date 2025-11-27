@@ -1,8 +1,6 @@
-﻿@{
-    var account = Page.ViewData.Model as PointBank.Account;
-    if(account == null){
-        account = new PointBank.Account();
-    }
+﻿@model PointBank.Account
+@{
+    var account = Model ?? new PointBank.Account();
 
     ViewBag.MetaTitle = "マイページ - ポイント情報";
 }

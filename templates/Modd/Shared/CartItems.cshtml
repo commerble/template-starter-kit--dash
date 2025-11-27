@@ -1,4 +1,5 @@
-﻿@functions {
+﻿@model ShoppingCartBase
+@functions {
     public class LineViewModel {
         public int ProductId { get; set; }
         public string ExternalId1 { get; set; }
@@ -78,7 +79,7 @@
     }
 }
 @{
-    var cart = Page.ViewData.Model as ShoppingCartBase;
+    var cart = Model;
     var action = Page.ViewData["action"] as bool? ?? true;
     var total = Page.ViewData["total"] as bool? ?? false;
     var vm = LoadViewModel(cart);

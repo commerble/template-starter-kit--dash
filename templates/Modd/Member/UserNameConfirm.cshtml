@@ -1,5 +1,6 @@
+@model VM.ChangeUserName
 @{
-    var user = Page.ViewData.Model as VM.ChangeUserName;
+    var user = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
 
     ViewBag.MetaTitle = "登録メールアドレス変更 - 確認";

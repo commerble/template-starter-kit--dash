@@ -1,5 +1,6 @@
+@model Commerble.Sandbox.Services.ViewModels.Contact
 @{
-    var general = Page.ViewData.Model as Commerble.Sandbox.Services.ViewModels.Contact;
+    var general = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
     ViewBag.MetaTitle = "お問い合わせ";
     ViewBag.MetaDescription = "商品に関する質問などお問い合わせページ。";

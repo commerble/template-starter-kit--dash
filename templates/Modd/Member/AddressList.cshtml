@@ -1,5 +1,6 @@
-﻿@{
-    var addresses = Page.ViewData.Model as IEnumerable<UserAddress>;
+﻿@model IEnumerable<UserAddress>
+@{
+    var addresses = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages; 
 
     ViewBag.MetaTitle = "お届け先";

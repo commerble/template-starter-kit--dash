@@ -1,5 +1,6 @@
-﻿@{
-    var address = (Page.ViewData.Model as Address) ?? new Address();
+﻿@model Address
+@{
+    var address = Model ?? new Address();
     var target = string.Format("{0}.", Page.ViewData["target"]);
     var prefix = string.Format("{0}_", Page.ViewData["target"]);
     var command = string.Format("{0}", Page.ViewData["command"]);

@@ -1,5 +1,6 @@
-﻿@{
-  var customer = Page.ViewData.Model as VM.HistoryCustomer; 
+﻿@model VM.HistoryCustomer
+@{
+  var customer = Model; 
   var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
 
   ViewBag.MetaTitle = "注文編集 - お客様情報";

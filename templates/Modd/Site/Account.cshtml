@@ -1,6 +1,7 @@
-﻿@{
+﻿@model VM.Account
+@{
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
-    var account = Page.ViewData.Model as VM.Account;
+    var account = Model;
 
     if (!IsPost) {
         account.Sex = HumanSexes.NotKnown;

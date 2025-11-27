@@ -1,7 +1,8 @@
-﻿@{
-  Layout = null;
-  var cartId = (int)Page.ViewData["cartId"];
-  var zipList = Page.ViewData.Model as List<ZipCodeAddress>;
+﻿@model IEnumerable<ZipCodeAddress>
+@{
+    Layout = null;
+    var cartId = (int)Page.ViewData["cartId"];
+    var zipList = Model;
 }
 
 @if (!zipList.Any())

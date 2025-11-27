@@ -1,4 +1,5 @@
-﻿@functions {
+﻿@model IEnumerable<ShoppingCartBase>
+@functions {
     public class ViewModel {
         public int CartId { get; set; }
         public bool IsEmpty { get; set; }
@@ -67,7 +68,7 @@
     }
 }
 @{
-    var cart = (Page.ViewData.Model as IEnumerable<ShoppingCartBase>).First();
+    var cart = Model.First();
 
     var vm = LoadViewModel(cart);
     

@@ -1,7 +1,8 @@
-﻿@{
+﻿@model IEnumerable<ZipCodeAddress>
+@{
     Layout = null;
     var orderId = (long)Page.ViewData["orderId"];
-    var zipList = Page.ViewData.Model as List<ZipCodeAddress>;
+    var zipList = Model;
 }
 
 @if(!zipList.Any()){

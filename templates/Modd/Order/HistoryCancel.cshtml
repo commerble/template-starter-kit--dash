@@ -1,9 +1,10 @@
-﻿@{
-      var cart = Page.ViewData.Model as CancelCart; 
+﻿@model CancelCart
+@{
+    var cart = Model;
     
     var pointFixed = new List<OrderStatus>{OrderStatus.Arrival,OrderStatus.Booked};
     var isGuest = cart.OrderCustomer.IsGuest;
-      var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
+    var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
 
     ViewBag.MetaTitle = "注文キャンセル";
 }

@@ -1,5 +1,6 @@
-﻿@{
-    var payment = Page.ViewData.Model as VM.PurchasePayment;
+﻿@model VM.PurchasePayment
+@{
+    var payment = Model;
     var viewData = Page.ViewData[BasicController.ViewMessageKey] as ViewMessages;
         
     var paymentMethods = new [] {

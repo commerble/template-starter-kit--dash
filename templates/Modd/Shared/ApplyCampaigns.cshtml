@@ -1,6 +1,7 @@
-﻿@{
+﻿@model ShoppingCart
+@{
     const int FREE_DELIVERY_CHARGE = 10;
-    var cart = Page.ViewData.Model as ShoppingCart;
+    var cart = Model;
     var campaigns = cart.AppliedCampaigns;
     foreach (var campaign in cart.ApplyCampaigns) {
         if (campaign.FirstAction?.CampaignActionID == FREE_DELIVERY_CHARGE) {
