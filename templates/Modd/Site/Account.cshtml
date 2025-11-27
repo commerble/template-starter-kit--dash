@@ -144,17 +144,17 @@
         <dl class="field optional">
             <dt class="field-title">性別</dt>
             <dd class="field-body">
-                <label><input name="Sex" type="radio" value="@HumanSexes.NotKnown" @when(account.Sex==HumanSexes.NotKnown,"checked")><span class="text">未選択</span></label>
-                <label><input name="Sex" type="radio" value="@HumanSexes.Male" @when(account.Sex==HumanSexes.Male,"checked")><span class="text">男性</span></label>
-                <label><input name="Sex" type="radio" value="@HumanSexes.Female" @when(account.Sex==HumanSexes.Female,"checked")><span class="text">女性</span></label>
+                <label>@Page.Html.RadioButton("Sex", HumanSexes.NotKnown, account.Sex == HumanSexes.NotKnown)<span class="text">未選択</span></label>
+                <label>@Page.Html.RadioButton("Sex", HumanSexes.Male, account.Sex == HumanSexes.Male)<span class="text">男性</span></label>
+                <label>@Page.Html.RadioButton("Sex", HumanSexes.Female, account.Sex == HumanSexes.Female)<span class="text">女性</span></label>
                 @ValidationMessageFor("Sex")
             </dd>
         </dl>
         <dl class="field optional">
             <dt class="field-title">メルマガ配信</dt>
             <dd class="field-body">
-                <label><input name="Subscribe" type="radio" value="false" @when(account.Subscribe==false,"checked")><span class="text">希望しない</span></label>
-                <label><input name="Subscribe" type="radio" value="true" @when(account.Subscribe==true,"checked")><span class="text">希望する</span></label>
+                <label>@Page.Html.RadioButton("Subscribe", "false", account.Subscribe == false)<span class="text">希望しない</span></label>
+                <label>@Page.Html.RadioButton("Subscribe", "true", account.Subscribe == true)<span class="text">希望する</span></label>
                 @ValidationMessageFor("Subscribe")
             </dd>
         </dl>
