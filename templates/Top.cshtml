@@ -140,7 +140,10 @@
                     PriceProductId = m.PriceProductId,
                     HasMultiplePrice = m.HasMultiplePrice,
                     PriceProductExternalId1 = s.ExternalId1,
-                    PriceProductName = s.Name
+                    PriceProductName = s.Name,
+                    UnitPrice = s.UnitPrice,
+                    TaxationPrice = s.TaxationPrice,
+                    TaxRoundMode = s.TaxRoundMode,
                 }
             ).Take(12)).ToList();
         foreach (var item in items) {
