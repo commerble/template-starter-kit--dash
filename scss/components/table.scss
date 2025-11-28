@@ -1,6 +1,5 @@
 table.table {
     width: calc(100% - #{$unit * 2});
-    margin: $unit;
     td, th {
         padding: $unit;
         text-align: center;

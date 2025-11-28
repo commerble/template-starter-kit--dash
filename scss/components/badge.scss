@@ -13,7 +13,6 @@
     &:focus {
         border-color: $color-primary;
     }
-    margin: $unit;
 }
 .badge-removal::after {
     content: "\d7";

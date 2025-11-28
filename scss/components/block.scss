@@ -5,6 +5,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: $unit;
     &>.full {
         width: 100%;
     }
@@ -28,7 +29,6 @@
     }
 }
 .block-horizontal {
-    padding: 0 $unit;
     flex-direction: row;
     &.block-left {
         justify-content: flex-start;
