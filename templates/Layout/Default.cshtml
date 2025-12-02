@@ -11,8 +11,10 @@
 <body>
     @RenderParts("BodyTop")
     @RenderHeaderBanner()
-    @RenderHeader()
-    @RenderGlobalNav()
+    <div class="sticky-header">
+        @RenderHeader()
+        @RenderGlobalNav()
+    </div>
     @RenderBody()
     @RenderFooter()
     @RenderPreviewFooter()
@@ -20,5 +22,7 @@
     <script src="@Resolve("/bundle/script.js" + ViewBag.ResourceSuffix)"></script>
     @RenderSection("ScriptBlock", false)
     @RenderParts("BodyBottom")
+    <style>
+    </style>
 </body>
 </html>
