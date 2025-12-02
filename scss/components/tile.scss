@@ -1,6 +1,6 @@
 .tiles {
     display: grid;
-    grid-template-columns: repeat(1fr);
+    grid-template-columns: repeat(1, 1fr);
     // grid-auto-rows: minmax(200px, auto);
     grid-gap: $unit;
     margin: 0 $unit * 2;
@@ -36,7 +36,7 @@
     text-decoration: none;
     display: grid;
     grid-template-rows: subgrid;
-    grid-row: span 3;
+    grid-row: span 4;
     gap: $unit;
     padding: $unit;
     color: $color-primary;
@@ -49,10 +49,10 @@
         opacity: .5;
     }
     &>figure {
-        order: 1;
+        grid-row: 1;
     }
     &>time {
-        order: 2;
+        grid-row: 2;
         padding: 0 $unit;
         font-size: $font-size-default;
         font-family: monospace;
@@ -64,13 +64,13 @@
     &>h4,
     &>h5,
     &>h6 {
-        order: 3;
+        grid-row: 3;
         padding: 0 $unit;
         font-size: $font-size-default;
         line-height: $line-height-default;
     }
     &>.tile-info {
-        order: 4;
+        grid-row: 4;
         padding: 0 $unit;
     }
 }
