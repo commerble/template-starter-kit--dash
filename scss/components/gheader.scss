@@ -2,11 +2,14 @@
     display: grid;
     grid-template-columns: 1fr auto auto auto $unit / 2;
     gap: $unit / 2;
+    align-items: center;
 }
 
 .gheader-link {
+    display: flex;
+    flex: row;
+    align-items: center;
     line-height: 32px;
-    text-align: center;
     text-decoration: none;
     color: $color-primary;
 
