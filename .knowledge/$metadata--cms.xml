@@ -1,1 +1,206 @@
-<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Commerble.CMS.Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm"><EntityType Name="BannerKind"><Key><PropertyRef Name="Code" /></Key><Property Name="Code" Type="Edm.String" Nullable="false" /><Property Name="Name" Type="Edm.String" Nullable="false" /><NavigationProperty Name="Banners" Type="Collection(Commerble.CMS.Entities.Banner)" /></EntityType><EntityType Name="Banner"><Key><PropertyRef Name="Code" /></Key><Property Name="Code" Type="Edm.String" Nullable="false" /><Property Name="Kind" Type="Edm.String" Nullable="false" /><Property Name="Title" Type="Edm.String" /><Property Name="Subtitle" Type="Edm.String" /><Property Name="LinkText" Type="Edm.String" /><Property Name="LinkUrl" Type="Edm.String" /><Property Name="Thumbnail" Type="Edm.String" /><Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" /><Property Name="DisplayStart" Type="Edm.DateTimeOffset" Nullable="false" /><Property Name="DisplayEnd" Type="Edm.DateTimeOffset" /><Property Name="IsPublished" Type="Edm.Boolean" Nullable="false" /><NavigationProperty Name="BannerKind" Type="Commerble.CMS.Entities.BannerKind" /></EntityType><EntityType Name="PageRelation"><Key><PropertyRef Name="GroupCode" /><PropertyRef Name="PageCode" /><PropertyRef Name="RelateCode" /></Key><Property Name="PageCode" Type="Edm.String" Nullable="false" /><Property Name="RelateCode" Type="Edm.String" Nullable="false" /><Property Name="GroupCode" Type="Edm.String" Nullable="false" /><Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" /><NavigationProperty Name="SitePage1" Type="Commerble.CMS.Entities.SitePage" /><NavigationProperty Name="SitePage2" Type="Commerble.CMS.Entities.SitePage" /></EntityType><EntityType Name="SitePage"><Key><PropertyRef Name="Code" /></Key><Property Name="Code" Type="Edm.String" Nullable="false" /><Property Name="Kind" Type="Edm.String" Nullable="false" /><Property Name="Priority" Type="Edm.Int32" Nullable="false" /><Property Name="Name" Type="Edm.String" Nullable="false" /><Property Name="Title" Type="Edm.String" /><Property Name="Body" Type="Edm.String" /><Property Name="Hero" Type="Edm.String" /><Property Name="Thumbnail" Type="Edm.String" /><Property Name="MetaTitle" Type="Edm.String" /><Property Name="MetaDescription" Type="Edm.String" /><Property Name="MetaImage" Type="Edm.String" /><Property Name="PublishDate" Type="Edm.DateTimeOffset" /><Property Name="DisplayStart" Type="Edm.DateTimeOffset" Nullable="false" /><Property Name="DisplayEnd" Type="Edm.DateTimeOffset" /><Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" /><Property Name="IsPublished" Type="Edm.Boolean" Nullable="false" /><Property Name="IsListed" Type="Edm.Boolean" Nullable="false" /><NavigationProperty Name="SitePageKind" Type="Commerble.CMS.Entities.SitePageKind" /><NavigationProperty Name="SitePagePriority" Type="Commerble.CMS.Entities.SitePagePriority" /><NavigationProperty Name="PageRelations1" Type="Collection(Commerble.CMS.Entities.PageRelation)" /><NavigationProperty Name="PageRelations2" Type="Collection(Commerble.CMS.Entities.PageRelation)" /><NavigationProperty Name="ProductRelations" Type="Collection(Commerble.CMS.Entities.ProductRelation)" /></EntityType><EntityType Name="ProductRelation"><Key><PropertyRef Name="ExternalId1" /><PropertyRef Name="PageCode" /></Key><Property Name="PageCode" Type="Edm.String" Nullable="false" /><Property Name="ExternalId1" Type="Edm.String" Nullable="false" /><Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" /><NavigationProperty Name="SitePage" Type="Commerble.CMS.Entities.SitePage" /><NavigationProperty Name="ProductDetail" Type="Commerble.CMS.Entities.ProductDetail" /></EntityType><EntityType Name="ProductDetail"><Key><PropertyRef Name="ExternalId1" /></Key><Property Name="ExternalId1" Type="Edm.String" Nullable="false" /><Property Name="NamePart1" Type="Edm.String" /><Property Name="NamePart2" Type="Edm.String" /><Property Name="NamePart3" Type="Edm.String" /><Property Name="Icon" Type="Edm.String" /><NavigationProperty Name="ProductRelations" Type="Collection(Commerble.CMS.Entities.ProductRelation)" /></EntityType><EntityType Name="SitePageKind"><Key><PropertyRef Name="Code" /></Key><Property Name="Code" Type="Edm.String" Nullable="false" /><Property Name="Name" Type="Edm.String" Nullable="false" /><Property Name="Layout" Type="Edm.String" /><Property Name="Partial" Type="Edm.String" Nullable="false" /><Property Name="GroupCode" Type="Edm.String" Nullable="false" /><NavigationProperty Name="SitePages" Type="Collection(Commerble.CMS.Entities.SitePage)" /></EntityType><EntityType Name="SitePagePriority"><Key><PropertyRef Name="Priority" /></Key><Property Name="Priority" Type="Edm.Int32" Nullable="false" /><Property Name="Name" Type="Edm.String" Nullable="false" /><NavigationProperty Name="SitePages" Type="Collection(Commerble.CMS.Entities.SitePage)" /></EntityType><EntityType Name="Product"><Key><PropertyRef Name="Id" /></Key><Property Name="Id" Type="Edm.Int32" Nullable="false" /><Property Name="ExternalId1" Type="Edm.String" Nullable="false" /><Property Name="ExternalId2" Type="Edm.String" /><Property Name="ExternalId3" Type="Edm.String" /><Property Name="ExternalId4" Type="Edm.String" /><Property Name="Name" Type="Edm.String" Nullable="false" /><Property Name="SalesStatus" Type="Edm.Int32" Nullable="false" /><Property Name="SalesStart" Type="Edm.DateTimeOffset" Nullable="false" /><Property Name="SalesEnd" Type="Edm.DateTimeOffset" /><Property Name="LimitAmount" Type="Edm.Int32" Nullable="false" /><Property Name="TaxRoundMode" Type="Edm.Int32" Nullable="false" /><Property Name="UnitPrice" Type="Edm.Decimal" Nullable="false" /><Property Name="TaxationPrice" Type="Edm.Decimal" Nullable="false" /></EntityType><EntityType Name="Search"><Key><PropertyRef Name="PageCode" /></Key><Property Name="PageCode" Type="Edm.String" Nullable="false" /><Property Name="RecommendIndex" Type="Edm.Int32" /><Property Name="RankingIndex" Type="Edm.Int32" /><Property Name="PriceIndex" Type="Edm.Decimal" /><Property Name="PriceProductId" Type="Edm.Int32" /><Property Name="HasMultiplePrice" Type="Edm.Boolean" Nullable="false" /></EntityType><EntityType Name="SiteConfig"><Key><PropertyRef Name="ConfigKey" /></Key><Property Name="ConfigKey" Type="Edm.String" Nullable="false" /><Property Name="ConfigValue" Type="Edm.String" /><Property Name="Memo" Type="Edm.String" /></EntityType><EntityType Name="SitePart"><Key><PropertyRef Name="Code" /></Key><Property Name="Code" Type="Edm.String" Nullable="false" /><Property Name="Pattern" Type="Edm.String" Nullable="false" /><Property Name="Position" Type="Edm.String" Nullable="false" /><Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" /><Property Name="Html" Type="Edm.String" /><Property Name="Memo" Type="Edm.String" /></EntityType><EntityContainer Name="Container"><EntitySet Name="BannerKinds" EntityType="Commerble.CMS.Entities.BannerKind"><NavigationPropertyBinding Path="Banners" Target="Banners" /></EntitySet><EntitySet Name="Banners" EntityType="Commerble.CMS.Entities.Banner"><NavigationPropertyBinding Path="BannerKind" Target="BannerKinds" /></EntitySet><EntitySet Name="PageRelations" EntityType="Commerble.CMS.Entities.PageRelation"><NavigationPropertyBinding Path="SitePage1" Target="SitePages" /><NavigationPropertyBinding Path="SitePage2" Target="SitePages" /></EntitySet><EntitySet Name="SitePages" EntityType="Commerble.CMS.Entities.SitePage"><NavigationPropertyBinding Path="PageRelations1" Target="PageRelations" /><NavigationPropertyBinding Path="PageRelations2" Target="PageRelations" /><NavigationPropertyBinding Path="ProductRelations" Target="ProductRelations" /><NavigationPropertyBinding Path="SitePageKind" Target="SitePageKinds" /><NavigationPropertyBinding Path="SitePagePriority" Target="SitePagePriorities" /></EntitySet><EntitySet Name="ProductRelations" EntityType="Commerble.CMS.Entities.ProductRelation"><NavigationPropertyBinding Path="ProductDetail" Target="ProductDetails" /><NavigationPropertyBinding Path="SitePage" Target="SitePages" /></EntitySet><EntitySet Name="ProductDetails" EntityType="Commerble.CMS.Entities.ProductDetail"><NavigationPropertyBinding Path="ProductRelations" Target="ProductRelations" /></EntitySet><EntitySet Name="SitePageKinds" EntityType="Commerble.CMS.Entities.SitePageKind"><NavigationPropertyBinding Path="SitePages" Target="SitePages" /></EntitySet><EntitySet Name="SitePagePriorities" EntityType="Commerble.CMS.Entities.SitePagePriority"><NavigationPropertyBinding Path="SitePages" Target="SitePages" /></EntitySet><EntitySet Name="Products" EntityType="Commerble.CMS.Entities.Product" /><EntitySet Name="Searches" EntityType="Commerble.CMS.Entities.Search" /><EntitySet Name="SiteConfigs" EntityType="Commerble.CMS.Entities.SiteConfig" /><EntitySet Name="SiteParts" EntityType="Commerble.CMS.Entities.SitePart" /></EntityContainer></Schema></edmx:DataServices></edmx:Edmx>
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Commerble.CMS.Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityType Name="BannerKind">
+                <Key>
+                    <PropertyRef Name="Code" />
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" />
+                <Property Name="Name" Type="Edm.String" Nullable="false" />
+                <NavigationProperty Name="Banners" Type="Collection(Commerble.CMS.Entities.Banner)" />
+            </EntityType>
+            <EntityType Name="Banner">
+                <Key>
+                    <PropertyRef Name="Code" />
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" />
+                <Property Name="Kind" Type="Edm.String" Nullable="false" />
+                <Property Name="Title" Type="Edm.String" />
+                <Property Name="Subtitle" Type="Edm.String" />
+                <Property Name="LinkText" Type="Edm.String" />
+                <Property Name="LinkUrl" Type="Edm.String" />
+                <Property Name="Thumbnail" Type="Edm.String" />
+                <Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" />
+                <Property Name="DisplayStart" Type="Edm.DateTimeOffset" Nullable="false" />
+                <Property Name="DisplayEnd" Type="Edm.DateTimeOffset" />
+                <Property Name="IsPublished" Type="Edm.Boolean" Nullable="false" />
+                <NavigationProperty Name="BannerKind" Type="Commerble.CMS.Entities.BannerKind" />
+            </EntityType>
+            <EntityType Name="PageRelation">
+                <Key>
+                    <PropertyRef Name="GroupCode" />
+                    <PropertyRef Name="PageCode" />
+                    <PropertyRef Name="RelateCode" />
+                </Key>
+                <Property Name="PageCode" Type="Edm.String" Nullable="false" />
+                <Property Name="RelateCode" Type="Edm.String" Nullable="false" />
+                <Property Name="GroupCode" Type="Edm.String" Nullable="false" />
+                <Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" />
+                <NavigationProperty Name="SitePage1" Type="Commerble.CMS.Entities.SitePage" />
+                <NavigationProperty Name="SitePage2" Type="Commerble.CMS.Entities.SitePage" />
+            </EntityType>
+            <EntityType Name="SitePage">
+                <Key>
+                    <PropertyRef Name="Code" />
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" />
+                <Property Name="Kind" Type="Edm.String" Nullable="false" />
+                <Property Name="Priority" Type="Edm.Int32" Nullable="false" />
+                <Property Name="Name" Type="Edm.String" Nullable="false" />
+                <Property Name="Title" Type="Edm.String" />
+                <Property Name="Body" Type="Edm.String" />
+                <Property Name="Hero" Type="Edm.String" />
+                <Property Name="Thumbnail" Type="Edm.String" />
+                <Property Name="MetaTitle" Type="Edm.String" />
+                <Property Name="MetaDescription" Type="Edm.String" />
+                <Property Name="MetaImage" Type="Edm.String" />
+                <Property Name="PublishDate" Type="Edm.DateTimeOffset" />
+                <Property Name="DisplayStart" Type="Edm.DateTimeOffset" Nullable="false" />
+                <Property Name="DisplayEnd" Type="Edm.DateTimeOffset" />
+                <Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" />
+                <Property Name="IsPublished" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="IsListed" Type="Edm.Boolean" Nullable="false" />
+                <NavigationProperty Name="SitePageKind" Type="Commerble.CMS.Entities.SitePageKind" />
+                <NavigationProperty Name="SitePagePriority"
+                    Type="Commerble.CMS.Entities.SitePagePriority" />
+                <NavigationProperty Name="PageRelations1"
+                    Type="Collection(Commerble.CMS.Entities.PageRelation)" />
+                <NavigationProperty Name="PageRelations2"
+                    Type="Collection(Commerble.CMS.Entities.PageRelation)" />
+                <NavigationProperty Name="ProductRelations"
+                    Type="Collection(Commerble.CMS.Entities.ProductRelation)" />
+            </EntityType>
+            <EntityType Name="ProductRelation">
+                <Key>
+                    <PropertyRef Name="ExternalId1" />
+                    <PropertyRef Name="PageCode" />
+                </Key>
+                <Property Name="PageCode" Type="Edm.String" Nullable="false" />
+                <Property Name="ExternalId1" Type="Edm.String" Nullable="false" />
+                <Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" />
+                <NavigationProperty Name="SitePage" Type="Commerble.CMS.Entities.SitePage" />
+                <NavigationProperty Name="ProductDetail" Type="Commerble.CMS.Entities.ProductDetail" />
+            </EntityType>
+            <EntityType Name="ProductDetail">
+                <Key>
+                    <PropertyRef Name="ExternalId1" />
+                </Key>
+                <Property Name="ExternalId1" Type="Edm.String" Nullable="false" />
+                <Property Name="NamePart1" Type="Edm.String" />
+                <Property Name="NamePart2" Type="Edm.String" />
+                <Property Name="NamePart3" Type="Edm.String" />
+                <Property Name="Icon" Type="Edm.String" />
+                <NavigationProperty Name="ProductRelations"
+                    Type="Collection(Commerble.CMS.Entities.ProductRelation)" />
+            </EntityType>
+            <EntityType Name="SitePageKind">
+                <Key>
+                    <PropertyRef Name="Code" />
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" />
+                <Property Name="Name" Type="Edm.String" Nullable="false" />
+                <Property Name="Layout" Type="Edm.String" />
+                <Property Name="Partial" Type="Edm.String" Nullable="false" />
+                <Property Name="GroupCode" Type="Edm.String" Nullable="false" />
+                <NavigationProperty Name="SitePages"
+                    Type="Collection(Commerble.CMS.Entities.SitePage)" />
+            </EntityType>
+            <EntityType Name="SitePagePriority">
+                <Key>
+                    <PropertyRef Name="Priority" />
+                </Key>
+                <Property Name="Priority" Type="Edm.Int32" Nullable="false" />
+                <Property Name="Name" Type="Edm.String" Nullable="false" />
+                <NavigationProperty Name="SitePages"
+                    Type="Collection(Commerble.CMS.Entities.SitePage)" />
+            </EntityType>
+            <EntityType Name="Product">
+                <Key>
+                    <PropertyRef Name="Id" />
+                </Key>
+                <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+                <Property Name="ExternalId1" Type="Edm.String" Nullable="false" />
+                <Property Name="ExternalId2" Type="Edm.String" />
+                <Property Name="ExternalId3" Type="Edm.String" />
+                <Property Name="ExternalId4" Type="Edm.String" />
+                <Property Name="Name" Type="Edm.String" Nullable="false" />
+                <Property Name="SalesStatus" Type="Edm.Int32" Nullable="false" />
+                <Property Name="SalesStart" Type="Edm.DateTimeOffset" Nullable="false" />
+                <Property Name="SalesEnd" Type="Edm.DateTimeOffset" />
+                <Property Name="LimitAmount" Type="Edm.Int32" Nullable="false" />
+                <Property Name="TaxRoundMode" Type="Edm.Int32" Nullable="false" />
+                <Property Name="UnitPrice" Type="Edm.Decimal" Nullable="false" />
+                <Property Name="TaxationPrice" Type="Edm.Decimal" Nullable="false" />
+            </EntityType>
+            <EntityType Name="Search">
+                <Key>
+                    <PropertyRef Name="PageCode" />
+                </Key>
+                <Property Name="PageCode" Type="Edm.String" Nullable="false" />
+                <Property Name="RecommendIndex" Type="Edm.Int32" />
+                <Property Name="RankingIndex" Type="Edm.Int32" />
+                <Property Name="PriceIndex" Type="Edm.Decimal" />
+                <Property Name="PriceProductId" Type="Edm.Int32" />
+                <Property Name="HasMultiplePrice" Type="Edm.Boolean" Nullable="false" />
+            </EntityType>
+            <EntityType Name="SiteConfig">
+                <Key>
+                    <PropertyRef Name="ConfigKey" />
+                </Key>
+                <Property Name="ConfigKey" Type="Edm.String" Nullable="false" />
+                <Property Name="ConfigValue" Type="Edm.String" />
+                <Property Name="Memo" Type="Edm.String" />
+            </EntityType>
+            <EntityType Name="SitePart">
+                <Key>
+                    <PropertyRef Name="Code" />
+                </Key>
+                <Property Name="Code" Type="Edm.String" Nullable="false" />
+                <Property Name="Pattern" Type="Edm.String" Nullable="false" />
+                <Property Name="Position" Type="Edm.String" Nullable="false" />
+                <Property Name="DisplayOrder" Type="Edm.Int32" Nullable="false" />
+                <Property Name="Html" Type="Edm.String" />
+                <Property Name="Memo" Type="Edm.String" />
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="BannerKinds" EntityType="Commerble.CMS.Entities.BannerKind">
+                    <NavigationPropertyBinding Path="Banners" Target="Banners" />
+                </EntitySet>
+                <EntitySet Name="Banners" EntityType="Commerble.CMS.Entities.Banner">
+                    <NavigationPropertyBinding Path="BannerKind" Target="BannerKinds" />
+                </EntitySet>
+                <EntitySet Name="PageRelations" EntityType="Commerble.CMS.Entities.PageRelation">
+                    <NavigationPropertyBinding Path="SitePage1" Target="SitePages" />
+                    <NavigationPropertyBinding Path="SitePage2" Target="SitePages" />
+                </EntitySet>
+                <EntitySet Name="SitePages" EntityType="Commerble.CMS.Entities.SitePage">
+                    <NavigationPropertyBinding Path="PageRelations1" Target="PageRelations" />
+                    <NavigationPropertyBinding Path="PageRelations2" Target="PageRelations" />
+                    <NavigationPropertyBinding Path="ProductRelations" Target="ProductRelations" />
+                    <NavigationPropertyBinding Path="SitePageKind" Target="SitePageKinds" />
+                    <NavigationPropertyBinding Path="SitePagePriority" Target="SitePagePriorities" />
+                </EntitySet>
+                <EntitySet Name="ProductRelations"
+                    EntityType="Commerble.CMS.Entities.ProductRelation">
+                    <NavigationPropertyBinding Path="ProductDetail" Target="ProductDetails" />
+                    <NavigationPropertyBinding Path="SitePage" Target="SitePages" />
+                </EntitySet>
+                <EntitySet Name="ProductDetails" EntityType="Commerble.CMS.Entities.ProductDetail">
+                    <NavigationPropertyBinding Path="ProductRelations" Target="ProductRelations" />
+                </EntitySet>
+                <EntitySet Name="SitePageKinds" EntityType="Commerble.CMS.Entities.SitePageKind">
+                    <NavigationPropertyBinding Path="SitePages" Target="SitePages" />
+                </EntitySet>
+                <EntitySet Name="SitePagePriorities"
+                    EntityType="Commerble.CMS.Entities.SitePagePriority">
+                    <NavigationPropertyBinding Path="SitePages" Target="SitePages" />
+                </EntitySet>
+                <EntitySet Name="Products" EntityType="Commerble.CMS.Entities.Product" />
+                <EntitySet Name="Searches" EntityType="Commerble.CMS.Entities.Search" />
+                <EntitySet Name="SiteConfigs" EntityType="Commerble.CMS.Entities.SiteConfig" />
+                <EntitySet Name="SiteParts" EntityType="Commerble.CMS.Entities.SitePart" />
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
