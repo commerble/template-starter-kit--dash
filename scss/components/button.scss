@@ -183,6 +183,7 @@
 .btn-large {
     font-size: $font-size-default * 1.5;
     padding: ($unit * 2) ($unit * 4);
+    min-width: ($cw / 2 - $unit * 3);
 }
 .btn-large.btn-next,
 .btn-large.btn-prev {
