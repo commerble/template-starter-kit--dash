@@ -91,7 +91,7 @@
 }
 @if (!string.IsNullOrEmpty(Model.Hero as string)) {
     <div class="image image-hero">
-        <img src="@ImageUrl(Model.Hero)" alt="@Model.Name" loading="lazy" decoding="async" crossorigin="anonymous">
+        <img src="@ImageUrl(Model.Hero)" alt="@Model.Name" decoding="async" crossorigin="anonymous" class="@ClassName(Model.Code)">
     </div>
 }
 <article class="article content">

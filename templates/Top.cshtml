@@ -211,7 +211,7 @@
                             <a href="@Resolve(banner.LinkUrl)" rel="bookmark" title="@banner.Title">
                                 <h1>@banner.Title</h1>
                                 <figure class="image image-square">
-                                    <img src="@ThumbnailUrl(banner.Thumbnail)" alt="@banner.Title" loading="lazy" decoding="async">
+                                    <img src="@ThumbnailUrl(banner.Thumbnail)" alt="@banner.Title" loading="lazy" decoding="async" class="@ClassName(banner.LinkUrl)">
                                 </figure>
                             </a>
                         </article>
@@ -282,4 +282,30 @@
             }
         </div>
     </section>
+}
+
+@section StyleBlock {
+<style>
+@@view-transition {
+    navigation: auto;
+}
+@foreach (var b in vm.SubBanners) {
+    var name = @ClassName(b.LinkUrl);
+    <text>
+        .@name {
+            view-transition-name: @name;
+            contain: paint;
+        }
+    </text>
+}
+@foreach (var p in vm.ProductPages) {
+    var name = @ClassName(p.Code);
+    <text>
+        .@name {
+            view-transition-name: @name;
+            contain: paint;
+        }
+    </text>
+}
+</style>
 }

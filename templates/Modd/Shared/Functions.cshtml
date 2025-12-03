@@ -355,6 +355,9 @@
         }
         return $"{part1} {$"{part2}／{part3}".Trim(new[]{'／'})}".Trim();
     }
+    string ClassName(string code) {
+        return "c" + code.Replace("/", "--").Replace(":", "__").Replace("~", "").Replace(".", "");
+    }
 }
 
 @helper RenderParts(string position) {
@@ -616,7 +619,7 @@
         <a href="@ItemUrl(code)" rel="bookmark" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
             <h3>@name</h3>
             <figure class="image image-square">
-                <img src="@ThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
+                <img src="@ThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async" class="@ClassName(code)">
             </figure>
             <div class="tile-info text-right">
                 @PrintPrice(unitPriceWithTax, hasMultiplePrice)
@@ -635,7 +638,7 @@
                 <time></time>
             }
             <figure class="image image-2x1">
-                <img src="@TopicThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async">
+                <img src="@TopicThumbnailUrl(thumbnail)" alt="@name" loading="lazy" decoding="async" class="@ClassName(code)">
             </figure>
         </a>
     </article>
