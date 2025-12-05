@@ -315,6 +315,10 @@
             }
         },
     };
+    if (ViewBag.Transitions is List<string> transitions) {
+        transitions.AddRange(vm.RelateProducts.Select(x => ClassName(x.Code)));
+        transitions.AddRange(vm.RelatePages.Select(x => ClassName(x.Code)));
+    }
 }
 <main class="section product-detail content-wide">
     <div class="product-summary">

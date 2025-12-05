@@ -180,6 +180,10 @@
             })
         }
     }};
+    ViewBag.Transitions = 
+        vm.SubBanners.Select(x => ClassName(x.LinkUrl))
+            .Concat(vm.ProductPages.Select(x => ClassName(x.Code)))
+            .ToList();
 }
 @if (vm.MainBanner != null) {
     <section class="section hero">
@@ -282,30 +286,4 @@
             }
         </div>
     </section>
-}
-
-@section StyleBlock {
-<style>
-@@view-transition {
-    navigation: auto;
-}
-@foreach (var b in vm.SubBanners) {
-    var name = @ClassName(b.LinkUrl);
-    <text>
-        .@name {
-            view-transition-name: @name;
-            contain: paint;
-        }
-    </text>
-}
-@foreach (var p in vm.ProductPages) {
-    var name = @ClassName(p.Code);
-    <text>
-        .@name {
-            view-transition-name: @name;
-            contain: paint;
-        }
-    </text>
-}
-</style>
 }

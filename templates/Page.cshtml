@@ -137,17 +137,6 @@
         ["item"] = urlPrefix + b.url
     }));
     ViewBag.JsonLd = new List<object>(ViewBag.JsonLd);
+    ViewBag.Transitions = new List<string> { ClassName(vm.Code) };
 }
 @Include(vm.Partial, vm)
-@section StyleBlock {
-    @{var name = ClassName(vm.Code);}
-    <style>
-        @@view-transition {
-            navigation: auto;
-        }
-        .@name {
-            view-transition-name: @name;
-            contain: paint;
-        }
-    </style>
-}

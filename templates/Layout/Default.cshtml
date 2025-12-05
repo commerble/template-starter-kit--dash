@@ -7,6 +7,21 @@
     @RenderJsonLD()
     @RenderDataLayer()
     @RenderSection("StyleBlock", false)
+    <style>
+        @@view-transition {
+            navigation: auto;
+        }
+        @if (ViewBag.Transitions is List<string> transitions) {
+            foreach (var name in transitions) {
+                <text>
+                .@name {
+                    view-transition-name: @name;
+                    contain: paint;
+                }
+                </text>
+            }
+        }
+    </style>
 </head>
 
 <body>
