@@ -398,6 +398,35 @@
     var defaultDescription = GetConfigValue("BRAND_DESCRIPTION");
     var defaultImage = GetConfigValue("BRAND_IMAGE_URL");
     var requestUrl = Page.Template.SecuredHost(true) + Page.Request.Path;
+    var canonicalQueryString = string.Empty;
+    var allowedQueryStringKeys = ViewBag.CanonicalQueryStringKeys as IEnumerable<string>;
+    if (allowedQueryStringKeys != null) {
+        var original = Page.Request.QueryString;
+        var filtered = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
+        foreach (string key in original.AllKeys)
+        {
+            if (key == null) {
+                continue;
+            }
+
+            if (allowedQueryStringKeys.Contains(key))
+            {
+                foreach (var value in original.GetValues(key))
+                {
+                    filtered.Add(key, value);
+                }
+            }
+        }
+
+        canonicalQueryString = filtered.ToString();
+    }
+
+    var canonical = fallback(ViewBag.Canonical, requestUrl);
+
+    if (canonicalQueryString.Length > 0) {
+        canonical += (canonical.IndexOf('?') != -1 ? "&" : "?") + canonicalQueryString;
+    }
 
     var title = string.IsNullOrWhiteSpace(ViewBag.MetaTitle) ? defaultTitle : $"{ViewBag.MetaTitle} | {brand}";
     var description = fallback(ViewBag.MetaDescription, defaultDescription);
@@ -407,8 +436,7 @@
     var ogTitle = fallback(ViewBag.OgTitle, title);
     var ogDescription = fallback(ViewBag.OgDescription, description);
     var ogImage = fallback(ViewBag.OgImage, image);
-    var ogUrl = fallback(ViewBag.OgUrl, requestUrl);
-    var canonical = fallback(ViewBag.Canonical, requestUrl);
+    var ogUrl = fallback(ViewBag.OgUrl, canonical);
 
     <title>@title</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

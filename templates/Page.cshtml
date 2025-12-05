@@ -120,8 +120,8 @@
     ViewBag.MetaImage = vm.MetaImage;
 
     var urlPrefix = TopUrl(true);
-
     ViewBag.Canonical = urlPrefix + vm.Code;
+    ViewBag.CanonicalQueryStringKeys = new string[]{};
 
     ViewBag.JsonLd = new[] {
         new Dictionary<string, object> {
