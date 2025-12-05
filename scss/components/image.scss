@@ -35,7 +35,8 @@
   
     img:after { 
         content: "📷 " attr(alt);
-        display: block;
+        display: grid;
+        place-content: center;
         font-size: $font-size-default;
         font-style: normal;
         line-height: $unit * 4;
@@ -44,12 +45,11 @@
         position: absolute;
         top: 0;
         width: 100%;
-        text-align: center;
     }
 }
 .image-square {
     position: relative;
-    padding-bottom: 100%;
+    aspect-ratio: 1;
 
     img {
         position: absolute;
@@ -62,41 +62,38 @@
 }
 .image-4x3 {
     position: relative;
-    padding-bottom: 75%;
+    aspect-ratio: 4 / 3;;
 
     img {
         position: absolute;
         top:0;
     }
     img:after {
-        margin-top: 37.5%;
-        top: $unit * -2;
+        aspect-ratio: 4 / 3;;
     }
 }
 .image-2x1 {
     position: relative;
-    padding-bottom: 50%;
+    aspect-ratio: 2 / 1;
 
     img {
         position: absolute;
         top:0;
     }
     img:after {
-        margin-top: 25%;
-        top: $unit * -2;
+        aspect-ratio: 2 / 1;
     }
 }
 .image-golden {
     position: relative;
-    padding-bottom: 61.8%;
+    aspect-ratio: 1.618 / 1;
 
     img {
         position: absolute;
         top:0;
     }
     img:after {
-        margin-top: 30.9%;
-        top: $unit * -2;
+        aspect-ratio: 1.618 / 1;
     }
 }
 .image-hero {

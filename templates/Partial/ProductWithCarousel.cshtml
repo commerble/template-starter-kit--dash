@@ -424,20 +424,11 @@
     <div class="carousel product-image">
         <ul class="carousel-images">
             @foreach(var (img, index) in vm.Images.Select((img, index) => (img, index))) {
-                <li id="carousel-frame-@index" class="carousel-frame image image-square">
+                <li id="carousel-frame-@index" class="carousel-frame image image-square" style="--img: url(@SmallImageUrl(img.Url))">
                     <img src="@LargeImageUrl(img.Url)" alt="@(img.Alt)" loading="lazy" decoding="async" crossorigin="anonymous" class="@when(index == 0, ClassName(Model.Code))">
                 </li>
             }
         </ul>
-        <div class="carousel-thumbnails">
-            @foreach(var (img, index) in vm.Images.Select((img, index) => (img, index))) {
-                <a href="#carousel-frame-@index" target="_self">
-                    <div class="image image-square">
-                        <img src="@SmallImageUrl(img.Url)" alt="@(img.Alt)" width="64" height="64" loading="lazy" decoding="async" crossorigin="anonymous">
-                    </div>
-                </a>
-            }
-        </div>
     </div>
 </main>
 @if (vm.Tags.Count > 0) {
