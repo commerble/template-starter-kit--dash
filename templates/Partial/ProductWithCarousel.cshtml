@@ -428,7 +428,7 @@
     <div class="carousel product-image">
         <ul class="carousel-images">
             @foreach(var (img, index) in vm.Images.Select((img, index) => (img, index))) {
-                <li id="carousel-frame-@index" class="carousel-frame image image-square" style="--img: url(@SmallImageUrl(img.Url))">
+                <li id="carousel-frame-@index" class="carousel-frame image image-square" style="--marker: url(@SmallImageUrl(img.Url));">
                     <img src="@LargeImageUrl(img.Url)" alt="@(img.Alt)" loading="lazy" decoding="async" crossorigin="anonymous" class="@when(index == 0, ClassName(Model.Code))">
                 </li>
             }

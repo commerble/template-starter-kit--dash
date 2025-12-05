@@ -4,18 +4,12 @@
 }
 .carousel-images {
     display: grid;
-    /* アイテムを横並びにする */
     grid-auto-flow: column;
-    /* 次のスライドとの間隔 */
     gap: 20px;
     overflow-x: auto;
-    /* X方向にスナップ */
     scroll-snap-type: x mandatory;
-    /* 1度に1枚ずつ移動 */
     scroll-snap-stop: always;
-    /* スムーズにスクロールさせる */
     scroll-behavior: smooth;
-    /* インジケーターの表示 */
     scroll-marker-group: after;
     scrollbar-width: none;
     border-radius: 12px;
@@ -30,8 +24,8 @@
         scroll-snap-align: center;
         border-radius: 12px;
         overflow: hidden;
+        --marker: "";
 
-        /* インジケーター */
         &::scroll-marker {
             content: "";
             display: block;
@@ -41,8 +35,7 @@
             transition: background-color 0.2s;
             border-radius: 8px;
             overflow: hidden;
-            /* 背景画像を設定 */
-            background-image: var(--img);
+            background-image: var(--marker);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -50,7 +43,6 @@
             background-clip: padding-box;
         }
 
-        /* インジケーターのカレントスタイル */
         &::scroll-marker:target-current {
             border: 2px solid $color-primary
         }
