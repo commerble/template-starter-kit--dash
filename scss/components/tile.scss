@@ -4,28 +4,30 @@
     // grid-auto-rows: minmax(200px, auto);
     grid-gap: $unit;
     margin: 0 $unit * 2;
+    container-type: inline-size;
+    container-name: tiles;
 }
 .tiles-x2 {
     grid-template-columns: repeat(2, 1fr);
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         grid-template-columns: repeat(1, 1fr);
     }
 }
 .tiles-x3 {
     grid-template-columns: repeat(3, 1fr);
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         grid-template-columns: repeat(1, 1fr);
     }
 }
 .tiles-x4 {
     grid-template-columns: repeat(4, 1fr);
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 .tiles-x5 {
     grid-template-columns: repeat(5, 1fr);
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         grid-template-columns: repeat(2, 1fr);
     }
 }

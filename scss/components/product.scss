@@ -3,7 +3,9 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: $unit * 2;
-    @include mq($bp-sp) {
+    container-type: inline-size;
+    container-name: product-detail;
+    @include cq($cq-sp) {
         flex-direction: column;
     }
 }

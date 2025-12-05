@@ -1,4 +1,6 @@
 .gnav {
+    container-type: inline-size;
+    container-name: gnav;
     & > ul {
         position: relative;
         display: flex;
@@ -8,13 +10,13 @@
         padding: 0;
         & > li {
             padding: ($unit * 2);
-            @include mq($bp-sp) {
+            @include cq($cq-sp) {
                 padding: ($unit * 2) $unit;
             }
         }
         width: $cw;
         margin: 0 auto;
-        @include mq($bp-tb) {
+        @include cq($cq-tb) {
             width: 100%;
         }
     }
@@ -52,10 +54,10 @@
             z-index: 100;
             width: $cw;
             margin: $unit * 2 auto 0;
-            @include mq($bp-sp) {
+            @include cq($cq-sp) {
                 grid-template-columns: repeat(1, 1fr);
             }
-            @include mq($bp-tb) {
+            @include cq($cq-tb) {
                 width: 100%;
             }
             & > li {

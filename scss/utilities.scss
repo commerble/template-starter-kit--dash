@@ -1,5 +1,19 @@
 @charset "utf-8";
 
+// Container Query Mixin
+@mixin cq($num, $mode:0) {
+  @if $mode == 0 {
+    @container (max-width: #{$num}px) {
+      @content;
+    }
+  } @else {
+    @container (min-width: #{$num + 1}px) {
+      @content;
+    }
+  }
+}
+
+// Legacy Media Query Mixin (for backward compatibility)
 @mixin mq($num, $mode:0) {
   @if $mode == 0 {
     @media screen and (max-width:$num + px) {

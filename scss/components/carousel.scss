@@ -1,6 +1,8 @@
 .carousel {
     width: 600px;
-    @include mq($bp-sp) {
+    container-type: inline-size;
+    container-name: carousel;
+    @include cq($cq-sp) {
         width: 100%;
     }
 }
@@ -27,7 +29,7 @@
     line-height: 0;
     margin: $unit * .5;
     letter-spacing: 0;
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         white-space: nowrap;
         overflow-x: auto;
     }

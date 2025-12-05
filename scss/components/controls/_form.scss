@@ -51,7 +51,7 @@
             }
         }
     }
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         display:block;
         margin-top: $unit;
         padding-bottom:0;

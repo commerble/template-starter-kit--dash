@@ -2,6 +2,8 @@
     margin-top: $unit * 8;
     background-color: $color-aside;
     padding: $unit * 4;
+    container-type: inline-size;
+    container-name: gfooter;
     & > ul {
         display: flex;
         flex-direction: row;
@@ -17,7 +19,7 @@
                 }
             }
         }
-        @include mq($bp-sp) {
+        @include cq($cq-sp) {
             flex-direction: column;
             text-align: center;
         }

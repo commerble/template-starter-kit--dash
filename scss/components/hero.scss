@@ -1,5 +1,7 @@
 .hero {
     position: relative;
+    container-type: inline-size;
+    container-name: hero;
 }
 .hero-bgimage {
     position: relative;
@@ -31,11 +33,11 @@
         letter-spacing: $unit * .5;
         padding: $unit * 4 0;
     }
-    @include mq($bp-tb) {
+    @include cq($cq-tb) {
         margin-left: auto;
         
     }
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         .title {
             font-size: $font-size-default * 2;
             line-height: $font-size-default * 2.7;

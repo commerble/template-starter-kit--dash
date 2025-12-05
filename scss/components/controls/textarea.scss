@@ -1,6 +1,6 @@
 textarea {
     min-width: 40em;
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         min-width: 100%;
     }
 }

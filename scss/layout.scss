@@ -1,7 +1,15 @@
+// Container Query Base Setup
+body {
+    container-type: inline-size;
+    container-name: main-container;
+}
+
 .section {
     display: flex;
     flex-direction: column;
     gap: $unit * 2;
+    container-type: inline-size;
+    container-name: section;
     
     & + .section {
         margin-top: $unit * 8;
@@ -27,12 +35,12 @@ hr {
 }
 
 .sp-hide {
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         display: none !important;
     }
 }
 .pc-hide {
-    @include mq($bp-sp, 1) {
+    @include cq($cq-sp, 1) {
         display: none !important;
     }
 }
@@ -40,6 +48,8 @@ hr {
 .columns {
     display: flex;
     flex-direction: row;
+    container-type: inline-size;
+    container-name: columns;
     .col-1 { flex: 1; }
     .col-2 { flex: 2; }
     .col-3 { flex: 3; }
@@ -50,7 +60,7 @@ hr {
     .col-order-3 { order: 3; }
     .col-order-4 { order: 4; }
     .col-order-5 { order: 5; }
-    @include mq($bp-sp) {
+    @include cq($cq-sp) {
         flex-direction: column;
         .col-order-1-sp { order: 1; }
         .col-order-2-sp { order: 1; }
