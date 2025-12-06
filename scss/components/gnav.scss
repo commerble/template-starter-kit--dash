@@ -79,6 +79,8 @@
     padding: $unit;
     border: 2px solid transparent;
     background-color: $color-base;
+    min-height: 64px;
+    box-sizing: border-box;
     &:hover {
         border-color: $color-primary;
     }
