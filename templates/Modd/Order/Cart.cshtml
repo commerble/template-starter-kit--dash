@@ -95,7 +95,7 @@
         <div class="message-box">
             <p class="message text-center lead">カートに商品が入っていません。</p>
             <div class="block">
-                <a onclick="backToCheckPoint();" class="btn btn-primary btn-prev">お買い物を続ける</a>
+                <a href="@TopUrl()" class="btn btn-primary btn-prev">お買い物を続ける</a>
             </div>
         </div>
     }
@@ -116,7 +116,7 @@
                 <a href="@PurchaseUrl(vm.CartId, direct:false)" class="btn btn-action btn-large btn-next">注文手続きへ進む</a>
             }
             <button type="submit" form="cart" name="recalc" value="recalc" class="btn btn-primary btn-large btn-next hide">数量変更して再計算</button>
-            <a class="btn btn-primary btn-text btn-prev" ic-action="backToCheckPoint">お買い物を続ける</a>
+            <a class="btn btn-primary btn-text btn-prev" href="@TopUrl()">お買い物を続ける</a>
         </div>
     }
 </main>

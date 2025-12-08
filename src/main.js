@@ -73,10 +73,6 @@ $.fn.selectAddress = function () {
     $('#DeliveryOrderAddress_Tel').val(addr.Tel || '');
 }
 
-$.fn.backToCheckPoint = function () {
-    window.backToCheckPoint();
-}
-
 $('body').on('click', 'a[data-gtm]', function(e) {
     if (window.google_tag_manager) {
         e.preventDefault();
