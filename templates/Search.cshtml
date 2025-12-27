@@ -232,6 +232,7 @@
             })
         }
     }};
+    ViewBag.Transitions = vm.ProductPages.Select(x => ClassName(x.Code)).ToList();
 }
 @helper RenderOption(TagViewModel item, string filter) {
     if (item.Children?.Any() == true) {
