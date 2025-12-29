@@ -508,6 +508,7 @@
                 Children = Database.Query(new { Now, Next, IsPreview, group.Code }, (db, args) =>
                     from p in db.SitePages
                     where p.Code != args.Code && p.Code.StartsWith(args.Code)
+                      &&  p.IsListed
                       && (p.IsPublished == true || args.IsPreview)
                     select new {
                         p.Code,
