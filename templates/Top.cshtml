@@ -155,7 +155,7 @@
             Notices = notices,
             ProductPages = items,
             TopTag = tag,
-            Tags = Tags.Where(t => t.IsListed).Take(20).Select(t => new TagViewModel { 
+            Tags = Tags.Where(t => t.IsListed && t.Code.StartsWith("/tag/")).Take(20).Select(t => new TagViewModel { 
                 Code = t.Code,
                 Name = t.Name,
             }).ToList()
