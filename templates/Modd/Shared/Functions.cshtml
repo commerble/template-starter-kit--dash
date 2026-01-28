@@ -373,21 +373,34 @@
                             })
                         )
                         .Select(p => {
-                            return new KeyValuePair<Regex, SiteParts>(new Regex(("^" + root + p.Pattern + "$").Replace("//","/"), RegexOptions.IgnoreCase), new SiteParts
+                            Regex r = null;
+                            try {
+                                r = new Regex(("^" + root + p.Pattern + "$").Replace("//","/"), RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(1));
+                            }
+                            catch(ArgumentException) {}
+                            return new KeyValuePair<Regex, SiteParts>(r, new SiteParts
                             {
                                 Pattern = p.Pattern,
                                 Position = p.Position,
                                 DisplayOrder = p.DisplayOrder,
                                 Html = p.Html,
                             });
-                        }));
+                        })
+                        .Where(kv => kv.Key != null));
 
     var path = Page.Request.Url.AbsolutePath;
     if (root.Equals(path + "/", StringComparison.OrdinalIgnoreCase)) {
         path = root;
     }
     
-    var parts = siteParts.Where(kv => kv.Key.Match(path).Success && kv.Value.Position == position).OrderBy(kv => kv.Value.DisplayOrder).Select(kv => kv.Value.Html);
+    var parts = siteParts.Where(kv => {
+        try {
+            return kv.Key.Match(path).Success && kv.Value.Position == position;
+        }
+        catch(RegexMatchTimeoutException) {
+            return false;
+        }
+    }).OrderBy(kv => kv.Value.DisplayOrder).Select(kv => kv.Value.Html);
 
     @:@Raw(string.Join("\n", parts))
 }
