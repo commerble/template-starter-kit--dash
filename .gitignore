@@ -2,3 +2,4 @@ node_modules/*
 templates/Bundle/*
 dist/*
 .env
+data
