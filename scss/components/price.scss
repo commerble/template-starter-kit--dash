@@ -11,7 +11,7 @@
     color: $color-attention;
 }
 .price-value {
-    font-family: $font-family-price;
+    font-family: PriceSymobl, $font-family-price;
 }
 .price-strong .price-value {
     font-weight: bold;

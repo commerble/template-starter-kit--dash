@@ -334,7 +334,7 @@
                                 var sku = part3Group.Where(p => p.NamePart2 == part2Group.Key).FirstOrDefault();
                                 <td>
                                     @if (sku != null) {
-                                        <text>@FormatPrice(sku.UnitPriceWithTax)<br></text>
+                                        <span class="price-value">@FormatPrice(sku.UnitPriceWithTax)</span><br>
                                         if (sku.Stockout) {
                                             if (Page.Template.CanReserveRequest(sku.Id)) {
                                                 <a href="@ReserveCreateUrl(sku.Id)">次回入荷分を予約</a>
