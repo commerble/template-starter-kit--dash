@@ -36,6 +36,7 @@ table.product-skus {
     thead {
         border-bottom: 1px solid $color-border;
         th:not(:first-child) {
+            vertical-align: top;
             width: 128px;
         }
     }
