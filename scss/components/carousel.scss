@@ -12,7 +12,6 @@
     scroll-behavior: smooth;
     scroll-marker-group: after;
     scrollbar-width: none;
-    border-radius: 12px;
     scroll-snap-align: center;
     height: min($carousel-size, 100svw);
     img {
@@ -22,7 +21,6 @@
         width: min($carousel-size, 100svw);
         aspect-ratio: 1;
         scroll-snap-align: center;
-        border-radius: 12px;
         overflow: hidden;
         --marker: "";
 
@@ -33,7 +31,6 @@
             height: $carousel-marker-size;
             background-color: $color-secondary;
             transition: background-color 0.2s;
-            border-radius: 8px;
             overflow: hidden;
             background-image: var(--marker);
             background-size: cover;
