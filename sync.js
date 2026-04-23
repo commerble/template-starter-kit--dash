@@ -73,6 +73,14 @@ async function main() {
         return
     }
 
+    if (cmd == 'upload') {
+        const [files, nameMaxSize] = await getPlan(config.templateDirPath, process.argv.slice(3).map(x => path.resolve(x)));
+        for(let file of files) {
+            await upload(file, config.useLockMode, nameMaxSize)
+        }
+        return
+    }
+
     console.log(`USAGE:
     node sync.js <COMMAND>
 
@@ -294,8 +302,10 @@ async function getModel(file, withFirstLine = true) {
     }, firstLine]
 }
 
-async function getPlan(root) {
-    const files = await getFiles(root); 
+async function getPlan(root, files) {
+    if (!files) {
+        files = await getFiles(root)
+    }
     const sorted = []
     let nameMaxSize = 0
     for (const file of files) {

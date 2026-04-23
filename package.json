@@ -7,8 +7,9 @@
     "build:watch": "webpack --mode development --no-devtool --watch",
     "build": "webpack --mode production --no-devtool",
     "upload:watch": "node ./sync.js watch",
-    "upload": "node ./sync.js all",
-    "publish": "npm-run-all -s build upload",
+    "upload:all": "node ./sync.js all",
+    "upload": "node ./sync.js upload",
+    "publish": "npm-run-all -s build upload:all",
     "start": "npm-run-all -p build:watch upload:watch"
   },
   "keywords": [],
