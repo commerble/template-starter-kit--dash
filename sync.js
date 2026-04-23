@@ -55,27 +55,40 @@ const typeMap = {
 }
 
 async function main() {
-    const mode = process.argv[2]
+    const cmd = process.argv[2]
 
-    if (mode == 'all') {
+    if (cmd == 'all') {
         await uploadAll()
         return
     }
 
-    if (mode == 'watch') {
+    if (cmd == 'watch') {
         await watch()
         return
     }
 
-    if (mode == 'unlock') {
+    if (cmd == 'unlock') {
         const files = process.argv.slice(3);
         await unlock(files);
         return
     }
 
-    console.log(process.argv)
-    console.log('sync.js <mode>')
-    console.log('mode = upload | sync | unlock')
+    console.log(`USAGE:
+    node sync.js <COMMAND>
+
+COMMANDS:
+    all
+        すべてのテンプレートをアップロードします。
+
+    watch
+        起動中に変更のあったテンプレートをアップロードします。
+
+    unlock <...FILE_PATHs>
+        指定された1つ以上のファイルをアンロックします。
+
+    upload <...FILE_PATHs>
+        指定されたファイルをアップロードします。
+`)
 }
 
 async function validateAll() {
@@ -428,4 +441,20 @@ function hasAnyUpdatesInMain() {
     return !mergedBranches.includes(config.gitDefaultBranch)
 }
 
+function validateConfig() {
+    if (!process.env[config.apiEndpointEnvKey]) {
+        console.error(`${config.apiEndpointEnvKey}の設定が必要です。`)
+        process.exit(1);
+    }
+    if (!process.env[config.apiUsernameEnvKey]) {
+        console.error(`${config.apiUsernameEnvKey}の設定が必要です。`)
+        process.exit(1);
+    }
+    if (!process.env[config.apiPasswordEnvKey]) {
+        console.error(`${config.apiPasswordEnvKey}の設定が必要です。`)
+        process.exit(1);
+    }
+}
+
+validateConfig();
 main().catch(message => console.error(message));
