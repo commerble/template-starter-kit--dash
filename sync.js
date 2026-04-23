@@ -313,6 +313,9 @@ async function getPlan(root, files) {
         const nameExt = relative.replace(/[\\\/]/g, '')
         const ext = path.extname(nameExt)
         const name = nameExt.replace(ext, '')
+        if (name.includes(".")) {
+            throw `テンプレートディレクトリのファイルのみ同期できます。: ${file}`
+        }
         if (config.sharedTemplates.some(_ => _ == name)) {
             sorted.unshift(file)
         } else {
