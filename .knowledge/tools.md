@@ -16,7 +16,7 @@
 ルートディレクトリに以下のキーを持つ`.env`ファイルを作成します。
 
 ```properties
-CBAPI_ENDPOINT=https://api.example.com/odata
+CBAPI_ENDPOINT=https://api.example.invalid/odata
 CBAPI_USERNAME=your_username
 CBAPI_PASSWORD=your_password
 # オプション: ロックされていても強制的にアップロードします（注意して使用してください）
@@ -40,7 +40,10 @@ CBAPI_PASSWORD=your_password
 npm run upload:watch
 
 # 全てのテンプレートをアップロード
-npm run upload
+npm run upload:all
+
+# テンプレートファイルを指定してアップロード
+npm run upload <...files>
 
 # ファイルをビルドして全てのテンプレートをアップロード
 npm run publish
@@ -52,10 +55,10 @@ npm start
 また、以下のいずれかのモードでNode.jsを使用して直接スクリプトを実行することもできます。
 
 ```bash
-node sync.js <mode> [args]
+node sync.js <cmd> [args]
 ```
 
-#### モード
+#### サブコマンド
 
 1.  **`all`**
     *   `templateDirPath`内のすべてのテンプレートをアップロードします。
@@ -73,6 +76,12 @@ node sync.js <mode> [args]
     *   特定のファイルのロックを解除し（ロックフレーズを削除）、アップロードします。
     *   `useLockMode`が有効な場合に使用します。
     *   **コマンド:** `node sync.js unlock <path/to/file1> <path/to/file2> ...`
+
+4.  **`upload`**
+    *   特定のファイルのロックをアップロードします。
+    *   アップロード前にテンプレートを検証します。
+    *   **コマンド:** `node sync.js upload <path/to/file1> <path/to/file2> ...`
+
 
 ### ロックモード (`useLockMode: true`)
 
