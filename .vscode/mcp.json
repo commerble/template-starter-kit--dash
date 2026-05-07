@@ -1,0 +1,13 @@
+{
+	"servers": {
+		"playwright": {
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@latest"
+			],
+            "envFile": "${workspaceFolder}/.env",
+			"type": "stdio"
+		}
+	},
+	"inputs": []
+}
