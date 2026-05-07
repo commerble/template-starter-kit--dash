@@ -3,7 +3,10 @@
 		"playwright": {
 			"command": "npx",
 			"args": [
-				"@playwright/mcp@latest"
+				"-y",
+				"@playwright/mcp@latest",
+				"--user-data-dir",
+        		"${workspaceFolder}/.tmp"
 			],
             "envFile": "${workspaceFolder}/.env",
 			"type": "stdio"
