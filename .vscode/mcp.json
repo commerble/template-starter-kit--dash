@@ -1,15 +1,14 @@
 {
 	"servers": {
 		"playwright": {
-			"command": "npx",
+			"command": "playwright-mcp",
 			"args": [
-				"-y",
-				"@playwright/mcp@latest",
-				"--user-data-dir",
-        		"${workspaceFolder}/.tmp"
-			],
-            "envFile": "${workspaceFolder}/.env",
-			"type": "stdio"
+				"--headless",
+        		"--isolated",
+        		"--no-sandbox",
+        		"--browser", "chrome",
+        		"--config", "${workspaceFolder}/playwright-mcp.config.json"
+			]
 		}
 	},
 	"inputs": []

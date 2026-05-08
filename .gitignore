@@ -3,4 +3,4 @@ templates/Bundle/*
 dist/*
 .env
 data
-.tmp
+playwright-mcp.config.json
