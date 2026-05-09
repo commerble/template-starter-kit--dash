@@ -76,7 +76,14 @@ async function main() {
     if (cmd == 'upload') {
         const [files, nameMaxSize] = await getPlan(config.templateDirPath, process.argv.slice(3).map(x => path.resolve(x)));
         for(let file of files) {
-            await upload(file, config.useLockMode, nameMaxSize)
+            await upload(file, config.useLockMode, nameMaxSize).then(success => {
+                if (success) {
+                    const [name] = resolveTemplateInfo(file);
+                    if (config.sharedTemplates.includes(name)) {
+                        validateAll();
+                    }
+                }
+            })
         }
         return
     }
