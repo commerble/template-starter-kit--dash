@@ -6,8 +6,7 @@
 				"--headless",
         		"--isolated",
         		"--no-sandbox",
-        		"--browser", "chrome",
-        		"--config", "${workspaceFolder}/playwright-mcp.config.json"
+        		"--browser", "chrome"
 			]
 		}
 	},
