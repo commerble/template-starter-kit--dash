@@ -89,5 +89,5 @@ Template Starter Kit for Dash は、Commerble CMS 向けテンプレート開発
 
 ## 追加メモ
 
-- URL確認が必要な場合、`.knowledge/browse.md` のとおり `CBPAAS_FRONT` 環境変数を参照する。
+- URL確認が必要な場合、`.knowledge/browse.md` のとおり `.knowledge/_local.md` を参照する。
 - Razor仕様は ASP.NET Core/Blazor ではなく、`.knowledge/razor.md` を基準に判断する。
