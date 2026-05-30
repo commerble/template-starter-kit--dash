@@ -1,14 +1,15 @@
 {
-  "name": "storybook",
+  "name": "template-starter-kit--dash",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "build:watch": "webpack --mode development --no-devtool --watch",
     "build": "webpack --mode production --no-devtool",
-    "upload:watch": "node ./sync.js watch",
-    "upload:all": "node ./sync.js all",
-    "upload": "node ./sync.js upload",
+    "upload:watch": "node ./sync.ts watch",
+    "upload:all": "node ./sync.ts all",
+    "upload": "node ./sync.ts upload",
+    "unlock": "node ./sync.ts unlock",
+    "rest": "node ./sync.ts rest",
     "publish": "npm-run-all -s build upload:all",
     "start": "npm-run-all -p build:watch upload:watch"
   },
