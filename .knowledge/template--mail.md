@@ -88,15 +88,6 @@ EC DBスキーマについては[$metadata--ec.xml](./$metadata--ec.xml)を参�
 
 
 ```pwsh
-# .envファイルを読み込む
-gci . | ?{ $_.Name -eq '.env' } | get-content | ?{ $_ -notlike '#*'} | %{ $key, $value = $_.split('=', 2); set-content env:\$key $value; }
-
-# APIエンドポイント
-$ep = $env:CBAPI_ENDPOINT
-
-# API認証情報
-$c = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:CBAPI_USERNAME, (ConvertTo-SecureString $env:CBAPI_PASSWORD -AsPlainText -Force)
-
 # 実行テンプレート
 $templateName = "MailCustomerOrderPc"
 
@@ -122,6 +113,10 @@ $body = @{
     SubjectEncoding = $true;
 }
 
+$json = $body | ConvertTo-Json
+
 # APIコール
-irm -Method Post -Uri "$ep/mail/render" -Credential $c -ContentType "application/json" -Body (ConvertTo-Json $body)
+## AIエージェントはnode sync.ts restを実行するほうがnpmによる出力の影響がない
+## node sync.ts rest post "/mail/render" "$json"
+npm run rest post "/mail/render" "$json"
 ```
