@@ -10,6 +10,7 @@ SCSSとJavaScriptのアセットパイプライン、およびCommerbleプラッ
 -   Commerble CMSへのテンプレートのアップロード（同期）
 -   開発中のリアルタイム同期 (`watch`モード)
 -   本番環境向けの全テンプレートアップロード
+-   Commerble Web APIを直接確認できるRESTラッパー実行
 
 ## ディレクトリ構成
 
@@ -19,7 +20,7 @@ SCSSとJavaScriptのアセットパイプライン、およびCommerbleプラッ
 ├── scss/               # スタイルシートのソースファイル
 ├── src/                # JavaScriptのソースファイル
 ├── templates/          # Commerbleのテンプレートファイル（ビルド成果物も含む）
-├── sync.js             # テンプレート同期スクリプト
+├── sync.ts             # テンプレート同期スクリプト
 ├── webpack.config.js   # Webpack設定ファイル
 └── package.json
 ```
@@ -42,7 +43,7 @@ SCSSとJavaScriptのアセットパイプライン、およびCommerbleプラッ
     CBAPI_PASSWORD="your_api_password"
     ```
 
-    これらの環境変数キーは`sync.js`内で変更可能です。
+    これらの環境変数キーは`sync.ts`内で変更可能です。
 
 ## 利用可能なスクリプト
 
@@ -56,10 +57,11 @@ SCSSとJavaScriptのアセットパイプライン、およびCommerbleプラッ
 | `npm run upload:watch`    | テンプレートファイルの変更を監視し、変更があった場合に同期します。         |
 | `npm run upload <path>`   | 指定したテンプレートを同期します。                                         |
 | `npm run unlock <path>`   | 指定したテンプレートのロックを解除します。                                 |
+| `npm run rest <method> <path> [bodyJson]` | 同じ認証設定でCommerble Web APIへ任意のRESTリクエストを送信します。レスポンスのステータス・Content-Type・本文をそのまま確認できます。 |
 
-## テンプレート同期の設定 (`sync.js`)
+## テンプレート同期の設定 (`sync.ts`)
 
-テンプレートの同期に関する詳細な設定は`sync.js`ファイルで行います。
+テンプレートの同期に関する詳細な設定は`sync.ts`ファイルで行います。
 
 ```javascript
 const config = {
@@ -99,7 +101,7 @@ const config = {
 ## 注意事項
 
 -   **片方向同期**: このスターターキットによるテンプレート同期は、ローカル環境からCommerbleプラットフォームへの**片方向**です。管理画面上で行った変更はローカルファイルには反映されません。
--   **開発ブランチ**: `sync.js`の`useLockMode`を`true`に設定した場合、`gitDefaultBranch`で指定されたブランチ（デフォルトは`main`）では`npm start`や`npm run upload:watch`などの監視モードは安全のため動作しません。開発時はフィーチャーブランチなど、`main`以外のブランチで作業してください。
+-   **開発ブランチ**: `sync.ts`の`useLockMode`を`true`に設定した場合、`gitDefaultBranch`で指定されたブランチ（デフォルトは`main`）では`npm start`や`npm run upload:watch`などの監視モードは安全のため動作しません。開発時はフィーチャーブランチなど、`main`以外のブランチで作業してください。
 
 ## 開発手順
 
