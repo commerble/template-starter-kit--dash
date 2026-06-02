@@ -656,7 +656,7 @@
     <p class="field-error" data-valmsg-for="@name" data-valmsg-replace="true"></p>
 }
 
-@helper ProductTile(string code, string name, string thumbnail, decimal? unitPriceWithTax, bool? hasMultiplePrice, object gtm) {
+@helper ProductTile(string code, string name, string thumbnail, decimal? unitPriceWithTax, int? maxLimitAmount, bool? hasMultiplePrice, object gtm) {
     <article class="tile">
         <a href="@ItemUrl(code)" rel="bookmark" title="@name" data-gtm="@Jil.JSON.Serialize(gtm)">
             <h3>@name</h3>
@@ -665,6 +665,9 @@
             </figure>
             <div class="tile-info text-right">
                 @PrintPrice(unitPriceWithTax, hasMultiplePrice)
+                @if (maxLimitAmount == 0) {
+                    <span class="price-stockout">売り切れ</span>
+                }
             </div>
         </a>
     </article>

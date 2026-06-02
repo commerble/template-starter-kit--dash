@@ -52,6 +52,7 @@
         public string Name { get; set; }
         public string Thumbnail { get; set; }
         public int? PriceProductId { get; set; }
+        public int? MaxLimitAmount { get; set; }
         public bool? HasMultiplePrice { get; set; }
 
         public decimal? UnitPriceWithTax { get; set; }
@@ -172,6 +173,7 @@
                     Code = p.Code,
                     Name = p.Name,
                     Thumbnail = p.Thumbnail,
+                    MaxLimitAmount = m.MaxLimitAmount,
                     HasMultiplePrice = m.HasMultiplePrice,
                     PriceProductId = m.PriceProductId,
                     PriceProductExternalId1 =  s.ExternalId1,
@@ -410,6 +412,7 @@
             item.Name,
             item.Thumbnail,
             item.UnitPriceWithTax,
+            item.MaxLimitAmount,
             item.HasMultiplePrice,
             gtm: new {
                 @event = "select_item",

@@ -4,6 +4,12 @@
     display: inline-block;
     font-family: $font-family-title;
 }
+.price-stockout {
+    display: inline-block;
+    margin-right: $unit * 0.5;
+    color: $color-attention;
+    font-family: $font-family-title;
+}
 .price-tax {
     font-size: $font-size-default * 0.8;
 }
