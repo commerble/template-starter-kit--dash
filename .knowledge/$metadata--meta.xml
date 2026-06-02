@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="Commerble.CMS.Metadata.Models" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityType Name="ListField">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="ListId" Type="Edm.Int32" />
+        <Property Name="ColumnOrdinal" Type="Edm.Int32" Nullable="false" />
+        <Property Name="ColumnName" Type="Edm.String" Nullable="false" />
+        <Property Name="DisplayText" Type="Edm.String" />
+        <Property Name="TypeId" Type="Edm.Int32" />
+        <Property Name="IsVersioned" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="IsPrimaryKey" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="IsNullable" Type="Edm.Boolean" Nullable="false" />
+        <NavigationProperty Name="List" Type="Commerble.CMS.Metadata.Models.List">
+          <ReferentialConstraint Property="ListId" ReferencedProperty="Id" />
+        </NavigationProperty>
+        <NavigationProperty Name="Type" Type="Commerble.CMS.Metadata.Models.Type">
+          <ReferentialConstraint Property="TypeId" ReferencedProperty="Id" />
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="List">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Revision" Type="Edm.Int32" Nullable="false" />
+        <Property Name="TableName" Type="Edm.String" Nullable="false" />
+        <Property Name="DisplayText" Type="Edm.String" />
+        <Property Name="IdentityColumnName" Type="Edm.String" />
+        <Property Name="DisplayColumnName" Type="Edm.String" />
+        <Property Name="IsMaster" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="IsVersioned" Type="Edm.Boolean" Nullable="false" />
+        <Property Name="CreaterUser" Type="Edm.Guid" Nullable="false" />
+        <Property Name="CreateAt" Type="Edm.DateTimeOffset" Nullable="false" />
+        <Property Name="Deleted" Type="Edm.Boolean" Nullable="false" />
+        <NavigationProperty Name="ListFields" Type="Collection(Commerble.CMS.Metadata.Models.ListField)" />
+        <NavigationProperty Name="ListRelations" Type="Collection(Commerble.CMS.Metadata.Models.ListRelation)" />
+      </EntityType>
+      <EntityType Name="ListRelation">
+        <Key>
+          <PropertyRef Name="ListId" />
+          <PropertyRef Name="RelationId" />
+        </Key>
+        <Property Name="ListId" Type="Edm.Int32" />
+        <Property Name="RelationId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="TargetListId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="EditOrdinal" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Cardinality" Type="Edm.Int32" Nullable="false" />
+        <Property Name="UpdateCascade" Type="Edm.Int32" Nullable="false" />
+        <Property Name="DeleteCascade" Type="Edm.Int32" Nullable="false" />
+        <NavigationProperty Name="ListRelationColumns" Type="Collection(Commerble.CMS.Metadata.Models.ListRelationColumn)" />
+        <NavigationProperty Name="List" Type="Commerble.CMS.Metadata.Models.List">
+          <ReferentialConstraint Property="ListId" ReferencedProperty="Id" />
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="ListRelationColumn">
+        <Key>
+          <PropertyRef Name="ColumnName" />
+          <PropertyRef Name="ListId" />
+          <PropertyRef Name="RelationId" />
+        </Key>
+        <Property Name="ListId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="RelationId" Type="Edm.Int32" Nullable="false" />
+        <Property Name="ColumnName" Type="Edm.String" Nullable="false" />
+        <Property Name="TargetColumnName" Type="Edm.String" Nullable="false" />
+        <NavigationProperty Name="ListRelation" Type="Commerble.CMS.Metadata.Models.ListRelation" />
+      </EntityType>
+      <EntityType Name="Type">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" />
+        <Property Name="DbTypeName" Type="Edm.String" Nullable="false" />
+        <Property Name="DbDefaultValue" Type="Edm.String" />
+        <Property Name="ClrTypeName" Type="Edm.String" Nullable="false" />
+        <Property Name="UrlConstraint" Type="Edm.String" Nullable="false" />
+        <Property Name="InputValidation" Type="Edm.String" Nullable="false" />
+        <Property Name="DefaultFieldTypeName" Type="Edm.String" Nullable="false" />
+        <NavigationProperty Name="ListFields" Type="Collection(Commerble.CMS.Metadata.Models.ListField)" />
+        <NavigationProperty Name="RoutingParameters" Type="Collection(Commerble.CMS.Metadata.Models.RoutingParameter)" />
+        <NavigationProperty Name="TemplateParameters" Type="Collection(Commerble.CMS.Metadata.Models.TemplateParameter)" />
+      </EntityType>
+      <EntityType Name="RoutingParameter">
+        <Key>
+          <PropertyRef Name="Id" />
+          <PropertyRef Name="Name" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" />
+        <Property Name="ParameterType" Type="Edm.Int32" Nullable="false" />
+        <Property Name="TypeId" Type="Edm.Int32" />
+        <Property Name="Value" Type="Edm.String" />
+        <Property Name="HasValue" Type="Edm.Boolean" Nullable="false" />
+        <NavigationProperty Name="Routing" Type="Commerble.CMS.Metadata.Models.Routing" />
+        <NavigationProperty Name="RoutingDataToken" Type="Commerble.CMS.Metadata.Models.RoutingDataToken" />
+        <NavigationProperty Name="Type" Type="Commerble.CMS.Metadata.Models.Type">
+          <ReferentialConstraint Property="TypeId" ReferencedProperty="Id" />
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Routing">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" />
+        <Property Name="Pattern" Type="Edm.String" Nullable="false" />
+        <Property Name="RouteType" Type="Edm.Int32" Nullable="false" />
+        <Property Name="ContentType" Type="Edm.String" Nullable="false" />
+        <Property Name="TemplateName" Type="Edm.String" />
+        <Property Name="BlobExpression" Type="Edm.String" />
+        <Property Name="BlobQuery" Type="Edm.String" />
+        <Property Name="LoadOrder" Type="Edm.Int32" />
+        <NavigationProperty Name="RoutingParameters" Type="Collection(Commerble.CMS.Metadata.Models.RoutingParameter)" />
+      </EntityType>
+      <EntityType Name="RoutingDataToken">
+        <Key>
+          <PropertyRef Name="Id" />
+          <PropertyRef Name="Name" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" />
+        <Property Name="Value" Type="Edm.Binary" />
+        <NavigationProperty Name="RoutingParameter" Type="Commerble.CMS.Metadata.Models.RoutingParameter" />
+      </EntityType>
+      <EntityType Name="TemplateParameter">
+        <Key>
+          <PropertyRef Name="Id" />
+          <PropertyRef Name="Name" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" />
+        <Property Name="TypeId" Type="Edm.Int32" />
+        <NavigationProperty Name="Template" Type="Commerble.CMS.Metadata.Models.Template" />
+        <NavigationProperty Name="Type" Type="Commerble.CMS.Metadata.Models.Type">
+          <ReferentialConstraint Property="TypeId" ReferencedProperty="Id" />
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Template">
+        <Key>
+          <PropertyRef Name="Id" />
+        </Key>
+        <Property Name="Id" Type="Edm.Int32" Nullable="false" />
+        <Property Name="Name" Type="Edm.String" Nullable="false" />
+        <Property Name="Text" Type="Edm.String" Nullable="false" />
+        <Property Name="Type" Type="Edm.String" />
+        <NavigationProperty Name="TemplateParameters" Type="Collection(Commerble.CMS.Metadata.Models.TemplateParameter)" />
+      </EntityType>
+      <EntityContainer Name="Container">
+        <EntitySet Name="ListFields" EntityType="Commerble.CMS.Metadata.Models.ListField">
+          <NavigationPropertyBinding Path="List" Target="Lists" />
+          <NavigationPropertyBinding Path="Type" Target="Types" />
+        </EntitySet>
+        <EntitySet Name="Lists" EntityType="Commerble.CMS.Metadata.Models.List">
+          <NavigationPropertyBinding Path="ListFields" Target="ListFields" />
+          <NavigationPropertyBinding Path="ListRelations" Target="ListRelations" />
+        </EntitySet>
+        <EntitySet Name="ListRelations" EntityType="Commerble.CMS.Metadata.Models.ListRelation">
+          <NavigationPropertyBinding Path="List" Target="Lists" />
+          <NavigationPropertyBinding Path="ListRelationColumns" Target="ListRelationColumns" />
+        </EntitySet>
+        <EntitySet Name="ListRelationColumns" EntityType="Commerble.CMS.Metadata.Models.ListRelationColumn">
+          <NavigationPropertyBinding Path="ListRelation" Target="ListRelations" />
+        </EntitySet>
+        <EntitySet Name="Types" EntityType="Commerble.CMS.Metadata.Models.Type">
+          <NavigationPropertyBinding Path="ListFields" Target="ListFields" />
+          <NavigationPropertyBinding Path="RoutingParameters" Target="RoutingParameters" />
+          <NavigationPropertyBinding Path="TemplateParameters" Target="TemplateParameters" />
+        </EntitySet>
+        <EntitySet Name="RoutingParameters" EntityType="Commerble.CMS.Metadata.Models.RoutingParameter">
+          <NavigationPropertyBinding Path="Routing" Target="Routings" />
+          <NavigationPropertyBinding Path="RoutingDataToken" Target="RoutingDataTokens" />
+          <NavigationPropertyBinding Path="Type" Target="Types" />
+        </EntitySet>
+        <EntitySet Name="Routings" EntityType="Commerble.CMS.Metadata.Models.Routing">
+          <NavigationPropertyBinding Path="RoutingParameters" Target="RoutingParameters" />
+        </EntitySet>
+        <EntitySet Name="RoutingDataTokens" EntityType="Commerble.CMS.Metadata.Models.RoutingDataToken">
+          <NavigationPropertyBinding Path="RoutingParameter" Target="RoutingParameters" />
+        </EntitySet>
+        <EntitySet Name="TemplateParameters" EntityType="Commerble.CMS.Metadata.Models.TemplateParameter">
+          <NavigationPropertyBinding Path="Template" Target="Templates" />
+          <NavigationPropertyBinding Path="Type" Target="Types" />
+        </EntitySet>
+        <EntitySet Name="Templates" EntityType="Commerble.CMS.Metadata.Models.Template">
+          <NavigationPropertyBinding Path="TemplateParameters" Target="TemplateParameters" />
+        </EntitySet>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
