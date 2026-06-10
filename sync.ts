@@ -449,7 +449,7 @@ async function unlock(paths: string[], nameMaxSize: number = 28): Promise<void> 
 }
 
 async function rest(method: string, path: string, json?: string): Promise<void> {
-    const headers:HeadersInit = json ? { 'Content-Type': 'json' } : {}
+    const headers:HeadersInit = json ? { 'Content-Type': 'application/json' } : {}
     const response = await http(path, { method, headers, body: json})
     console.log(response.status);
     console.log(`Content-Type: ${response.headers.has('Content-Type')?response.headers.get('Content-Type'):''}`)
