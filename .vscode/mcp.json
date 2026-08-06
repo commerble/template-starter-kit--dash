@@ -1,13 +1,13 @@
 {
 	"servers": {
-		"playwright": {
-			"command": "playwright-mcp",
+		"chrome-devtools": {
+			"command": "npx",
 			"args": [
-				"--headless",
-        		"--isolated",
-        		"--no-sandbox",
-        		"--browser", "chrome"
-			]
+				"-y",
+				"chrome-devtools-mcp@latest",
+				"--browser-url=http://127.0.0.1:9222"
+			],
+			"type": "stdio"
 		}
 	},
 	"inputs": []

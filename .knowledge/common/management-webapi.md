@@ -15,7 +15,7 @@ node sync.ts rest "/ec/Products"
 
 ## CMSデータ
 
-ODataメタデータ: ./$metadata--cms.xml
+ODataメタデータ: ../tenant/$metadata--cms.xml
 REST API URLプレフィックス: /cms
 
 例

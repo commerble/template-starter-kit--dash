@@ -1,0 +1,79 @@
+<p>ECEntitiesの一部のカラムには次の制約が設けられいます。この制約はオーダーカスタムが可能です。</p>
+<h2 id="addressname">AddressName</h2>
+<p><strong>バリデーション</strong><br>
+<code>[\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs}|\p{IsCJKUnifiedIdeographsExtensionA}|\p{IsCJKCompatibilityIdeographs}|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]*</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#useraddresses">UserAddress.AddressName</a></p>
+<hr>
+<h2 id="addresspart">AddressPart</h2>
+<p><strong>バリデーション</strong><br>
+<code>[\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs}|\p{IsCJKUnifiedIdeographsExtensionA}|\p{IsCJKCompatibilityIdeographs}|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]*</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#addresses">Address.Prefecture</a>, 
+<a href="./$metadata--ec.xml#addresses">Address.City</a></p>
+<hr>
+<h2 id="addresstextpart">AddressTextPart</h2>
+<p><strong>バリデーション</strong><br>
+<code>[\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs}|\p{IsCJKUnifiedIdeographsExtensionA}|\p{IsCJKCompatibilityIdeographs}|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇|　|＆|（|）]*</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#addresses">Address.Streat</a></p>
+<hr>
+<h2 id="creditcardnumber">CreditCardNumber</h2>
+<p><strong>バリデーション</strong><br>
+<code>[0-9]{13,16}</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#ordercustomers">OrderCustomer.CreditCardNumber</a>, 
+<a href="./$metadata--ec.xml#usercreditcards">UserCreditCard.Number</a></p>
+<hr>
+<h2 id="creditsecurity">CreditSecurity</h2>
+<p><strong>バリデーション</strong><br>
+<code>[0-9]{3,4}</code></p>
+<p><strong>対象カラム</strong> 
+<a href="./$metadata--ec.xml#ordercustomers">OrderCustomer.CreditSecurity</a> </p>
+<hr>
+<h2 id="email">Email</h2>
+<p><strong>バリデーション</strong><br>
+<code>^[a-zA-Z0-9!$&amp;<em>=^<code>|~#%'+\/?_{}-][a-zA-Z0-9!$&amp;*.=^</code>|~#%'+\/?_{}-]</em>@([a-zA-Z0-9_-]+.)+[a-zA-Z0-9]+$</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#ordercustomers">OrderCustomer.MailAddress</a></p>
+<hr>
+<h2 id="paymentnumeric">PaymentNumeric</h2>
+<p><strong>バリデーション</strong><br>
+<code>[0-9]{1,9}</code></p>
+<p><strong>対象カラム</strong>  </p>
+<hr>
+<h2 id="personname">PersonName</h2>
+<p><strong>バリデーション</strong><br>
+<code>[\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs}|\p{IsCJKUnifiedIdeographsExtensionA}|\p{IsCJKCompatibilityIdeographs}|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]*</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#addresses">Address.LastName</a>, 
+<a href="./$metadata--ec.xml#addresses">Address.FirstName</a>, 
+<a href="./$metadata--ec.xml#deliveryorders">DeliveryOrder.SenderName</a>, 
+<a href="./$metadata--ec.xml#usermanages">UserManages.LastName</a>, 
+<a href="./$metadata--ec.xml#usermanages">UserManages.FirstName</a></p>
+<hr>
+<h2 id="personnamekana">PersonNameKana</h2>
+<p><strong>バリデーション</strong><br>
+<code>[\p{IsKatakana}]*</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#addresses">Address.LastNameKana</a>, 
+<a href="./$metadata--ec.xml#addresses">Address.FirstNameKana</a>, 
+<a href="./$metadata--ec.xml#usermanages">UserManages.LastNameKana</a>, 
+<a href="./$metadata--ec.xml#usermanages">UserManages.FirstNameKana</a></p>
+<hr>
+<h2 id="phonenumber">PhoneNumber</h2>
+<p><strong>バリデーション</strong><br>
+<code>[0-9]{10,11}</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#addresses">Address.Tel</a></p>
+<hr>
+<h2 id="widejapanesecharacter">WideJapaneseCharacter</h2>
+<p><strong>バリデーション</strong><br>
+<code>[\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs}|\p{IsCJKUnifiedIdeographsExtensionA}|\p{IsCJKCompatibilityIdeographs}|０-９Ａ-Ｚａ-ｚ|－|―|ー|‐|ヽ|ヾ|ゝ|ゞ|〃|仝|々|〆|〇]*</code></p>
+<p><strong>対象カラム</strong>  </p>
+<hr>
+<h2 id="zipcode">ZipCode</h2>
+<p><strong>バリデーション</strong><br>
+<code>[\d]{7}</code></p>
+<p><strong>対象カラム</strong><br>
+<a href="./$metadata--ec.xml#addresses">Address.ZipCode</a></p>
