@@ -32,7 +32,7 @@
         }
     }
     // -- プレビュー
-    static string PREVIEW_KEY = "G2OJzTlzsfin8QGMOSjgbgYMEuS68GX8";
+    const string PREVIEW_KEY = "G2OJzTlzsfin8QGMOSjgbgYMEuS68GX8";
     bool? _isPreview = null;
     bool IsPreview { get { if (!_isPreview.HasValue) { _isPreview = Page.Request.Cookies.AllKeys.Contains(PREVIEW_KEY); } return _isPreview.Value; } }
 
@@ -62,7 +62,7 @@
 
     // -- 次の1日刻みの時間、プレビュー時には1秒後
     DateTime? _nextLongLong = null;
-    DateTime NextLongLong { get { if (!_nextLong.HasValue) { _nextLongLong =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(JustNow, 86400).AddSeconds(86400); } return _nextLongLong.Value; } }
+    DateTime NextLongLong { get { if (!_nextLongLong.HasValue) { _nextLongLong =  IsPreview ? DateTime.Now.AddSeconds(1) : TruncateDateTime(JustNow, 86400).AddSeconds(86400); } return _nextLongLong.Value; } }
 
     // -- 時刻を指定秒で丸める
     DateTime TruncateDateTime(DateTime datetime, int seconds) {
@@ -358,6 +358,108 @@
     string ClassName(string code) {
         return "c" + code.Replace("/", "--").Replace(":", "__").Replace("~", "").Replace(".", "");
     }
+
+    string OnlineStoreJsonLdId() {
+        var brandName = GetConfigValue("BRAND_NAME");
+        if (string.IsNullOrWhiteSpace(brandName)) {
+            return null;
+        }
+        return TopUrl(true).TrimEnd('/') + "#online-store";
+    }
+
+    Dictionary<string, object> BuildOnlineStoreJsonLd() {
+        var brandName = GetConfigValue("BRAND_NAME");
+        if (string.IsNullOrWhiteSpace(brandName)) {
+            return null;
+        }
+
+        var onlineStore = new Dictionary<string, object> {
+            ["@context"] = "https://schema.org/",
+            ["@type"] = "OnlineStore",
+            ["@id"] = OnlineStoreJsonLdId(),
+            ["name"] = brandName,
+            ["url"] = TopUrl(true),
+        };
+
+        var description = GetConfigValue("BRAND_DESCRIPTION");
+        if (!string.IsNullOrWhiteSpace(description)) {
+            onlineStore["description"] = description;
+        }
+
+        var imageUrl = GetConfigValue("BRAND_IMAGE_URL");
+        if (!string.IsNullOrWhiteSpace(imageUrl)) {
+            onlineStore["image"] = Resolve(imageUrl, true);
+        }
+
+        var logoUrl = GetConfigValue("BRAND_LOGO_URL");
+        if (!string.IsNullOrWhiteSpace(logoUrl)) {
+            onlineStore["logo"] = Resolve(logoUrl, true);
+        }
+
+        return onlineStore;
+    }
+
+    Dictionary<string, object> BuildBrandJsonLd() {
+        var brandName = GetConfigValue("BRAND_NAME");
+        if (string.IsNullOrWhiteSpace(brandName)) {
+            return null;
+        }
+
+        var brand = new Dictionary<string, object> {
+            ["@type"] = "Brand",
+            ["name"] = brandName,
+        };
+
+        var imageUrl = GetConfigValue("BRAND_IMAGE_URL");
+        if (!string.IsNullOrWhiteSpace(imageUrl)) {
+            brand["image"] = Resolve(imageUrl, true);
+        }
+
+        var logoUrl = GetConfigValue("BRAND_LOGO_URL");
+        if (!string.IsNullOrWhiteSpace(logoUrl)) {
+            brand["logo"] = Resolve(logoUrl, true);
+        }
+
+        return brand;
+    }
+
+    bool IsJsonLdType(object jsonLdItem, string typeName) {
+        var map = jsonLdItem as Dictionary<string, object>;
+        if (map == null) {
+            return false;
+        }
+        if (!map.ContainsKey("@type")) {
+            return false;
+        }
+        return (map["@type"] as string) == typeName;
+    }
+
+    List<object> BuildJsonLdDocuments(object currentJsonLd) {
+        var docs = new List<object>();
+
+        var objectEnumerable = currentJsonLd as IEnumerable<object>;
+        if (objectEnumerable != null) {
+            docs.AddRange(objectEnumerable);
+        }
+        else {
+            var enumerable = currentJsonLd as System.Collections.IEnumerable;
+            if (enumerable != null && !(currentJsonLd is string)) {
+                foreach (var item in enumerable) {
+                    docs.Add(item);
+                }
+            }
+            else if (currentJsonLd != null) {
+                docs.Add(currentJsonLd);
+            }
+        }
+
+        var onlineStore = BuildOnlineStoreJsonLd();
+        if (onlineStore != null && !docs.Any(item => IsJsonLdType(item, "OnlineStore"))) {
+            docs.Add(onlineStore);
+        }
+
+        return docs;
+    }
 }
 
 @helper RenderParts(string position) {
@@ -467,8 +569,9 @@
 }
 
 @helper RenderJsonLD() {
-    if (ViewBag.JsonLd != null) {
-    <script type="application/ld+json">@Raw(Jil.JSON.SerializeDynamic(ViewBag.JsonLd))</script>
+    List<object> jsonLd = BuildJsonLdDocuments(ViewBag.JsonLd);
+    if (jsonLd.Count > 0) {
+    <script type="application/ld+json">@Raw(Jil.JSON.SerializeDynamic(jsonLd))</script>
     }
 }
 

@@ -34,14 +34,9 @@
         public decimal Point { get;set; }
         public bool Stockout => LimitAmount <= 0;
         
-        public int TaxRoundMode { private get; set; }
-        public decimal UnitPrice { private get; set; }
-        public decimal TaxationPrice { private get; set; }
-
-        public void CalcTax() {
-            Tax = Crosswarp.Modd.Services.Pipelines.Tax.CalcTax((TaxRoundMode)TaxRoundMode, TaxationPrice);
-            UnitPriceWithTax = UnitPrice + Tax;
-        }
+        public int TaxRoundMode { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal TaxationPrice { get; set; }
     }
 
     public class TagViewModel{
@@ -66,16 +61,9 @@
         public string PriceProductExternalId1 { get; set; }
         public string PriceProductName { get; set; }
 
-        public int? TaxRoundMode { private get; set; }
-        public decimal? UnitPrice { private get; set; }
-        public decimal? TaxationPrice { private get; set; }
-
-        public void CalcTax() {
-            if (TaxRoundMode.HasValue && TaxationPrice.HasValue) {
-                Tax = Crosswarp.Modd.Services.Pipelines.Tax.CalcTax((TaxRoundMode)TaxRoundMode.Value, TaxationPrice.Value);
-                UnitPriceWithTax = UnitPrice + Tax;
-            }
-        }
+        public int? TaxRoundMode { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public decimal? TaxationPrice { get; set; }
     }
 
     public class RelatePageViewModel {
@@ -84,6 +72,18 @@
         public string Name { get; set; }
         public string Thumbnail { get; set; }
         public DateTime? PublishDate { get; set; }
+    }
+
+    void CalcTax(ProductViewModel product) {
+        product.Tax = Crosswarp.Modd.Services.Pipelines.Tax.CalcTax((TaxRoundMode)product.TaxRoundMode, product.TaxationPrice);
+        product.UnitPriceWithTax = product.UnitPrice + product.Tax;
+    }
+
+    void CalcTax(RelateProductViewModel product) {
+        if (product.TaxRoundMode.HasValue && product.TaxationPrice.HasValue) {
+            product.Tax = Crosswarp.Modd.Services.Pipelines.Tax.CalcTax((TaxRoundMode)product.TaxRoundMode.Value, product.TaxationPrice.Value);
+            product.UnitPriceWithTax = product.UnitPrice + product.Tax;
+        }
     }
 
     List<ImageViewModel> ParseImages(string hero) {
@@ -234,10 +234,10 @@
             )).ToList();
         
         foreach (var p in vm.Products) {
-            p.CalcTax();
+            CalcTax(p);
         }
         foreach (var p in vm.RelateProducts) {
-            p.CalcTax();
+            CalcTax(p);
         }
 
         if (vm.PriceProductId.HasValue) {
@@ -259,36 +259,59 @@
         throw new System.Web.HttpException(404, "Not Found");
     }
 
-    ((List<object>)ViewBag.JsonLd).Add(new Dictionary<string, object> {
+    var productJsonLd = new Dictionary<string, object> {
         ["@context"] = "https://schema.org/",
         ["@type"] = "Product",
         ["name"] = Model.Name,
-        ["image"] = Model.Thumbnail,
-        ["description"] = ViewBag.MetaDescription,
-        ["sku"] = vm.PriceProduct?.ExternalId1,
-        ["mpn"] = vm.PriceProduct?.ExternalId1, // Manufacturer Part Number 製品番号
-        ["category"] = "Category",
-        ["brand"] = new Dictionary<string, object> {
-            ["@type"] = "Brand",
-            ["name"] = "",
-            ["url"] = "",
-            ["logo"] = "",
-            ["slogan"] = ""
-        },
-        ["offers"] = new Dictionary<string, object> {
-            ["@type"] = "Offer",
-            ["url"] = Page.Template.SecuredHost(true) + Page.Request.Url.AbsolutePath,
-            ["priceCurrency"] = "JPY",
-            ["price"] = vm.PriceProduct?.UnitPriceWithTax,
-            // ["priceValidUntil"] = "yyyy-MM-dd",
-            ["itemCondition"] = "https://schema.org/NewCondition",
-            ["availability"] = false ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-            ["seller"] = new Dictionary<string, object> {
-                ["@type"] = "Organization",
-                ["name"] = ""
-            }
-        }
-    });
+    };
+
+    var image = Resolve(Model.Thumbnail as string, true);
+    if (!string.IsNullOrWhiteSpace(image)) {
+        productJsonLd["image"] = image;
+    }
+
+    var description = ViewBag.MetaDescription as string;
+    if (!string.IsNullOrWhiteSpace(description)) {
+        productJsonLd["description"] = description;
+    }
+
+    var priceProductSku = vm.PriceProduct?.ExternalId1;
+    if (!string.IsNullOrWhiteSpace(priceProductSku)) {
+        productJsonLd["sku"] = priceProductSku;
+    }
+
+    var brandJsonLd = BuildBrandJsonLd();
+    if (brandJsonLd != null) {
+        productJsonLd["brand"] = brandJsonLd;
+    }
+
+    var offerJsonLd = new Dictionary<string, object> {
+        ["@type"] = "Offer",
+        ["url"] = fallback(ViewBag.Canonical as string, Page.Template.SecuredHost(true) + Page.Request.Url.AbsolutePath),
+        ["priceCurrency"] = "JPY",
+        ["itemCondition"] = "https://schema.org/NewCondition",
+        ["availability"] = vm.Products.Any(p => !p.Stockout) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    };
+
+    if (vm.PriceProduct != null) {
+        offerJsonLd["price"] = vm.PriceProduct.UnitPriceWithTax;
+    }
+
+    var onlineStoreId = OnlineStoreJsonLdId();
+    if (!string.IsNullOrWhiteSpace(onlineStoreId)) {
+        offerJsonLd["seller"] = new Dictionary<string, object> {
+            ["@id"] = onlineStoreId,
+        };
+    }
+
+    productJsonLd["offers"] = offerJsonLd;
+
+    var jsonLdDocs = ViewBag.JsonLd as List<object>;
+    if (jsonLdDocs == null) {
+        jsonLdDocs = new List<object>();
+        ViewBag.JsonLd = jsonLdDocs;
+    }
+    jsonLdDocs.Add(productJsonLd);
     ViewBag.DataLayer = new object[] {
         // 以下のペイロードはGA4なのでユニバーサルアナライティクスではない
         new {

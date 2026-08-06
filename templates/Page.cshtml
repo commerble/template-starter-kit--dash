@@ -123,20 +123,17 @@
     ViewBag.Canonical = urlPrefix + vm.Code;
     ViewBag.CanonicalQueryStringKeys = new string[]{};
 
-    ViewBag.JsonLd = new[] {
-        new Dictionary<string, object> {
-            ["@context"] = "https://schema.org/",
-            ["@type"] = "BreadcrumbList",
-            ["itemListElement"] = new List<Dictionary<string, object>>()
-        }
+    var breadcrumbJsonLd = new Dictionary<string, object> {
+        ["@context"] = "https://schema.org/",
+        ["@type"] = "BreadcrumbList",
+        ["itemListElement"] = vm.Breadcrumbs.Select((b,i) => new Dictionary<string, object> {
+            ["@type"] = "ListItem",
+            ["position"] = i + 1,
+            ["name"] = b.name,
+            ["item"] = urlPrefix + b.url
+        }),
     };
-    ViewBag.JsonLd[0]["itemListElement"].AddRange(vm.Breadcrumbs.Select((b,i) => new Dictionary<string, object> {
-        ["@type"] = "ListItem",
-        ["position"] = i + 1,
-        ["name"] = b.name,
-        ["item"] = urlPrefix + b.url
-    }));
-    ViewBag.JsonLd = new List<object>(ViewBag.JsonLd);
+    ViewBag.JsonLd = new List<object> { breadcrumbJsonLd };
     ViewBag.Transitions = new List<string> { ClassName(vm.Code) };
 }
 @Include(vm.Partial, vm)
