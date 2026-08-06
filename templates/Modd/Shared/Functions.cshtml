@@ -13,8 +13,7 @@
         ViewBag.IsNotProduction = ViewBag.IsProduction == false;
         ViewBag.ResourceSuffix  =  $"?_rc={Page.Template.RestartCounter}" + (ViewBag.IsNotProduction == true ? $"&_rq={Guid.NewGuid()}" : string.Empty);
         ViewBag.RouteController = Page.Request.RequestContext.RouteData.Values["controller"] as string;
-        if (ViewBag.RouteName == null && ViewBag.RouteController != "ModdErrors")
-        {
+        if (ViewBag.RouteName == null && ViewBag.RouteController != "ModdErrors") {
             Page.Response.Headers.Add("X-Robots-Tag", "noindex");
         }
         else {
@@ -519,16 +518,13 @@
         var original = Page.Request.QueryString;
         var filtered = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-        foreach (string key in original.AllKeys)
-        {
+        foreach (string key in original.AllKeys) {
             if (key == null) {
                 continue;
             }
 
-            if (allowedQueryStringKeys.Contains(key))
-            {
-                foreach (var value in original.GetValues(key))
-                {
+            if (allowedQueryStringKeys.Contains(key)) {
+                foreach (var value in original.GetValues(key)) {
                     filtered.Add(key, value);
                 }
             }

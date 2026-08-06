@@ -20,23 +20,19 @@
     {
         var dirs = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
-        if (dirs.Length == 0)
-        {
+        if (dirs.Length == 0) {
             return new[] { "/" };
         }
 
-        if (dirs.Length == 1)
-        {
+        if (dirs.Length == 1) {
             return new[] { "/", path };
         }
 
-        for (var i = 1; i < dirs.Length; i++)
-        {
+        for (var i = 1; i < dirs.Length; i++) {
             dirs[i] = $"{dirs[i - 1]}/{dirs[i]}";
         }
 
-        for (var i = 0; i < dirs.Length; i++)
-        {
+        for (var i = 0; i < dirs.Length; i++) {
             dirs[i] = $"/{dirs[i]}";
         }
 
@@ -81,7 +77,7 @@
             return null;
 
         var dirs = ParseDirs(vm.Code);
-        vm.Breadcrumbs = 
+        vm.Breadcrumbs =
             Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
                 from p in db.SitePages
                 where dirs.Contains(p.Code)
