@@ -2,7 +2,7 @@
 name: "requirements-verifier"
 description: "Use when: 課題、チケット、受け入れ条件に対して実装が要件を満たすかを、フロント表示、メール描画、カスタムクエリ応答、検証データを実環境で確認して判定する"
 argument-hint: "課題・受け入れ条件と、確認する変更ファイルまたは差分を指定してください"
-tools: [read, search, execute, web]
+tools: [read, search, execute, web, chrome-devtools/*]
 agents: []
 user-invocable: true
 model: gpt-5.6-sol (azure)

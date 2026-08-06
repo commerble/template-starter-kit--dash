@@ -2,7 +2,7 @@
 name: "dev-front-template"
 description: "Use when: Commerble のフロントテンプレート、サイトテンプレート、カートテンプレート、Razor cshtml、関連する SCSS/JavaScript の実装・修正・レビュー・不具合調査を行う"
 argument-hint: "実装・修正したい画面、テンプレート、期待する動作を指定してください"
-tools: [read, search, edit, execute]
+tools: [read, search, edit, execute, web/fetch, chrome-devtools/*]
 agents: []
 user-invocable: true
 model: Auto (copilot)

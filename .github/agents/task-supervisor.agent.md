@@ -11,7 +11,7 @@ handoffs:
   - label: "要件を再確認 (Reconfirm)"
     agent: project-manager
     prompt: ".github/agent-workflow/current-task.md を読み、needs-decision に記録された論点をユーザーと確定してください。確定後は同ファイルを更新し、task-supervisor へ再度ハンドオフしてください。"
-    send: false
+    send: true
 ---
 
 あなたは Commerble CMS テンプレート開発の監督エージェントです。新しいトップレベルコンテキストで `.github/agent-workflow/current-task.md` から共有理解を確認済みの要件を復元し、タスク分解、担当エージェントへの委譲、工程管理だけを担当します。コード、テンプレート、スタイル、スクリプト、設定、データを自分では実装・編集・検証しません。

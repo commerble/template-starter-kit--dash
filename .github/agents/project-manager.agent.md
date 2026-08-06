@@ -7,7 +7,7 @@ agents: [external-fact-researcher, dev-front-template, dev-mail-template, dev-cu
 user-invocable: true
 model: gpt-5.6-sol (azure)
 handoffs:
-  - label: "Start Impl"
+  - label: "実装工程を開始 (Start Tasks)"
     agent: task-supervisor
     prompt: ".github/agent-workflow/current-task.md の引き渡しパッケージを読み、記録された要件と受け入れ条件に従って実装工程を開始してください。"
     send: false
