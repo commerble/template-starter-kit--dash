@@ -85,5 +85,46 @@ NULL伝搬オペレーターなどExpression式として扱えないシンタッ
 
 C#の慣習からはズレますが、K&Rを用います。LSPやインテリセンスがない関係上、Razorの構文エラーはエラーとなった行の周辺を抜粋して出力されます。 なるべくRazorロジックコード上に情報量の少ない行が発生しないように書くと特定がスムーズです。
 
+### 6. ToList, ToArray, ToDictionaryが使えるならそちらを優先する
 
+1回しかAdd等をしないのであれば、ToList等を使います。
 
+**OK**  
+```
+var breadcrumbItems = 
+    vm.Breadcrumbs.Select((b,i) => new Dictionary<string, object> {
+        ["@type"] = "ListItem",
+        ["position"] = i + 1,
+        ["name"] = b.name,
+        ["item"] = urlPrefix + b.url
+    }).ToList();
+```
+
+**NG**
+```
+var breadcrumbItems = new List<Dictionary<string, object>>(vm.Breadcrumbs.Count); // 空で先に作るのであれば可能な限りキャパシティを指定する
+breadcrumbItems.AddRange(vm.Breadcrumbs.Select((b,i) => new Dictionary<string, object> {
+    ["@type"] = "ListItem",
+    ["position"] = i + 1,
+    ["name"] = b.name,
+    ["item"] = urlPrefix + b.url
+}));
+// 1回しかAddRangeししていない
+```
+
+**OK**  
+```
+var breadcrumbItems = new List<Dictionary<string, object>>();
+breadcrumbItems.AddRange(vm.Breadcrumbs.Select((b,i) => new Dictionary<string, object> {
+    ["@type"] = "ListItem",
+    ["position"] = i + 1,
+    ["name"] = b.name,
+    ["item"] = urlPrefix + b.url
+}));
+breadcrumbItems.Add(new Dictionary<string, object> {
+    ["@type"] = "ListItem",
+    ["position"] = i + 1,
+    ["name"] = b.name,
+    ["item"] = urlPrefix + b.url
+});
+```
