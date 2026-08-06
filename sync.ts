@@ -352,9 +352,14 @@ async function watch(): Promise<void> {
             })
         }
     }
-    chokidar.watch(config.templateDirPath, {
-        persistent: true
-    }).on('all', (event: string, file: string) => {
+    const options = process.env.REMOTE_CONTAINERS === 'true' ? {
+        persistent: true,
+        usePolling: true,
+        interval: 250,
+    } : { 
+        persistent: true 
+    };
+    chokidar.watch(config.templateDirPath, options).on('all', (event: string, file: string) => {
         if (file.endsWith('.cshtml') || file.endsWith('.csx') || file.endsWith('.txt')) {
             if (event == 'add' && !files.includes(file)) {
                 unitOfWork(file)
