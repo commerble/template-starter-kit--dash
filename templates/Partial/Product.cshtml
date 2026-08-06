@@ -229,11 +229,32 @@
         throw new System.Web.HttpException(404, "Not Found");
     }
 
+    var canonicalUrl = ViewBag.Canonical as string;
+
+    var distinctColors = vm.Products
+        .Select(p => p.NamePart2)
+        .Where(v => !string.IsNullOrWhiteSpace(v))
+        .Distinct()
+        .ToList();
+    var distinctSizes = vm.Products
+        .Select(p => p.NamePart3)
+        .Where(v => !string.IsNullOrWhiteSpace(v))
+        .Distinct()
+        .ToList();
+    var hasColorVariants = distinctColors.Count >= 2;
+    var hasSizeVariants = distinctSizes.Count >= 2;
+    var isProductGroup = hasColorVariants || hasSizeVariants;
+
     var productJsonLd = new Dictionary<string, object> {
         ["@context"] = "https://schema.org/",
-        ["@type"] = "Product",
+        ["@type"] = isProductGroup ? "ProductGroup" : "Product",
         ["name"] = Model.Name,
     };
+
+    if (isProductGroup) {
+        productJsonLd["productGroupID"] = Model.Code;
+        productJsonLd["url"] = canonicalUrl;
+    }
 
     var image = Resolve(Model.Thumbnail as string, true);
     if (!string.IsNullOrWhiteSpace(image)) {
@@ -245,36 +266,94 @@
         productJsonLd["description"] = description;
     }
 
-    var priceProductSku = vm.PriceProduct?.ExternalId1;
-    if (!string.IsNullOrWhiteSpace(priceProductSku)) {
-        productJsonLd["sku"] = priceProductSku;
-    }
-
     var brandJsonLd = BuildBrandJsonLd();
     if (brandJsonLd != null) {
         productJsonLd["brand"] = brandJsonLd;
     }
 
-    var offerJsonLd = new Dictionary<string, object> {
-        ["@type"] = "Offer",
-        ["url"] = fallback(ViewBag.Canonical as string, Page.Template.SecuredHost(true) + Page.Request.Url.AbsolutePath),
-        ["priceCurrency"] = "JPY",
-        ["itemCondition"] = "https://schema.org/NewCondition",
-        ["availability"] = vm.Products.Any(p => !p.Stockout) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-    };
+    var ONLINE_STORE_ID = OnlineStoreJsonLdId();
 
-    if (vm.PriceProduct != null) {
-        offerJsonLd["price"] = vm.PriceProduct.UnitPriceWithTax;
+    if (isProductGroup) {
+        var variesBy = new List<string>();
+        if (hasColorVariants) {
+            variesBy.Add("https://schema.org/color");
+        }
+        if (hasSizeVariants) {
+            variesBy.Add("https://schema.org/size");
+        }
+        if (variesBy.Count > 0) {
+            productJsonLd["variesBy"] = variesBy;
+        }
+
+        productJsonLd["hasVariant"] = vm.Products.Select(sku => {
+            var variantJsonLd = new Dictionary<string, object> {
+                ["@type"] = "Product",
+                ["name"] = sku.Name,
+                ["sku"] = sku.ExternalId1,
+            };
+
+            if (!string.IsNullOrWhiteSpace(sku.NamePart2)) {
+                variantJsonLd["color"] = sku.NamePart2;
+            }
+            if (!string.IsNullOrWhiteSpace(sku.NamePart3)) {
+                variantJsonLd["size"] = sku.NamePart3;
+            }
+
+            var variantImage = !string.IsNullOrWhiteSpace(sku.Icon) ? Resolve(IconUrl(sku.Icon), true) : image;
+            if (!string.IsNullOrWhiteSpace(variantImage)) {
+                variantJsonLd["image"] = variantImage;
+            }
+
+            var variantUrl = canonicalUrl;
+            if (!string.IsNullOrWhiteSpace(sku.ExternalId1)) {
+                variantUrl = canonicalUrl + "#" + Uri.EscapeDataString(sku.ExternalId1);
+            }
+
+            var variantOfferJsonLd = new Dictionary<string, object> {
+                ["@type"] = "Offer",
+                ["url"] = variantUrl,
+                ["price"] = sku.UnitPriceWithTax,
+                ["priceCurrency"] = "JPY",
+                ["itemCondition"] = "https://schema.org/NewCondition",
+                ["availability"] = sku.Stockout ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+            };
+
+            if (!string.IsNullOrWhiteSpace(ONLINE_STORE_ID)) {
+                variantOfferJsonLd["seller"] = new Dictionary<string, object> {
+                    ["@id"] = ONLINE_STORE_ID,
+                };
+            }
+
+            variantJsonLd["offers"] = variantOfferJsonLd;
+            return (object)variantJsonLd;
+        }).ToList();
     }
+    else {
+        var priceProductSku = vm.PriceProduct?.ExternalId1;
+        if (!string.IsNullOrWhiteSpace(priceProductSku)) {
+            productJsonLd["sku"] = priceProductSku;
+        }
 
-    var onlineStoreId = OnlineStoreJsonLdId();
-    if (!string.IsNullOrWhiteSpace(onlineStoreId)) {
-        offerJsonLd["seller"] = new Dictionary<string, object> {
-            ["@id"] = onlineStoreId,
+        var offerJsonLd = new Dictionary<string, object> {
+            ["@type"] = "Offer",
+            ["url"] = canonicalUrl,
+            ["priceCurrency"] = "JPY",
+            ["itemCondition"] = "https://schema.org/NewCondition",
+            ["availability"] = vm.Products.Any(p => !p.Stockout) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         };
-    }
 
-    productJsonLd["offers"] = offerJsonLd;
+        if (vm.PriceProduct != null) {
+            offerJsonLd["price"] = vm.PriceProduct.UnitPriceWithTax;
+        }
+
+        if (!string.IsNullOrWhiteSpace(ONLINE_STORE_ID)) {
+            offerJsonLd["seller"] = new Dictionary<string, object> {
+                ["@id"] = ONLINE_STORE_ID,
+            };
+        }
+
+        productJsonLd["offers"] = offerJsonLd;
+    }
 
     var jsonLdDocs = ViewBag.JsonLd as List<object>;
     if (jsonLdDocs == null) {
@@ -357,7 +436,7 @@
                             <th>@part3Group.Key</th>
                             @foreach(var part2Group in vm.Products.GroupBy(p => p.NamePart2)) {
                                 var sku = part3Group.Where(p => p.NamePart2 == part2Group.Key).FirstOrDefault();
-                                <td>
+                                <td id="@(sku?.ExternalId1)">
                                     @if (sku != null) {
                                         <span class="price-value">@FormatPrice(sku.UnitPriceWithTax)</span><br>
                                         if (sku.Stockout) {
