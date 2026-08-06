@@ -73,6 +73,19 @@ HtmlHelperのPartialメソッドを使用して部分ビューをレンダリン
 @Page.Html.PartialEx("PartialLoginStatus", new { Message = "" }, new { Prop1 = 1 })
 ```
 
+### Page / Partial の責務分離
+
+`Page.cshtml` はページの入口であり、ここで行うのは次のような共通処理に限定します。
+
+* 現在の URL から対象ページを特定する
+* `Layout` と `Partial` を決める
+* 共通の `ViewBag`、canonical、breadcrumb、全ページ共通のメタ情報を整える
+* `@Include(vm.Partial, vm)` で本文テンプレートを呼び出す
+
+ページ種別ごとの本文生成、商品・タグ・ニュースなどの意味付け、SKU 単位の表示、ページ型固有の JSON-LD は、対応する `Partial` 側を正とします。`Page.cshtml` に `GroupCode` 分岐を追加して本文ロジックを押し込まないでください。
+
+`Page.cshtml` 側で JSON-LD を扱う場合も、全ページ共通の breadcrumb や canonical のような横断情報に限定し、本文の実体を知っている `Partial` の責務を上書きしないようにします。
+
 ### Template Helpers
 テンプレートヘルパーはサイトテンプレートもしくはカートテンプレートで使用できるAPI関数です。
 
