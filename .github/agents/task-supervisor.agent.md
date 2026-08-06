@@ -8,10 +8,10 @@ user-invocable: true
 disable-model-invocation: true
 model: gpt-5.6-luna (azure)
 handoffs:
-  - label: "要件を再確認"
+  - label: "要件を再確認 (Reconfirm)"
     agent: project-manager
     prompt: ".github/agent-workflow/current-task.md を読み、needs-decision に記録された論点をユーザーと確定してください。確定後は同ファイルを更新し、task-supervisor へ再度ハンドオフしてください。"
-    send: true
+    send: false
     model: gpt-5.6-sol (azure)
 ---
 

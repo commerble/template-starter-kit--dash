@@ -10,7 +10,7 @@ handoffs:
   - label: "Start Impl"
     agent: task-supervisor
     prompt: ".github/agent-workflow/current-task.md の引き渡しパッケージを読み、記録された要件と受け入れ条件に従って実装工程を開始してください。"
-    send: true
+    send: false
     model: gpt-5.6-luna (azure)
 ---
 
@@ -33,6 +33,7 @@ handoffs:
 - `.github/agent-workflow/current-task.md` 以外のファイルを作成、編集しない
 - 自分でタスク分解、実装、レビュー、検証、ビルド、同期、API、ブラウザ確認を行わない
 - frontier が空になり、ユーザーが共有理解を確認するまで引き渡しファイルを確定状態にせず、`task-supervisor` へのハンドオフを案内しない
+- `task-supervisor` から `needs-decision` で戻された場合、ユーザーの回答を受け取るまで停止し、回答なしで `task-supervisor` へ再ハンドオフしない
 - ローカル事実の調査を依頼した実装エージェントには、ファイル変更や実装を行わないよう明示する
 - 外部事実を自分で Web 調査せず、`external-fact-researcher` の根拠付き報告を用いる
 - `.knowledge/` と外部情報が競合する場合、プロジェクト固有仕様は `.knowledge/` を正とし、差異を引き渡しパッケージに記録する
@@ -49,7 +50,7 @@ handoffs:
 6. ユーザーの明示的な確認後、`.github/agent-workflow/current-task.template.md` を読み、その構造を保って `.github/agent-workflow/current-task.md` を新規作成または全置換する。前の課題の内容を残さず、全項目を満たして状態を `ready` にする。タスク一覧への追加承認は要求しない
 7. 保存内容を一度読み直し、合意内容の欠落がないことを確認してから「実装工程を開始」ハンドオフを案内する。`task-supervisor` をサブエージェントとして呼び出さない
 8. `task-supervisor` が判断を必要として状態を `needs-decision` にした場合は、ハンドオフで戻された新しいコンテキストから同ファイルを読み、論点をユーザーへ提示する
-9. ユーザー回答を同ファイルの決定事項へ反映して状態を `ready` に戻し、再度 `task-supervisor` へハンドオフする
+9. ユーザー回答を同ファイルの決定事項へ反映して状態を `ready` に戻し、ユーザーが明示的に再開を指示した後にだけ `task-supervisor` へハンドオフする
 
 ## 引き渡しパッケージ
 
