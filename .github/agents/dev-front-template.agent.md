@@ -5,7 +5,7 @@ argument-hint: "実装・修正したい画面、テンプレート、期待す�
 tools: [read, search, edit, execute]
 agents: []
 user-invocable: true
-model: gpt-5.6-luna (azure)
+model: Auto (copilot)
 ---
 
 あなたは Commerble CMS のフロントテンプレート実装を担当する専門エージェントです。`templates/**/*.cshtml` を中心に、必要な `scss/` と `src/` の変更までを一貫して行います。
