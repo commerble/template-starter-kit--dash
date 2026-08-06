@@ -12,10 +12,14 @@
         public int? PriceProductId { get; set; }
         public int? MaxLimitAmount { get; set; }
         public bool? HasMultiplePrice { get; set; }
-
         public decimal? UnitPriceWithTax { get; set; }
-        public string PriceProductExternalId1 { get; set; }
-        public string PriceProductName { get; set; }
+        public string PriceProductExternalId1 {get; set;}
+        public string PriceProductName {get; set;}
+
+        public int? TaxRoundMode { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public decimal? TaxationPrice { get; set; }
+        public decimal? Tax { get; set; }
     }
 
     public class RelatePageViewModel {
@@ -23,6 +27,13 @@
         public string Name { get; set; }
         public string Thumbnail { get; set; }
         public DateTime? PublishDate { get; set; }
+    }
+
+    void CalcTax(RelateProductViewModel product) {
+        if (product.TaxRoundMode.HasValue && product.TaxationPrice.HasValue) {
+            product.Tax = Crosswarp.Modd.Services.Pipelines.Tax.CalcTax((TaxRoundMode)product.TaxRoundMode.Value, product.TaxationPrice.Value);
+            product.UnitPriceWithTax = product.UnitPrice + product.Tax;
+        }
     }
 
     ViewModel LoadViewModel() {
@@ -48,11 +59,14 @@
                     Code = p.Code,
                     Name = p.Name,
                     Thumbnail = p.Thumbnail,
+                    PriceProductId = m.PriceProductId,
                     MaxLimitAmount = m.MaxLimitAmount,
                     HasMultiplePrice = m.HasMultiplePrice,
-                    PriceProductId = m.PriceProductId,
-                    PriceProductExternalId1 =  s.ExternalId1,
+                    PriceProductExternalId1 = s.ExternalId1,
                     PriceProductName = s.Name,
+                    UnitPrice = s.UnitPrice,
+                    TaxationPrice = s.TaxationPrice,
+                    TaxRoundMode = s.TaxRoundMode,
                 }
             ).Take(12)).ToList();
 
@@ -60,9 +74,9 @@
             Database.Query(new { Now, Next, IsPreview, code }, (db, args) => (
                 from r in db.PageRelations
                 join p in db.SitePages on r.RelateCode equals p.Code
+                join k in db.SitePageKinds on p.Kind equals k.Code
                 where r.PageCode == args.code
-                  &&  p.Kind != "product"
-                  &&  p.Kind != "productc"
+                  &&  k.GroupCode != "product"
                   &&  p.DisplayStart <= args.Now
                   && (p.DisplayEnd == null || p.DisplayEnd > args.Now)
                   && (p.IsPublished || args.IsPreview)
@@ -75,10 +89,8 @@
                 }
             )).ToList();
         
-        foreach (var p in vm.RelateProducts) {
-            if (p.PriceProductId.HasValue) {
-                p.UnitPriceWithTax = Page.Template.GetUnitPriceWithTax(p.PriceProductId.Value);
-            }
+        foreach (var product in vm.RelateProducts) {
+            CalcTax(product);
         }
 
         return vm;
