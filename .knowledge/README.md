@@ -1,13 +1,13 @@
 # .knowledge
 
-`.knowledge` は、このリポジトリで作業する際に参照する知識ベースです。
+`.knowledge` is the knowledge base to consult when working in this repository.
 
-## 構成
+## Structure
 
 ### `common/`
-Commerble テンプレート全般で使う汎用知識を格納します。
+Contains general knowledge used across Commerble templates.
 
-例:
+Examples:
 
 * `razor.md`
 * `template--front.md`
@@ -18,30 +18,30 @@ Commerble テンプレート全般で使う汎用知識を格納します。
 * `metadata--meta.xml`
 
 ### `tenant/`
-テナント固有の仕様や CMS 依存の知識を格納します。
+Contains tenant-specific specifications and CMS-dependent knowledge.
 
-例:
+Examples:
 
 * `metadata--cms.xml`
 * `cms-*`
 
 ### `repo/`
-このリポジトリ固有の運用知識やローカル確認手順を格納します。
+Contains repository-specific operational knowledge and local verification procedures.
 
-例:
+Examples:
 
 * `tools.md`
 * `browse.md`
 * `coding-rules.md`
 
-## 参照の目安
+## Reference Order
 
-1. まず `repo/` を見て、このリポジトリの運用ルールを確認する
-2. 次に `common/` を見て、テンプレートや Razor の共通仕様を確認する
-3. テナント依存の要件がある場合だけ `tenant/` を確認する
+1. First check `repo/` for the operational rules of this repository.
+2. Next check `common/` for shared template and Razor specifications.
+3. Check `tenant/` only when tenant-dependent requirements apply.
 
-## 追加ルール
+## Additional Rules
 
-* 複数案件で再利用できる内容は `common/` に置く
-* 特定テナントに閉じる内容は `tenant/` に置く
-* このスターターキット固有の手順やローカル確認方法は `repo/` に置く
+* Put content reusable across multiple projects in `common/`.
+* Put content specific to a particular tenant in `tenant/`.
+* Put procedures and local verification methods specific to this starter kit in `repo/`.

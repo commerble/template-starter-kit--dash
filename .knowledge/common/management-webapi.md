@@ -1,34 +1,34 @@
-# 管理WEBAPI
-ECデータ、CMSデータ、メタデータを作成・更新・削除するためのWEBAPIがあります。
+# Management Web API
+Web APIs are available to create, update, and delete EC data, CMS data, and metadata.
 
-各APIエンドポイントはOData(v4)で提供されます。
+Each API endpoint is provided through OData (v4).
 
-## ECデータ
+## EC Data
 
-ODataメタデータ: ./$metadata--ec.xml
-REST API URLプレフィックス: /ec
+OData metadata: ./$metadata--ec.xml
+REST API URL prefix: /ec
 
-例
+Example
 ```
 node sync.ts rest "/ec/Products"
 ```
 
-## CMSデータ
+## CMS Data
 
-ODataメタデータ: ../tenant/$metadata--cms.xml
-REST API URLプレフィックス: /cms
+OData metadata: ../tenant/$metadata--cms.xml
+REST API URL prefix: /cms
 
-例
+Example
 ```
 node sync.ts rest "/cms/SiteConfigs"
 ```
 
-## メタデータ
+## Metadata
 
-ODataメタデータ: ./$metadata--meta.xml
-REST API URLプレフィックス: /meta
+OData metadata: ./$metadata--meta.xml
+REST API URL prefix: /meta
 
-例
+Example
 ```
 node sync.ts rest "/meta/Templates"
 ```

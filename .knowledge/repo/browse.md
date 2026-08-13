@@ -1,5 +1,5 @@
-# 確認方法
+# Browsing Instructions
 
-ユーザが./_local.mdにECサイトルートURLを登録しします。
+The user registers the EC site root URL in `./_local.md`.
 
-AIエージェント等が確認する場合はこのドキュメントを参照します。
+AI agents and others should refer to this document when browsing the site.

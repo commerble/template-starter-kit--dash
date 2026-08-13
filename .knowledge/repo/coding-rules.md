@@ -1,20 +1,20 @@
-# コーディングルール
+# Coding Rules
 
-## cshtml(Razor)
-RazorはC#を書くことができますが、純粋なC#ソースでありません。同時に純粋なHTMLファイルでもありません。
-内容にはC#のコードブロック、HTML、scriptタグ内のJavaScript、sytleタグ内のCSS、その他JSONなど多様なコンテンツが混在します。
-また、VisualStudioで開発する完全なASP.NETプロジェクトとことなり、Commerbleテンプレート開発にはLSP等のインテリセンスの支援がありません。
-これらのことに留意が必要です。
-ここでは以下をコーディングルールとして定めます。
+## cshtml (Razor)
+Razor can contain C#, but it is not pure C# source. It is also not a pure HTML file.
+Its contents can mix many types of content, including C# code blocks, HTML, JavaScript inside `script` tags, CSS inside `style` tags, and JSON.
+Unlike a complete ASP.NET project developed in Visual Studio, Commerble template development does not have support from LSP or IntelliSense.
+Keep these constraints in mind.
+The following are the coding rules for this repository.
 
-### 1. 定数名はすべて大文字でフラットに定義する
-インテリセンスがないため、定数であることを判別可能にするために大文字で定義します。
-また、検索ツールで定義や参照を検索するために、class等でラップせずにフラットに定義します。
-単語の区切りには`_`を使用します。
+### 1. Define constant names in uppercase and keep them flat
+Because IntelliSense is unavailable, define constants in uppercase so they can be recognized as constants.
+Also define them flat, without wrapping them in a class, so definitions and references can be found with search tools.
+Use `_` to separate words.
 **OK**  
 ```
-// マウスのダブルクリックやキーボードショートカットの1操作で選択でき検索までがスムーズ
-// また検索結果には定義箇所と参照箇所にほぼ絞ることができる
+// A single mouse double-click or keyboard shortcut selects the name and makes searching straightforward.
+// Search results can also be narrowed mostly to the definition and reference locations.
 const string SERVICE_VALUES_REMARKS = "Remarks";
 const string SERVICE_VALUES_SUBSCRIBE = "Subscribe";
 ```
@@ -26,21 +26,21 @@ class ServiceValues {
     public static string Subscribe = "Subscribe";
 }
 // ServiceValues.Remarks
-// マウスのダブルクリックやキーボードショートカットは`.`で区切られるため
-// 1ショットで選択できるのはServiceValuesかRemarksのいずれかになる
-// また、ServiceValuesやRemarksだけでは、検索結果に望まない行が含まれてくる
+// Because mouse double-clicks and keyboard shortcuts treat `.` as a separator,
+// a single action selects either ServiceValues or Remarks.
+// Searching for only ServiceValues or Remarks also returns unwanted lines.
 ```
 
-### 2. クラスはPOCOに近づける
-RazorはテンプレートテキストをC#ソースにコンパイルします。この時、1つのラッパークラスが自動で生成され、その内部にテンプレートテキストが展開されるため、Razorテンプレート内に記載したクラスはすべてネストクラスとなります。
+### 2. Keep classes close to POCOs
+Razor compiles template text into C# source. During this process, one wrapper class is generated automatically and the template text is expanded inside it, so every class written in a Razor template becomes a nested class.
 
-`Page`や`ViewBag`、`Database`といった実装に不可欠なヘルパーオブジェクトは、すべてラッパークラスのプロパティとして宣言されています。
+Essential helper objects such as `Page`, `ViewBag`, and `Database` are all declared as properties of the wrapper class.
 
-また、ラッパークラスのクラス名はランダムに自動生成されるため、特定できずネストクラスにラッパークラスを型付で渡せません。
+The wrapper class name is also generated randomly, so it cannot be identified and the wrapper class cannot be passed as a typed value to a nested class.
 
-そのため、ネストクラスのメソッドからヘルパーオブジェクトや共有テンプレートに定義した独自のヘルパーメソッドを適切に呼ぶことができません。
+As a result, methods in nested classes cannot properly call helper objects or custom helper methods defined in shared templates.
 
-ネストクラスはデータ構造の定義と、ネストクラス内の値のみを使用した多少のメソッドのみ定義し、ラッパークラスのメソッドとして操作メソッドを用意します。
+Use nested classes only to define data structures and methods that use values within the nested class. Define operation methods as methods of the wrapper class.
 
 ```
 class ViewModel {
@@ -48,7 +48,7 @@ class ViewModel {
     ...
     // NG
     public static ViewModel Create() {
-        // ここではDatabaseが見えない
+        // Database is not visible here.
         return Database.Single(...);
     }
 }
@@ -59,35 +59,36 @@ ViewModel LoadViewModel() {
 }
 ```
 
-このルールに則り、コンストラクタで初期化するようなコードも避け、ファクトリーメソッドはネストクラス内に用意するのではなく、ラッパークラスのメソッドとして定義しましょう。
-※ GoやRustで実装した見た目に近くなります。
+Following this rule, also avoid code that initializes values in a constructor. Define factory methods as methods of the wrapper class rather than providing them inside nested classes.
+This makes the implementation look somewhat similar to code written in Go or Rust.
 
-コンストラクタが必要不可欠な場合は、必ずデフォルトコンストラクタを用意します。これは、コマーブルRazor内で使用できる`Jil.JSON`の仕様上、シリアライズ処理時に空インスタンスを生成するためです。Jil内ではtry-catchで処理されているため、実行時エラーにはなりませんが、コマーブル社員がデバッグ作業を行う際に、このときに発生する例外を補足してしまい難航するためご協力をお願いいたします。
+If a constructor is essential, always provide a default constructor. This is because `Jil.JSON`, which can be used in Commerble Razor, creates an empty instance during serialization.
+Jil handles this with try-catch, so it does not become a runtime error. However, Commerble employees may catch the exception generated at this point while debugging, making the investigation more difficult. Please follow this rule.
 
 
-### 3. 修飾は控えめでよい
+### 3. Keep modifiers modest
 
-RazorはテンプレートテキストをC#ソースにコンパイルします。この時、1つのクラスが自動で生成され、その内部にテンプレートテキストが展開されるため、Razorテンプレート内に記載したクラスはすべてネストクラスとなります。そのためグローバル空間等を汚染することはありません。
+Razor compiles template text into C# source. During this process, one class is generated automatically and the template text is expanded inside it, so every class written in a Razor template becomes a nested class. Therefore, it does not pollute the global namespace.
 
-また、先のPOCOルールにより、セッターをプライベートに閉じるということもないため、細かい`private`や`protected`は不要です。
+Also, the POCO rule above means that setters are not made private, so fine-grained use of `private` and `protected` is unnecessary.
 
-`sealed`に関しては、JITレイヤーでの共変性チェックの回避が見込めるため、積極的につけることをお勧めします。
+For `sealed`, active use is recommended because it may avoid covariance checks in the JIT layer.
 
-### 4. Databaseオブジェクトを使用してDBアクセスする場合はLINQ式で記述する
+### 4. Use query syntax for database access through the `Database` object
 
-DBアクセスが発生しうるクエリはLINQ式で、DBから取得したデータをC# RAM上で処理する場合はFluent APIを用います。
+Write queries that may perform database access using LINQ query syntax. Use the Fluent API when processing data retrieved from the database in C# RAM.
 
-あべこべでも実行上は問題ありませんが、パフォーマンスチューニングやデバッグ中の認知負荷を軽減するためにかき分けます。
+The reverse arrangement does not cause an execution problem, but keep them distinct to reduce cognitive load during performance tuning and debugging.
 
-NULL伝搬オペレーターなどExpression式として扱えないシンタックスシュガー等など、SQLに展開される部分とCILで実行される部分でかき分けが常に発生するため両者の判定容易性は常に重要です。
+Because syntax sugar such as the null-propagating operator cannot be handled as an expression, there is always a distinction between the portion expanded into SQL and the portion executed as CIL. It is therefore important to make the two easy to distinguish.
 
-### 5. ifやforのブレースはK&Rスタイル
+### 5. Use the K&R style for `if` and `for` braces
 
-C#の慣習からはズレますが、K&Rを用います。LSPやインテリセンスがない関係上、Razorの構文エラーはエラーとなった行の周辺を抜粋して出力されます。 なるべくRazorロジックコード上に情報量の少ない行が発生しないように書くと特定がスムーズです。
+Although this differs from C# conventions, use K&R style. Because LSP and IntelliSense are unavailable, Razor syntax errors output an excerpt around the line where the error occurred. Write the Razor logic so that it contains as few low-information lines as possible; this makes the error easier to locate.
 
-### 6. ToList, ToArray, ToDictionaryが使えるならそちらを優先する
+### 6. Prefer `ToList`, `ToArray`, or `ToDictionary` when applicable
 
-1回しかAdd等をしないのであれば、ToList等を使います。
+If you only call `Add` or a similar method once, use `ToList` or a similar conversion method.
 
 **OK**  
 ```
@@ -102,14 +103,14 @@ var breadcrumbItems =
 
 **NG**
 ```
-var breadcrumbItems = new List<Dictionary<string, object>>(vm.Breadcrumbs.Count); // 空で先に作るのであれば可能な限りキャパシティを指定する
+var breadcrumbItems = new List<Dictionary<string, object>>(vm.Breadcrumbs.Count); // If creating it empty first, specify the capacity whenever possible.
 breadcrumbItems.AddRange(vm.Breadcrumbs.Select((b,i) => new Dictionary<string, object> {
     ["@type"] = "ListItem",
     ["position"] = i + 1,
     ["name"] = b.name,
     ["item"] = urlPrefix + b.url
 }));
-// 1回しかAddRangeししていない
+// AddRange is called only once.
 ```
 
 **OK**  

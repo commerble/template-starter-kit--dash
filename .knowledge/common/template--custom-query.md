@@ -1,17 +1,17 @@
-# カスタムクエリテンプレート
-カスタムクエリテンプレートの拡張子はcsxであり、C#スクリプト記法を使用します。
-ルートスコープに存在する終端セミコロンの無い式を最終的な結果として返却します。
+# Custom Query Templates
+Custom query templates use the `.csx` extension and C# script syntax.
+The expression without a terminating semicolon in the root scope is returned as the final result.
 
-## テンプレート名
-本リポジトリでは各テンプレートファイルはフォルダ分けされて管理されていますが、Commerbleに同期する際はtemplatesフォルダより下層のフォルダ名が結合したフラットな名称で登録されます。
+## Template Names
+Template files are organized in folders in this repository, but are registered in Commerble with a flat name formed by joining the folder names below the `templates` folder when synchronized.
 
-例：
+Example:
 * templates/Query/Orders.csx -> QueryOrders
 
-また、テンプレートファイル名に使用可能な文字列は `[a-zA-Z][a-zA-Z0-9_]*` のため、ASP.NETで規範的な部分ビューのファイル名に `_` プレフィックスを付与するルールは避ける必要があります。
+Template file names must match `[a-zA-Z][a-zA-Z0-9_]*`. Therefore, do not follow the ASP.NET convention of prefixing partial view file names with `_`.
 
 ## Request Object
-現リクエストのSystem.Net.Http.HttpRequestMessageが取得できます。
+The current request's `System.Net.Http.HttpRequestMessage` is available.
 
 ```csx
 using System;
@@ -24,11 +24,11 @@ var parameter = qs.GetValues("s") ?? Array.Empty<string>();
 
 ## Database Object
 
-`Database`オブジェクトを使用することで、CommerbleのCMS DB、EC DBの双方に対してReadクエリを発行し、データを検索・取得できます。
+The `Database` object can issue read queries against both Commerble's CMS DB and EC DB to search and retrieve data.
 
 ### Database.CMS
 
-CMS DBに対して読み取り操作を行えます。`IEnumerable<TResult>`を取得する`Query`メソッドと`TResult`を取得する`Single`メソッドを利用できます。フロントテンプレートと異なりキャッシュされません。
+You can read from the CMS DB using the `Query` method to retrieve `IEnumerable<TResult>` and the `Single` method to retrieve `TResult`. Unlike front templates, the results are not cached.
 
 ```cshtml
 @{
@@ -51,11 +51,11 @@ CMS DBに対して読み取り操作を行えます。`IEnumerable<TResult>`を�
 }
 ```
 
-CMS DBスキーマについては[$metadata--cms.xml](./$metadata--cms.xml)を参照してください。
+See [$metadata--cms.xml](./$metadata--cms.xml) for the CMS DB schema.
 
 ### Database.EC
-フロントテンプレートと異なりEC DBにフルの読み取り操作が行えます。
-`IEnumerable<TResult>`を取得する`Query`メソッドと`TResult`を取得する`Single`メソッドを利用できます。
+Unlike front templates, you can perform full read operations on the EC DB.
+You can use the `Query` method to retrieve `IEnumerable<TResult>` and the `Single` method to retrieve `TResult`.
 
 ```cshtml
 @{
@@ -78,29 +78,29 @@ CMS DBスキーマについては[$metadata--cms.xml](./$metadata--cms.xml)を�
 }
 ```
 
-EC DBスキーマについては[$metadata--ec.xml](./$metadata--ec.xml)を参照してください。
+See [$metadata--ec.xml](./$metadata--ec.xml) for the EC DB schema.
 
-## 実行方法
+## Execution
 
-APIエンドポイントを呼び出し実行できます。レスポンスは`$format`クエリパラメータによりJSONとCSVを選択できます。ただし、CSVを利用する場合は、ネストのないフラットなTResultの配列 `TResult[]`もしくは、string辞書の配列`IDictionary<string, string>[]`である必要があります。
+You can execute a template by calling its API endpoint. Select JSON or CSV for the response with the `$format` query parameter. For CSV, the result must be a flat, non-nested `TResult[]` or an array of string dictionaries, `IDictionary<string, string>[]`.
 
 
 ```pwsh
-# .envファイルを読み込む
+# Load the .env file
 gci . | ?{ $_.Name -eq '.env' } | get-content | ?{ $_ -notlike '#*'} | %{ $key, $value = $_.split('=', 2); set-content env:\$key $value; }
 
-# APIエンドポイント
+# API endpoint
 $ep = $env:CBAPI_ENDPOINT
 
-# API認証情報
+# API credentials
 $c = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:CBAPI_USERNAME, (ConvertTo-SecureString $env:CBAPI_PASSWORD -AsPlainText -Force)
 
-# 実行テンプレート
+# Template to execute
 $templateName = "QueryOrders"
 
-# レスポンスフォーマット
+# Response format
 $format = "json" ## or "csv"
 
-# APIコール
+# API call
 irm "$ep/query/render?name=$templateName&`$format=$format" -Credential $c
 ```

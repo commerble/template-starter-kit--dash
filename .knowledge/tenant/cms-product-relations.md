@@ -1,54 +1,54 @@
-# CMS商品ページSKU関連データガイド
+# CMS Product Page SKU Relations Guide
 
-CMS 上で商品ページに SKU を陳列する際の基礎情報と判断手順をまとめる。
+This guide summarizes the basic information and decision process for displaying SKUs on product pages in CMS.
 
-ページ同士を関連付ける用途は [cms-page-relations.md](d:\templates\template-starter-kit--dash\.knowledge\cms-page-relations.md) を参照する。
+For relating pages to one another, see [cms-page-relations.md](d:\templates\template-starter-kit--dash\.knowledge\cms-page-relations.md).
 
-## 対象エンティティ
+## Target Entities
 
-CMS OData は `/cms` 配下を使用する。
+CMS OData uses the `/cms` path.
 
 - `SitePages`
-  - ページ本体。
-  - 主キーは `Code`。
-  - 主な項目: `Code`, `Kind`, `Name`。
+  - Page data.
+  - The primary key is `Code`.
+  - Main fields: `Code`, `Kind`, `Name`.
 - `SitePageKinds`
-  - ページ種別定義。
-  - 主な項目: `Code`, `GroupCode`, `Partial`。
+  - Page type definitions.
+  - Main fields: `Code`, `GroupCode`, `Partial`.
 - `ProductRelations`
-  - 商品ページと商品明細 (`ProductDetail.ExternalId1`) の関連。
-  - 主キーは `ExternalId1 + PageCode`。
-  - 主な項目: `PageCode`, `ExternalId1`, `DisplayOrder`。
+  - Relations between product pages and product details (`ProductDetail.ExternalId1`).
+  - The primary key is `ExternalId1 + PageCode`.
+  - Main fields: `PageCode`, `ExternalId1`, `DisplayOrder`.
 
-## このドキュメントの対象
+## Scope of This Guide
 
-`ProductRelations` は商品ページに SKU を陳列するときに使う。
+Use `ProductRelations` to display SKUs on product pages.
 
-- `PageCode` は陳列先の商品ページを表す。
-- `ExternalId1` は陳列する SKU を表す。
-- 1つの商品ページに複数 SKU を並べたい場合は、同じ `PageCode` に対して複数レコードを持たせる。
+- `PageCode` identifies the product page where the SKU is displayed.
+- `ExternalId1` identifies the SKU to display.
+- To display multiple SKUs on one product page, create multiple records with the same `PageCode`.
 
-関連先が別ページで表現される場合は `ProductRelations` ではなく `PageRelations` を使う。[cms-page-relations.md](d:\templates\template-starter-kit--dash\.knowledge\cms-page-relations.md) を参照する。
+When the related item is represented by another page, use `PageRelations` instead of `ProductRelations`. See [cms-page-relations.md](d:\templates\template-starter-kit--dash\.knowledge\cms-page-relations.md).
 
-## まず確認すること
+## Initial Checks
 
-商品ページに SKU を陳列するときは、次の順で確認すると判断しやすい。
+When displaying SKUs on a product page, check the following in order:
 
-1. 対象ページが `SitePages` にどの `Code` と `Kind` で存在するか確認する。
-2. `SitePageKinds` で対象 `Kind` の `GroupCode` と `Partial` を確認する。
-3. `/meta/Routings` で該当テンプレートの URL パターンを確認し、`SitePages.Code` と実 URL の対応を把握する。
-4. 既存の `ProductRelations` を確認し、同系統データの持ち方を揃える。
-5. 陳列対象 SKU の `ExternalId1` を確認する。
+1. Check which `Code` and `Kind` identify the target page in `SitePages`.
+2. In `SitePageKinds`, check the `GroupCode` and `Partial` for the target `Kind`.
+3. Check the URL pattern for the relevant template in `/meta/Routings` and understand the mapping between `SitePages.Code` and the actual URL.
+4. Check existing `ProductRelations` and follow the same data structure for related data.
+5. Check the `ExternalId1` of the SKU to display.
 
-## `ProductRelations` の見方
+## Understanding `ProductRelations`
 
-`ProductRelations` は商品ページと商品明細を結びつける。
+`ProductRelations` links a product page to a product detail.
 
-- `PageCode`: 商品ページ
-- `ExternalId1`: 商品明細側の識別子
-- `DisplayOrder`: 表示順
+- `PageCode`: Product page.
+- `ExternalId1`: Product detail identifier.
+- `DisplayOrder`: Display order.
 
-例:
+Example:
 
 ```json
 {
@@ -58,27 +58,27 @@ CMS OData は `/cms` 配下を使用する。
 }
 ```
 
-上記は `/item/w002nb` の商品ページに SKU `w002nb-blk-m` を陳列する関係を表す。
+The example above represents displaying SKU `w002nb-blk-m` on the `/item/w002nb` product page.
 
-## `SitePages.Code` とルーティングの見方
+## Understanding `SitePages.Code` and Routing
 
-商品ページの陳列先は、見た目の URL ではなく `SitePages.Code` を基準に扱う。
+For product page display targets, use `SitePages.Code` as the basis rather than the visible URL.
 
-例えば `TemplateName = 'Page'` のルーティングに `item/{Code}` があれば、商品ページは `/item/...` の形式で `SitePages.Code` に登録される。
+For example, if the routing for `TemplateName = 'Page'` contains `item/{Code}`, product pages are registered in `SitePages.Code` using the `/item/...` format.
 
-`ProductRelations.PageCode` にはこの `SitePages.Code` を使用する。
+Use this `SitePages.Code` value for `ProductRelations.PageCode`.
 
-## 投入前の注意点
+## Checks Before Insertion
 
-- 既存データと同じ並び方を優先し、`DisplayOrder` の付け方を揃える。
-- 同じ `ExternalId1 + PageCode` を再投入すると重複になるため、事前に既存レコードを確認する。
-- 新規投入前に、対象のページコードが `SitePages` に存在することを確認する。
-- 新規投入前に、陳列対象 SKU の `ExternalId1` が正しいことを確認する。
-- 参照先が SKU ではなく別ページなら `ProductRelations` ではなく `PageRelations` を使う。
+- Prefer the same ordering as existing data and follow the existing `DisplayOrder` convention.
+- Check existing records first, because inserting the same `ExternalId1 + PageCode` again creates a duplicate.
+- Before inserting new data, confirm that the target page code exists in `SitePages`.
+- Before inserting new data, confirm that the `ExternalId1` of the SKU to display is correct.
+- If the target is another page rather than a SKU, use `PageRelations` instead of `ProductRelations`.
 
-## 確認コマンド例
+## Example Inspection Commands
 
-`node sync.ts rest ...` を使うと npm の起動メッセージが混ざらず扱いやすい。
+Using `node sync.ts rest ...` avoids npm startup messages and makes the output easier to process.
 
 ```powershell
 node .\sync.ts rest get "/meta/Routings?`$filter=TemplateName eq 'Page'&`$select=Id,Name,Pattern,TemplateName"
@@ -87,16 +87,16 @@ node .\sync.ts rest get "/cms/SitePages?`$select=Code,Kind,Name&`$orderby=Kind,C
 node .\sync.ts rest get "/cms/ProductRelations?`$select=PageCode,ExternalId1,DisplayOrder&`$orderby=PageCode,ExternalId1"
 ```
 
-必要に応じて `$filter=startswith(PageCode,'/item/')` や `$filter=PageCode eq '/item/xxx'` のように絞り込む。
+Filter as needed, for example with `$filter=startswith(PageCode,'/item/')` or `$filter=PageCode eq '/item/xxx'`.
 
-## 調査の進め方
+## Investigation Workflow
 
-新しい商品ページ SKU 陳列データを扱うときは、以下の進め方を基本とする。
+Use the following workflow when handling new product page SKU display data:
 
-1. 対象ページの `SitePages.Code` を特定する。
-2. `SitePages` と `SitePageKinds` を確認し、ページ種別と Partial を特定する。
-3. 既存の `ProductRelations` から同種の登録例を探す。
-4. 使用する `ExternalId1` と `DisplayOrder` を決める。
-5. 重複確認後に `POST` または `PATCH` を行う。
+1. Identify the target page's `SitePages.Code`.
+2. Check `SitePages` and `SitePageKinds` to identify the page type and `Partial`.
+3. Find similar registration examples in existing `ProductRelations`.
+4. Decide which `ExternalId1` and `DisplayOrder` to use.
+5. Check for duplicates, then use `POST` or `PATCH`.
 
-この流れにしておくと、商品ページごとの SKU 陳列ルールを既存データに合わせて判断しやすい。
+This workflow makes it easier to align SKU display rules for each product page with existing data.

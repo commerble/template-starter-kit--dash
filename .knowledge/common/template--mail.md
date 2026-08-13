@@ -1,22 +1,22 @@
-# メールテンプレート
-メールテンプレートの拡張子はcshtmlであり、Razor記法を使用します。Razorについては [razor.md](./razor.md) を参照してください。
+# Mail Templates
+Mail templates use the `.cshtml` extension and Razor syntax. See [razor.md](./razor.md) for details about Razor.
 
-メールテンプレートとフロントテンプレートは双方ともに拡張子がcshtmlであり、リポジトリ内のファイル情報から区別する方法はフォルダの配置ルールのみです。メールテンプレートは必ず、`sync.js`の`mailTemplatePrefix`で設定されたフォルダに配置します。大抵の場合は`Mail`が設定されており、`templates/Mail/` 配下のcshtmlファイルはすべてメールテンプレートとみなします。
+Mail and front templates both use the `.cshtml` extension, so their folder placement is the only way to distinguish them in the repository. Mail templates must be placed in the folder configured by `mailTemplatePrefix` in `sync.js`. This is usually set to `Mail`, so all `.cshtml` files under `templates/Mail/` are treated as mail templates.
 
-## テンプレート名
-本リポジトリでは各テンプレートファイルはフォルダ分けされて管理されていますが、Commerbleに同期する際はtemplatesフォルダより下層のフォルダ名が結合したフラットな名称で登録されます。
+## Template Names
+Template files are organized in folders in this repository, but are registered in Commerble with a flat name formed by joining the folder names below the `templates` folder when synchronized.
 
-例：
+Examples:
 * templates/Mail/CustomerOrderPc.cshtml -> MailCustomerOrderPc
 * templates/Mail/AdminInquiryContact.cshtml -> MailAdminInquiryContact
 
-また、テンプレートファイル名に使用可能な文字列は `[a-zA-Z][a-zA-Z0-9_]*` のため、ASP.NETで規範的な部分ビューのファイル名に `_` プレフィックスを付与するルールは避ける必要があります。
+Template file names must match `[a-zA-Z][a-zA-Z0-9_]*`. Therefore, do not follow the ASP.NET convention of prefixing partial view file names with `_`.
 
-## 共有テンプレート
-メールテンプレートにフロントテンプレートのようなCommerble内部で自動的に文字列結合される共有テンプレート機能は存在しません。 しかし、`sync.js` で疑似的に再現されており、 `sync.js`の`mailSharedTemplatePath`設定で指定されたテンプレートが各メールテンプレートの先頭に文字列結合された上で同期されるため共通ロジックはこのファイルに記載します。
+## Shared Templates
+Mail templates do not have a shared-template feature that automatically concatenates templates inside Commerble as front templates do. However, `sync.js` simulates this behavior: the template specified by the `mailSharedTemplatePath` setting in `sync.js` is concatenated to the beginning of each mail template before synchronization. Put shared logic in that template.
 
 ## ViewBag.Parameters
-メールテンプレートのレンダリング引数は`ViewBag.Parameters`にstringの辞書として格納されます。
+Mail template rendering arguments are stored in `ViewBag.Parameters` as a dictionary of strings.
 
 ```cshtml
 @{
@@ -26,11 +26,11 @@
 
 ## Database Object
 
-`Database`オブジェクトを使用することで、CommerbleのCMS DB、EC DBの双方に対してReadクエリを発行し、データを検索・取得できます。
+The `Database` object can issue read queries against both Commerble's CMS DB and EC DB to search and retrieve data.
 
 ### Database.CMS
 
-CMS DBに対して読み取り操作を行えます。`IEnumerable<TResult>`を取得する`Query`メソッドと`TResult`を取得する`Single`メソッドを利用できます。フロントテンプレートと異なりキャッシュされません。
+You can read from the CMS DB using the `Query` method to retrieve `IEnumerable<TResult>` and the `Single` method to retrieve `TResult`. Unlike front templates, the results are not cached.
 
 ```cshtml
 @{
@@ -53,11 +53,11 @@ CMS DBに対して読み取り操作を行えます。`IEnumerable<TResult>`を�
 }
 ```
 
-CMS DBスキーマについては[$metadata--cms.xml](./$metadata--cms.xml)を参照してください。
+See [$metadata--cms.xml](./$metadata--cms.xml) for the CMS DB schema.
 
 ### Database.EC
-フロントテンプレートと異なりEC DBにフルの読み取り操作が行えます。
-`IEnumerable<TResult>`を取得する`Query`メソッドと`TResult`を取得する`Single`メソッドを利用できます。
+Unlike front templates, you can perform full read operations on the EC DB.
+You can use the `Query` method to retrieve `IEnumerable<TResult>` and the `Single` method to retrieve `TResult`.
 
 ```cshtml
 @{
@@ -80,18 +80,18 @@ CMS DBスキーマについては[$metadata--cms.xml](./$metadata--cms.xml)を�
 }
 ```
 
-EC DBスキーマについては[$metadata--ec.xml](./$metadata--ec.xml)を参照してください。
+See [$metadata--ec.xml](./$metadata--ec.xml) for the EC DB schema.
 
-## 実行方法
+## Execution
 
-レンダリングAPIエンドポイントを呼び出すことで、実際にメールを送信することなくレンダリング結果のみを確認できます。
+You can call the rendering API endpoint to inspect the rendered result without actually sending an email.
 
 
 ```pwsh
-# 実行テンプレート
+# Template to render
 $templateName = "MailCustomerOrderPc"
 
-# リクエストボディ
+# Request body
 $body = @{
     RequestState = @{
         Parameters = @{ orderId = "3" };
@@ -115,8 +115,8 @@ $body = @{
 
 $json = $body | ConvertTo-Json
 
-# APIコール
-## AIエージェントはnode sync.ts restを実行するほうがnpmによる出力の影響がない
+# API call
+## AI agents should use node sync.ts rest to avoid npm-related output
 ## node sync.ts rest post "/mail/render" "$json"
 npm run rest post "/mail/render" "$json"
 ```

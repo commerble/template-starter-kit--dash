@@ -1,14 +1,14 @@
 
 # Template Helpers
-テンプレートヘルパーはサイトテンプレートもしくはカートテンプレートで使用できるAPI関数です。
+Template helpers are API functions available in site and cart templates.
 
-テンプレートヘルパーは標準でいくつかのAPI関数が利用できますが、有償カスタムにてカスタムヘルパーを作成できます。
+Several API functions are available by default, and custom helpers can be created as paid customizations.
 
 ## SystemTime
 
-### 型：() => DateTime
+### Type: `() => DateTime`
 
-### 例：
+### Example:
 ```
 @{
     var now = Page.Template.SystemTime();
@@ -16,33 +16,34 @@
 ```
 
 ## Now
-`SystemTime`を取得します。
-### 型：DateTime
+Gets the `SystemTime` value.
+Gets the `SystemTime` value.
+### Type: `DateTime`
 
-### 例：
+### Example:
 ```
 @{
-    var now = Page.Template.Now; // Page.Template.SystemTime()と等価
+    var now = Page.Template.Now; // Equivalent to Page.Template.SystemTime()
 }
 ```
 
 ## TruncateNow
-端数処理を行った日時を取得します。
-### 型：(int? = null) => DateTime
+Gets the current time with truncation applied.
+### Type: `(int? = null) => DateTime`
 
-### 例：
+### Example:
 ```
 @{
-    var defaultTruncated = Page.Template.TruncateNow(); // 標準設定 1分刻み
-    var specificTruncated = Page.Template.TruncateNow(300); // 5分刻み
+    var defaultTruncated = Page.Template.TruncateNow(); // Default: one-minute increments
+    var specificTruncated = Page.Template.TruncateNow(300); // Five-minute increments
 }
 ```
 
 ## RestartCounter
-再起動カウンタ値を取得します。
-### 型：int
+Gets the restart counter value.
+### Type: `int`
 
-### 例：
+### Example:
 ```
 @{
     var rc = Page.Template.RestartCounter;
@@ -50,15 +51,15 @@
 ```
 
 ## SecuredHost
-セキュアホストを取得します。  
-商品ページは`http://www.example.com`で提供し、カート以降を`https://ssl.example.com`などのサブドメインで提供する時代がありました。  
-SecuredHostという名称はHTTPページとHTTPSページが別ドメインで混在していたこの時代の名残です。  
-この時代ではホストとSSLを使用するセキュアホストを区別する必要がありましたが、現代ではHTTPSのみで提供することが一般的でホストとセキュアホストが区別されることはありません。
+Gets the secure host.
+There was a time when product pages were served from `http://www.example.com` and later cart pages from a subdomain such as `https://ssl.example.com`.
+The name `SecuredHost` is a remnant of that period when HTTP and HTTPS pages used different domains.
+At that time, it was necessary to distinguish the host from the SSL-enabled secure host. Today, HTTPS-only delivery is common, so the host and secure host are not distinguished.
 
-### 型：(bool isSecure) => string
-SSLを使用するかを真偽値で渡し、ホストURLを取得します。
+### Type: `(bool isSecure) => string`
+Passes whether to use SSL as a Boolean and returns the host URL.
 
-### 例：
+### Example:
 ```
 @{
     string host;
@@ -67,10 +68,10 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 }
 ```
 
-### 型：(string routeName) => string
-指定したルート情報のSSL必須フラグに基づきホストURLを取得します。
+### Type: `(string routeName) => string`
+Returns the host URL based on the SSL-required flag for the specified route.
 
-### 例：
+### Example:
 ```
 @{
     string host;
@@ -79,10 +80,10 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 }
 ```
 
-### 型：(HttpContextBase context, bool isSecure) => string
-現在使用しているポート番号を引き継いでホストURLを取得します。
+### Type: `(HttpContextBase context, bool isSecure) => string`
+Returns the host URL while preserving the port number currently in use.
 
-### 例：
+### Example:
 ```
 @{
     string host;
@@ -92,11 +93,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## SecuredLink
-ルート名とルートパラメータを指定して絶対URLを生成します。
+Generates an absolute URL from a route name and route parameters.
 
-### 型：(string routeName, object parameters) => string
+### Type: `(string routeName, object parameters) => string`
 
-### 例：
+### Example:
 ```
 @{
     var action = Page.Template.SecuredLink("ModdPurchase", new { cart=cart.CartDefinition.CartId, action="Index"} );
@@ -104,12 +105,12 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## Cache
-キャッシュデータがある場合はそれを取得し、ない場合はデータを生成します。
+Returns cached data when available; otherwise, generates the data.
 
-### 型： (string cacheKey, int expireSeconds, Func<TResult> cacheGetter) => TResult
-キャッシュ時間（秒）を指定してキャッシュします。
+### Type: `(string cacheKey, int expireSeconds, Func<TResult> cacheGetter) => TResult`
+Caches the result for the specified number of seconds.
 
-### 例：
+### Example:
 ```
 @{
     var cachedRandom = Page.Template.Cache("cachekey", 300, () => {
@@ -119,10 +120,10 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 }
 ```
 
-### 型： (string cacheKey,  DateTime expireTime, Func<TResult> cacheGetter) => TResult
-指定日時までキャッシュします。
+### Type: `(string cacheKey, DateTime expireTime, Func<TResult> cacheGetter) => TResult`
+Caches the result until the specified time.
 
-### 例：
+### Example:
 ```
 @{
     var next = Page.Template.TruncateNow(300).AddSeconds(300);
@@ -133,10 +134,10 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 }
 ```
 
-### 型： (TCache cacheKey, int expireSeconds, Func<TResult> cacheGetter) => TResult
-キャッシュ時間（秒）を指定してキャッシュします。
+### Type: `(TCache cacheKey, int expireSeconds, Func<TResult> cacheGetter) => TResult`
+Caches the result for the specified number of seconds.
 
-### 例：
+### Example:
 ```
 @{
     var keyword = "keyword";
@@ -148,10 +149,10 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 }
 ```
 
-### 型： (TCache cacheKey,  DateTime expireTime, Func<TResult> cacheGetter) => TResult
-指定日時までキャッシュします。
+### Type: `(TCache cacheKey, DateTime expireTime, Func<TResult> cacheGetter) => TResult`
+Caches the result until the specified time.
 
-### 例：
+### Example:
 ```
 @{
     var keyword = "keyword";
@@ -164,10 +165,10 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 }
 ```
 
-### 型：(TCache cacheKey) => TResult
-キャッシュした値を取得します。存在しない場合は`default(TResult)`を返します。
+### Type: `(TCache cacheKey) => TResult`
+Returns the cached value, or `default(TResult)` if no cached value exists.
 
-### 例：
+### Example:
 ```
 @{
     var keyword = "keyword";
@@ -177,15 +178,15 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetModdUser
-ユーザ情報を取得します。 認証情報等を持つため、本番環境で`ModdMembershipUser`をそのままJSON等にシリアライズすることは避ける必要があります。
+Gets user information. Because it contains credentials and other sensitive information, avoid serializing `ModdMembershipUser` directly to JSON or similar formats in production.
 
-### 型：() => ModdMembershipUser
+### Type: `() => ModdMembershipUser`
 
-### 例：
+### Example:
 ```
 @{
     var user = Page.Template.GetModdUser();
-    /* ModdMembershipUserの構造
+    /* ModdMembershipUser structure
     {
         IsAnonymous: bool,
         IsApproved: bool,
@@ -236,11 +237,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetProduct
-内部商品IDを指定し、商品情報の取得します。
+Gets product information for the specified internal product ID.
 
-### 型：(int productId) => Product
+### Type: `(int productId) => Product`
 
-### 例：
+### Example:
 ```
 @{
     var product = Page.Template.GetProduct(1);
@@ -248,7 +249,7 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
     {
         ProductId: int,
         Name: string,
-        ExternalId: string, // ExternalId1と等価
+        ExternalId: string, // Equivalent to ExternalId1
         ExternalId1: string,
         ExternalId2: string,
         ExternalId3: string,
@@ -308,11 +309,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetProductAmount
-内部商品IDを指定し、商品の販売可能数を取得します。
+Gets the available quantity for the specified internal product ID.
 
-### 型：(int productId) => int
+### Type: `(int productId) => int`
 
-### 例：
+### Example:
 ```
 @{
     var stock = Page.Template.GetProductAmount(1);
@@ -320,11 +321,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetProductSalesPattern
-内部商品IDを指定し、販売パターンの取得します。
+Gets the sales pattern for the specified internal product ID.
 
-### 型：(int productId) => SalesPattern
+### Type: `(int productId) => SalesPattern`
 
-### 例：
+### Example:
 ```
 @{
     var salesPattern = Page.Template.GetProductSalesPattern(1);
@@ -359,11 +360,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetPointChargeRate
-内部商品IDを指定し、商品のポイント還元率を取得します。
+Gets the product's points reward rate for the specified internal product ID.
 
-### 型：(int productId) => int
+### Type: `(int productId) => int`
 
-### 例：
+### Example:
 ```
 @{
     var rate = Page.Template.GetPointChargeRate(1);
@@ -371,11 +372,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## CanReserveRequest
-内部商品IDを指定し、仮予約可能な商品かを判定します。
+Determines whether the specified internal product ID can be reserved.
 
-### 型：(int productId) => bool
+### Type: `(int productId) => bool`
 
-### 例：
+### Example:
 ```
 @{
     var reservable  = Page.Template.CanReserveRequest(1);
@@ -383,11 +384,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetUnitPriceWithTax
-内部商品IDを指定し、商品の税込価格を計算します。
+Calculates the tax-included price for the specified internal product ID.
 
-### 型：(int productId) => decimal
+### Type: `(int productId) => decimal`
 
-### 例：
+### Example:
 ```
 @{
     var price = Page.Template.GetUnitPriceWithTax(1);
@@ -395,11 +396,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetDiscountPriceWithTax
-内部商品IDと割引率(%)を指定し、商品の税込割引額を計算します。
+Calculates the tax-included discount amount using the internal product ID and discount rate (%).
 
-### 型：(int productId, int discountRate) => decimal
+### Type: `(int productId, int discountRate) => decimal`
 
-### 例：
+### Example:
 ```
 @{
     var discount = Page.Template.GetDiscountPriceWithTax(1, 30);
@@ -407,23 +408,23 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetDiscountedPriceWithTax
-内部商品IDと割引率(%)を指定し、割引後の税込価格を計算します。
+Calculates the tax-included price after discount using the internal product ID and discount rate (%).
 
-### 型：(int productId, int discountRate) => decimal
+### Type: `(int productId, int discountRate) => decimal`
 
-### 例：
+### Example:
 ```
 @{
-    var price = Page.Template.GetDiscountPriceWithTax(1, 30); // 3割引、30%オフ
+    var price = Page.Template.GetDiscountPriceWithTax(1, 30); // 30% discount
 }
 ```
 
 ## GetMakerPriceWithTax
-内部商品IDと商品のメーカー希望小売価格を指定し、税込額を計算します。
+Calculates the tax-included amount using the internal product ID and the manufacturer's suggested retail price.
 
-### 型：(int productId, decimal price) => decimal
+### Type: `(int productId, decimal price) => decimal`
 
-### 例：
+### Example:
 ```
 @{
     var price = Page.Template.GetMakerPriceWithTax(1, 1000m);
@@ -431,11 +432,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetProductPaymentMethods
-内部商品IDを指定し、商品の利用可能な決済方法一覧を取得します。
+Gets the available payment methods for the specified internal product ID.
 
-### 型：(int productId) => IEnumerable<PaymentMethod>
+### Type: `(int productId) => IEnumerable<PaymentMethod>`
 
-### 例：
+### Example:
 ```
 @{
     var now = Page.Template.GetProductPaymentMethods(1);
@@ -443,11 +444,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## UnavailableCashOnDeliveryByZipCode
-郵便番号を指定し、代引き不可地域か判定します。
+Determines whether cash on delivery is unavailable for the specified postal code.
 
-### 型：(string zipCode) => bool
+### Type: `(string zipCode) => bool`
 
-### 例：
+### Example:
 ```
 @{
     var disallowed = Page.Template.UnavailableCashOnDeliveryByZipCode("1030014");
@@ -455,11 +456,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 # UnavailableSetHourByZipCode
-郵便番号を指定し、時間帯指定不可地域か判定します。
+Determines whether time-slot selection is unavailable for the specified postal code.
 
-### 型：(string zipCode) => bool
+### Type: `(string zipCode) => bool`
 
-### 例：
+### Example:
 ```
 @{
     var disallowed = Page.Template.UnavailableSetHourByZipCode("1030014");
@@ -467,11 +468,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## UserIsInRole
-ログインしているユーザがロールを保持しているか判定します。
+Determines whether the logged-in user has the specified role.
 
-### 型：(string roleName) => bool
+### Type: `(string roleName) => bool`
 
-### 例：
+### Example:
 ```
 @{
     var hasRole = Page.Template.UserIsInRole("GoldMember");
@@ -479,11 +480,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## AppendUserToRole
-ログインしているユーザにロールを付与します。
+Assigns a role to the logged-in user.
 
-### 型：(string roleName, string roleParameter) => bool
+### Type: `(string roleName, string roleParameter) => bool`
 
-### 例：
+### Example:
 ```
 @{
     var result = Page.Template.AppendUserToRole("Campaign1", null);
@@ -491,11 +492,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## RemoveUserFromRole
-ログインしているユーザからロールを取り除きます。
+Removes a role from the logged-in user.
 
-### 型：(string roleName) => bool
+### Type: `(string roleName) => bool`
 
-### 例：
+### Example:
 ```
 @{
     var result = Page.Template.RemoveUserFromRole("Campaign1");
@@ -503,11 +504,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetRoleParameter
-ログインしているユーザのロールパラメータ値を取得します。
+Gets the role parameter value for the logged-in user.
 
-### 型：(string roleName) => string
+### Type: `(string roleName) => string`
 
-### 例：
+### Example:
 ```
 @{
     var value = Page.Template.GetRoleParameter("Campaign1");
@@ -515,11 +516,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetProductCampaigns
-内部商品IDを指定し、商品に紐づいている現在アクティブなキャンペーン情報を取得します。
+Gets active campaign information associated with the specified internal product ID.
 
-### 型：(int productId) => IEnumerable<ActiveCampaign>
+### Type: `(int productId) => IEnumerable<ActiveCampaign>`
 
-### 例：
+### Example:
 ```
 @{
     var campaigns = Page.Template.GetProductCampaigns(1);
@@ -539,12 +540,12 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 }
 ```
 
-## UserHasBacklog: 
-ログインしているユーザに進行中の受注が残っているか判定します。
+## UserHasBacklog
+Determines whether the logged-in user has any in-progress orders.
 
-### 型：() => bool
+### Type: `() => bool`
 
-### 例：
+### Example:
 ```
 @{
     var hasBacklog = Page.Template.UserHasBacklog();
@@ -552,11 +553,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## ZipCodeSearch
-郵便番号を検索します。存在しない場合は`null`を返却します。
+Searches for a postal code. Returns `null` if it does not exist.
 
-### 型：(string zipCode) => IEnumerable<ZipCodeAddress>
+### Type: `(string zipCode) => IEnumerable<ZipCodeAddress>`
 
-### 例：
+### Example:
 ```
 @{
     var address = Page.Template.ZipCodeSearch("1030014");
@@ -564,11 +565,11 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetLoginUrl
-システム指定しているログインURLを取得します。
+Gets the login URL specified by the system.
 
-### 型：() => string
+### Type: `() => string`
 
-### 例：
+### Example:
 ```
 @{
     var url = Page.Template.GetLoginUrl();
@@ -576,24 +577,24 @@ SSLを使用するかを真偽値で渡し、ホストURLを取得します。
 ```
 
 ## GetPrefecture
-都道府県名を番号から取得します。
+Gets a prefecture name from its ID.
 
-### 型：(int prefId) => string
+### Type: `(int prefId) => string`
 
-### 例：
+### Example:
 ```
 @{
-    var tokyo = Page.Template.GetPrefecture(13); // 東京都
+    var tokyo = Page.Template.GetPrefecture(13); // Tokyo
 }
 ```
 
 ## RecaptchaRenderInclude
-reCAPTCHAヘルパースクリプトをレンダリングします。引数に1つ以上の検証個所を指定します。
+Renders the reCAPTCHA helper script. Specify one or more validation targets as arguments.
 
-### 型：(string firstTarget, params string[] otherTargets) => HtmlString
+### Type: `(string firstTarget, params string[] otherTargets) => HtmlString`
 
-### 例：
-`Purchase/Create`が検証個所に設定されており、かつ、無効化されていない場合、レンダリングします。
+### Example:
+Renders the script when `Purchase/Create` is configured as a validation target and is not disabled.
 ```
 @section ScriptBlock {
     @Page.Template.RecaptchaRenderInclude("Purchase/Create")

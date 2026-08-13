@@ -1,8 +1,8 @@
 # Routings
-## 組み込みルーティング
-カートテンプレートには組み込みのコントローラーがあり、事前に定義された組み込みのルーティングがある。
+## Built-in Routing
+Cart templates have built-in controllers with predefined routes.
 
-|              ルーティング               |       カートテンプレート        |
+|                  Route                  |         Cart Template           |
 | :-------------------------------------- | ------------------------------- |
 | GET ~/order/cart                        | ModdOrderCart                   |
 | GET ~/order/cartitems                   | ModdOrderCartItems              |
@@ -65,31 +65,31 @@
 | GET ~/errors/451                        | ModdErrorsError451              |
 | GET ~/errors/500                        | ModdErrorsError500              |
 
-※ 但し、セッション内容やPOST内容で使用されるテンプレートは変わる。
+Note that the template used may vary depending on the session and POST data.
 
 
-## カスタムルーティング
-サイトテンプレートは作成時点ではルーティングルールがないためレンダリングされない。
-Webサイトで確認するためにはルーティングルールで紐づける必要がある。
+## Custom Routing
+Site templates are not rendered when created because they have no routing rules.
+They must be associated with routing rules to be viewed on the website.
 
-ルーティングはCMS管理画面から管理できるが、管理WEBAPIを使用しても同様に操作できる。
+Routes can be managed from the CMS administration screen or through the Management Web API.
 
-|      REST API パス       |                                                     説明                                                     |
+|      REST API Path       |                                                     Description                                              |
 | :----------------------- | ------------------------------------------------------------------------------------------------------------ |
-| /meta/Routings           | ルーティングテーブル                                                                                         |
-| /meta/RoutingsParameters | ルーティングパラメータ。テンプレートパラメータがルートパラメータ由来なのかクエリパラメータ由来かを決定する。 |
-| /meta/Types              | パラメータの型                                                                                               |
+| /meta/Routings           | Routing table                                                                                                |
+| /meta/RoutingsParameters | Routing parameters. Determines whether template parameters come from route parameters or query parameters.   |
+| /meta/Types              | Parameter types                                                                                              |
 
-各項目の構造は./$metadata--meta.xmlで定義されODataとして操作できる。
+The structure of each item is defined in `./$metadata--meta.xml` and can be operated through OData.
 
 >[!CAUTION]
-RoutingのLoadOrderプロパティは予約項目であり、ルーティングの優先順位はId、つまり登録順となる。
+The `LoadOrder` property is reserved. Route priority is determined by `Id`, which corresponds to registration order.
 
 > [!Important]
-> ルーティングテーブルの変更は再起動をするまで適用されません。
-> 再起動はCMS管理画面からのみ行えるため、AIエージェントはユーザに依頼する必要があります。
+> Changes to the routing table do not take effect until the system is restarted.
+> Restarting is only possible from the CMS administration screen, so the AI agent must ask the user to perform it.
 
-例: "Search"テンプレートのルーティングを探す
+Example: Find the route for the `Search` template.
 
 ```
 $ node ./sync.ts rest get "/meta/Routings?\$expand=RoutingParameters($expand=Type)&\$filter=TemplateName eq 'Search'"
@@ -99,23 +99,23 @@ Content-Type: application/json; odata
 ```
 
 > [!Note]
-> PatternプロパティがルーティングのURLパターンとなります。
-> Patternの先頭には`/`を指定できません。つまり、サイトトップを指定する場合は空文字を指定します。
+> The `Pattern` property defines the route's URL pattern.
+> A leading `/` cannot be specified in `Pattern`. To specify the site root, use an empty string.
 
 ## RoutingParameters
-パターンにはルーティングパラメータを記述できます。
-次に示すのはItemルーティングです。このルーティングのパターンは`item/{Code}`となっています。`Code`がルーティングパラメータになり、RoutingParametersナビゲーションにその詳細が登録されます。
+Patterns can contain routing parameters.
+The following is an Item route with the pattern `item/{Code}`. `Code` is the routing parameter, and its details are registered in the `RoutingParameters` navigation property.
 
 ```
 {"@odata.context":"...","Id":4,"Name":"Item","Pattern":"item/{Code}","RouteType":1,"ContentType":"text/html","TemplateName":"Page","BlobExpression":null,"BlobQuery":null,"LoadOrder":null,"RoutingParameters":[{"Id":4,"Name":"Code","ParameterType":1,"TypeId":7,"Value":null,"HasValue":false,"Type":{"Id":7,"Name":"\u30b7\u30e7\u30fc\u30c8\u30c6\u30ad\u30b9\u30c8","DbTypeName":"nvarchar(32)","DbDefaultValue":null,"ClrTypeName":"System.String","UrlConstraint":"","InputValidation":"(.+){1,32}","DefaultFieldTypeName":""}}]}
 ```
 
-RoutingParametersにはParameterTypeで指定される以下の種類があります。
+`RoutingParameters` supports the following `ParameterType` values.
 
-| ParamterType |       説明       |
+| ParamterType |   Description    |
 | :----------- | ---------------- |
-| 0            | クエリパラメータ |
-| 1            | ルートパラメータ |
-| 2            | ヘッダー         |
+| 0            | Query parameter  |
+| 1            | Route parameter  |
+| 2            | Header           |
 
-RoutingParametersに設定されたクエリパラメータとルートパラメータには同名のテンプレートパラメータが該当テンプレートに登録されている場合にテンプレート内で`ViewBag.{パラメータ名}`にてアクセスできます。
+Query and route parameters configured in `RoutingParameters` can be accessed in the template through `ViewBag.{parameterName}` when a template parameter with the same name is registered for the corresponding template.

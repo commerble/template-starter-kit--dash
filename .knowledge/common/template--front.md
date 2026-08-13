@@ -1,46 +1,46 @@
-# フロントテンプレート
-フロントテンプレートの拡張子はcshtmlであり、Razor記法を使用します。Razorについては [razor.md](./razor.md) を参照してください。
+# Front Templates
+Front templates use the `.cshtml` extension and Razor syntax. See [razor.md](./razor.md) for details about Razor.
 
-フロントテンプレートにはサイトテンプレートとカートテンプレートに大別されます。
+Front templates are broadly divided into site templates and cart templates.
 
-* サイトテンプレート: Commerble CMSにより自由に新規作成、ルーティング指定が可能
-* カートテンプレート: Commerble EC PaaSの組み込みコントローラによって利用される名称やビューモデルが固定されたテンプレート
+* Site templates: Can be created freely and assigned routes through Commerble CMS.
+* Cart templates: Have fixed names and view models and are used by the built-in controllers of Commerble EC PaaS.
 
-## テンプレート名
-本リポジトリでは各テンプレートファイルはフォルダ分けされて管理されていますが、Commerbleに同期する際はtemplatesフォルダより下層のフォルダ名が結合したフラットな名称で登録されます。
+## Template Names
+Template files are organized in folders in this repository, but are registered in Commerble with a flat name formed by joining the folder names below the `templates` folder when synchronized.
 
-例：
+Examples:
 * templates/Modd/Shared/Functions.cshtml -> ModdSharedFunctions
 * templates/Layout/Default.cshtml -> LayoutDefault
 
-また、テンプレートファイル名に使用可能な文字列は `[a-zA-Z][a-zA-Z0-9_]*` のため、ASP.NETで規範的な部分ビューのファイル名に `_` プレフィックスを付与するルールは避ける必要があります。
+Template file names must match `[a-zA-Z][a-zA-Z0-9_]*`. Therefore, do not follow the ASP.NET convention of prefixing partial view file names with `_`.
 
 ## Helpers
-フロントテンプレートはウェブサイトのHTMLをレンダリングするためのテンプレートであり、Commerble側で用意されたいくつかのヘルパーを使用することができます。
+Front templates render website HTML and can use several helpers provided by Commerble.
 
-## Page object
-`Page`はテンプレート内で利用可能なオブジェクトインスタンスをまとめたラッパーインスタンスです。
+## Page Object
+`Page` is a wrapper instance that groups the object instances available in a template.
 
-フロントテンプレートの`Page`には以下のプロパティがあり、それぞれの用途で利用可能です。
+The `Page` object in front templates has the following properties:
 
-* Context: 現リクエストのHttpContextオブジェクト (System.Web.HttpContext) ※
-* Request: 現リクエストのRequestオブジェクト (System.Web.HttpRequest) ※
-* Response: 現リクエストのResponseオブジェクト (System.Web.HttpResponse) ※
-* Session: 現リクエストのSessionStateオブジェクト (System.Web.SessionState) ※
-* ViewData: 現コンテキストのViewDataDictionaryオブジェクト (System.Web.Mvc.ViewDataDictionary)
-* Html: 現コンテキストのHtmlHelperオブジェクト (System.Web.Mvc.HtmlHelper)
-* Url: 現コンテキストのUrlHelperオブジェクト (System.Web.Mvc.UrlHelper)
-* NoCache: 現リクエストのレスポンスに`System.Web.HttpCacheability.NoCache`をセットします (bool)
-* User: 現リクエストのPrincipalオブジェクト (Systen.Sequrity.Principal.IPrincipal) ※
-* Template: テンプレートヘルパー
+* Context: The current request's HttpContext object (`System.Web.HttpContext`). *
+* Request: The current request's Request object (`System.Web.HttpRequest`). *
+* Response: The current request's Response object (`System.Web.HttpResponse`). *
+* Session: The current request's SessionState object (`System.Web.SessionState`). *
+* ViewData: The current context's ViewDataDictionary object (`System.Web.Mvc.ViewDataDictionary`).
+* Html: The current context's HtmlHelper object (`System.Web.Mvc.HtmlHelper`).
+* Url: The current context's UrlHelper object (`System.Web.Mvc.UrlHelper`).
+* NoCache: Sets `System.Web.HttpCacheability.NoCache` on the current request's response (`bool`).
+* User: The current request's Principal object (`Systen.Sequrity.Principal.IPrincipal`). *
+* Template: Template helpers.
 
-※ 多くのサイトテンプレートでは、CDNでの再利用性を高めるため、Cookieが使用できません。  
-そのためセッションの特定やユーザの特定を伴う操作はカートテンプレートでのみ実装する必要があります。  
-また、サイトテンプレートでそれらの実装が必要な場合は有償カスタムにてCDNのキャッシュ設定を変更する申告が必要となります。
+* In many site templates, cookies cannot be used to improve CDN reusability.
+Therefore, operations involving session or user identification must be implemented only in cart templates.
+If such operations are required in a site template, a paid customization request is required to change the CDN cache settings.
 
 ### Html Helpers
-カートテンプレートでは、`Page.Html` によって、ASP.NET MVC `Html` オブジェクトを利用することができます。
-また、`Page.Url` から同様にASP.NET MVC `Url` オブジェクトを利用することができます。
+In cart templates, the ASP.NET MVC `Html` object is available through `Page.Html`.
+Similarly, the ASP.NET MVC `Url` object is available through `Page.Url`.
 
 #### Links and URLs Helpers
 ```cshtml
@@ -65,46 +65,46 @@
 ```
 
 #### Partial Views
-HtmlHelperのPartialメソッドを使用して部分ビューをレンダリングできます。カートテンプレートではMvcコンテキストを引き継ぐために`Include`ではなくこちらを使用します。
+You can render partial views with the `HtmlHelper.Partial` method. In cart templates, use this instead of `Include` to preserve the MVC context.
 
 ```cshtml
 @Page.Html.Partial("PartialLoginStatus", new { Message = "" })
-@* Commerbleの独自拡張として、PartialExメソッドも利用でき、第3引数にViewDataを渡せます。*@
+@* Commerble also provides the PartialEx extension, which accepts ViewData as its third argument. *@
 @Page.Html.PartialEx("PartialLoginStatus", new { Message = "" }, new { Prop1 = 1 })
 ```
 
-### Page / Partial の責務分離
+### Separating Page and Partial Responsibilities
 
-`Page.cshtml` はページの入口であり、ここで行うのは次のような共通処理に限定します。
+`Page.cshtml` is the page entry point and should be limited to shared processing such as:
 
-* 現在の URL から対象ページを特定する
-* `Layout` と `Partial` を決める
-* 共通の `ViewBag`、canonical、breadcrumb、全ページ共通のメタ情報を整える
-* `@Include(vm.Partial, vm)` で本文テンプレートを呼び出す
+* Resolving the target page from the current URL.
+* Choosing the `Layout` and `Partial`.
+* Preparing the shared `ViewBag`, canonical, breadcrumb, and page-wide metadata.
+* Calling the body template with `@Include(vm.Partial, vm)`.
 
-ページ種別ごとの本文生成、商品・タグ・ニュースなどの意味付け、SKU 単位の表示、ページ型固有の JSON-LD は、対応する `Partial` 側を正とします。`Page.cshtml` に `GroupCode` 分岐を追加して本文ロジックを押し込まないでください。
+Body generation by page type, semantics for products/tags/news, SKU-level rendering, and page-type-specific JSON-LD belong in the corresponding `Partial`. Do not add `GroupCode` branches to `Page.cshtml` to contain body logic.
 
-`Page.cshtml` 側で JSON-LD を扱う場合も、全ページ共通の breadcrumb や canonical のような横断情報に限定し、本文の実体を知っている `Partial` の責務を上書きしないようにします。
+When handling JSON-LD in `Page.cshtml`, limit it to cross-page information such as the shared breadcrumb and canonical. Do not override the responsibility of the `Partial`, which knows the body content.
 
 ### Template Helpers
-テンプレートヘルパーはサイトテンプレートもしくはカートテンプレートで使用できるAPI関数です。
+Template helpers are API functions available in site and cart templates.
 
-詳細は [template-helpers.md](./template-helpers.md) を参照してください。
+See [template-helpers.md](./template-helpers.md) for details.
 
 ## Database Object
 
-`Database`オブジェクトを使用することで、Commerble CMSでテナントごと定義されたDBに対してReadクエリを発行し、CMSデータを検索・取得できます。
+The `Database` object can issue read queries against the tenant-specific database defined in Commerble CMS to search and retrieve CMS data.
 
 
-CMS DBスキーマについては[$metadata--cms.xml](./$metadata--cms.xml)を参照してください。ただし、名前空間とクラス名はXMLの値と異なるため匿名型や`@functions{}`ブロックに定義した独自の型に射影して使用します。
+See [$metadata--cms.xml](./$metadata--cms.xml) for the CMS DB schema. However, because the namespaces and class names differ from the XML values, project the results into anonymous types or custom types defined in an `@functions{}` block.
 
 ### Database.Query
 
-DBに対してクエリを実行し、`IEnumerable<TResult>`を得ます。必ずキャッシュされるため、キャッシュを回避するにはキャッシュキーをカスタムする。
+Executes a query against the DB and returns `IEnumerable<TResult>`. Results are always cached, so customize the cache key to bypass the default cache behavior.
 
 ```cshtml
 @{
-    // 生成されたSQL文をもとにキャッシュキーとし、デフォルトのキャッシュ時間が適用される
+    // Uses a cache key based on the generated SQL and applies the default cache duration.
     var example1 = Database.Query(db => 
         from p in db.Products
         where p.Id == 1
@@ -113,7 +113,7 @@ DBに対してクエリを実行し、`IEnumerable<TResult>`を得ます。必�
             p.Name,
         }
     );
-    // キャッシュキーをカスタム
+    // Customize the cache key.
     var example2 = Database.Query(new { MyCacheKey = "Product(1)" }, db => 
         from p in db.Products
         where p.Id == 1
@@ -122,7 +122,7 @@ DBに対してクエリを実行し、`IEnumerable<TResult>`を得ます。必�
             p.Name,
         }
     );
-    // ☆推奨： SQLがパラメータ化されコンパイル結果を使いまわせるため、使用を推奨
+    // Recommended: SQL is parameterized and the compiled result can be reused.
     var example3 = Database.Query(new { id = 1 }, (db, args) => 
         from p in db.Products
         where p.Id == args.id
@@ -136,11 +136,11 @@ DBに対してクエリを実行し、`IEnumerable<TResult>`を得ます。必�
 
 ### Database.Single
 
-DBに対してクエリを実行し、`TResult`を得ます。必ずキャッシュされるため、キャッシュを回避するにはキャッシュキーをカスタムする。
+Executes a query against the DB and returns `TResult`. Results are always cached, so customize the cache key to bypass the default cache behavior.
 
 ```cshtml
 @{
-    // 生成されたSQL文をもとにキャッシュキーとし、デフォルトのキャッシュ時間が適用される
+    // Uses a cache key based on the generated SQL and applies the default cache duration.
     var example1 = Database.Single(db => (
         from p in db.Products
         where p.Id == 1
@@ -149,7 +149,7 @@ DBに対してクエリを実行し、`TResult`を得ます。必ずキャッシ
             p.Name,
         }
     ).FirstOrDefault());
-    // キャッシュキーをカスタム
+    // Customize the cache key.
     var example2 = Database.Single(new { MyCacheKey = "Product(1)" }, db => (
         from p in db.Products
         where p.Id == 1
@@ -158,7 +158,7 @@ DBに対してクエリを実行し、`TResult`を得ます。必ずキャッシ
             p.Name,
         }
     ).FirstOrDefault());
-    // ☆推奨： SQLがパラメータ化されコンパイル結果を使いまわせるため、使用を推奨
+    // Recommended: SQL is parameterized and the compiled result can be reused.
     var example3 = Database.Single(new { id = 1 }, (db, args) => (
         from p in db.Products
         where p.Id == args.id
@@ -176,7 +176,7 @@ DBに対してクエリを実行し、`TResult`を得ます。必ずキャッシ
 @{
     var sort = Page.Request.QueryString["sort"] ?? "asc";
     
-    // ベースとなるクエリを指定してクエリビルダーを生成 (i)
+    // Create a query builder from the base query (i).
     var builder = Database.Builder(db =>
         from p in db.Products
         select new {
@@ -186,7 +186,7 @@ DBに対してクエリを実行し、`TResult`を得ます。必ずキャッシ
         }
     );
 
-    // 条件に基づきクエリを追加
+    // Append a query operation based on the condition.
     if(sort == "desc") {
         builder.Append(q => q.OrderByDescending(p => p.UnitPrice)); (ii)
     }
@@ -196,17 +196,17 @@ DBに対してクエリを実行し、`TResult`を得ます。必ずキャッシ
 
     var cacheKey = new { sort };
 
-    // カウントを取得
+    // Get the count.
     var total = builder.Count(cacheKey);
 
-    // カウントを取った後、取得件数を絞るクエリを追加する (iii)
+    // After getting the count, append a query to limit the number of results (iii).
     builder.Append(q => q.Take(10));
     
-    // 取得件数分だけDBから取得する
+    // Retrieve only the requested number of records from the DB.
     var items = builder.Execute(cacheKey);
 
     /*
-    -- クエリビルダーではAppendするたびに現クエリをFROMとしたフィルタが積み重なります。
+    -- Each Append call adds a filter using the current query as its FROM source.
     (
         -- (iii)
         SELECT TOP(10) *
@@ -225,25 +225,25 @@ DBに対してクエリを実行し、`TResult`を得ます。必ずキャッシ
 }
 ``
 
-## 共有テンプレート
+## Shared Templates
 
-一部のテンプレートはCommerble内部で実行時に他のテンプレートと文字列結合されます。このテンプレートを共有テンプレートと呼称し、多くのテナントでは以下のテンプレートが共有テンプレートとして設定されています。
+Some templates are concatenated with other templates at runtime inside Commerble. These are called shared templates, and the following templates are configured as shared templates in many tenants.
 
 * ModdSharedViewStart
 * ModdSharedFunctions
 * ModdSharedHelpers
 
-※ ModdShared接頭辞があるからと必ずしも共有テンプレートであるとは限りません。 本リポジトリでは`sync.ts`の`sharedTemplates`設定で確認できます。
+The `ModdShared` prefix does not necessarily mean that a template is shared. In this repository, check the `sharedTemplates` setting in `sync.ts`.
 
-## ルートパラメータ
+## Route Parameters
 
-CMS管理画面からルーティング設定を行うことで、`ViewBag`からルートパラメータを受け取れます。
+You can receive route parameters through `ViewBag` by configuring routing in the CMS administration screen.
 
 ```cshtml
 @*
- CMS管理画面のルーティング設定にて、
- このテンプレートに対して、 `dev/{Param1}/{*Params}` URLパターンを設定済みとする
- また、Param1は整数値、ParamsはURL文字列として型設定も登録済みとする
+ Assume the CMS routing settings define the URL pattern
+ `dev/{Param1}/{*Params}` for this template.
+ Also assume that `Param1` is registered as an integer and `Params` as a URL string.
 *@
 
 @{
@@ -252,5 +252,5 @@ CMS管理画面からルーティング設定を行うことで、`ViewBag`か�
 }
 ```
 
-## 実行方法
-フロントテンプレートはどのようなURLにマップされるかは管理画面のルーティング設定に左右されるため、もしあなたがAIエージェントである場合は確認作業を人間の作業者に依頼してください。
+## Execution
+The URL mapping for a front template depends on the routing settings in the administration screen. If you are an AI agent, ask a human operator to verify the mapping.

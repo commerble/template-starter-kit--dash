@@ -1,109 +1,109 @@
-# ツール
+# Tools
 
-## 同期スクリプト (`sync.ts`)
+## Sync Script (`sync.ts`)
 
-このスクリプトは、ローカルのテンプレートファイルをCommerble EC PaaS APIと同期します。検証、アップロード、ファイル監視を処理します。
+This script synchronizes local template files with the Commerble EC PaaS API. It handles validation, uploads, and file watching.
 
-※ AIエージェントはスキル化された`cbsync`を参照してください。
+AI agents should refer to the `cbsync` skill.
 
-### 前提条件
+### Prerequisites
 
-*   Node.jsがインストールされていること。
-*   依存関係がインストールされていること（`npm install` または `yarn install`）。
+*   Node.js must be installed.
+*   Dependencies must be installed (`npm install` or `yarn install`).
     *   `chokidar`
     *   `dotenv`
 
-### 設定
+### Configuration
 
-ルートディレクトリに以下のキーを持つ`.env`ファイルを作成します。
+Create a `.env` file in the root directory with the following keys.
 
 ```properties
 CBAPI_ENDPOINT=https://api.example.invalid/odata
 CBAPI_USERNAME=your_username
 CBAPI_PASSWORD=your_password
-# オプション: ロックされていても強制的にアップロードします（注意して使用してください）
+# Optional: Force uploads even when templates are locked (use with caution)
 # CBSYNC_FORCE_UPLOAD_ALL=1
 ```
 
-また、スクリプトの`sync.ts`の先頭には、以下の項目を定義する内部的な`config`オブジェクトがあります。
-*   `templateDirPath`: テンプレートを含むディレクトリ（デフォルト: `./templates`）。
-*   `mailTemplatePrefix`: メールテンプレートのプレフィックス（デフォルト: `Mail`）。
-*   `mailSharedTemplatePath`: 各メールテンプレートの先頭に文字列結合する疑似共有テンプレートのパス（例: `./templates/Mail/SharedFunctions.cshtml`）
-*   `sharedTemplates`: 共有テンプレートのリスト（例: `ModdSharedFunctions`）。
-*   `ignoreTemplates`: スキップするテンプレートのリスト。
-*   `useLockMode`: 他のブランチからの変更の上書きを防ぐためのロックメカニズムを有効にします（デフォルト: `false`）。
+The `sync.ts` script also defines an internal `config` object near the top with the following settings.
+*   `templateDirPath`: Directory containing templates (default: `./templates`).
+*   `mailTemplatePrefix`: Mail template prefix (default: `Mail`).
+*   `mailSharedTemplatePath`: Path to the pseudo-shared template concatenated to the beginning of each mail template (example: `./templates/Mail/SharedFunctions.cshtml`).
+*   `sharedTemplates`: List of shared templates (example: `ModdSharedFunctions`).
+*   `ignoreTemplates`: List of templates to skip.
+*   `useLockMode`: Enables the lock mechanism to prevent changes from other branches from being overwritten (default: `false`).
 
-### 使用方法
+### Usage
 
-`package.json` に定義されたnpmタスクからも実行できます。
+You can also run the script through the npm tasks defined in `package.json`.
 
 ```bash
-# 変更を監視して自動でアップロード
+# Watch for changes and upload automatically
 npm run upload:watch
 
-# 全てのテンプレートをアップロード
+# Upload all templates
 npm run upload:all
 
-# テンプレートファイルを指定してアップロード
+# Upload specified template files
 npm run upload <...files>
 
-# 認証済みでREST APIを実行
+# Run the REST API with authentication
 npm run rest <method> <path> [bodyJson]
 
-# ファイルをビルドして全てのテンプレートをアップロード
+# Build files and upload all templates
 npm run publish
 
-# ファイルのビルドとアップロードを監視モードで並行実行
+# Build files and run upload in watch mode concurrently
 npm start
 ```
 
-また、以下のいずれかのモードでNode.jsを使用して直接スクリプトを実行することもできます。
+You can also run the script directly with Node.js in one of the following modes.
 
 ```bash
 node sync.ts <cmd> [args]
 ```
 
-#### サブコマンド
+#### Subcommands
 
 1.  **`all`**
-    *   `templateDirPath`内のすべてのテンプレートをアップロードします。
-    *   アップロード前にテンプレートを検証します。
-    *   `useLockMode`が有効な場合、ロックをチェックします。
-    *   **コマンド:** `node sync.ts all`
+    *   Uploads all templates in `templateDirPath`.
+    *   Validates templates before uploading.
+    *   Checks locks when `useLockMode` is enabled.
+    *   **Command:** `node sync.ts all`
 
 2.  **`watch`**
-    *   `templateDirPath`内のファイルの変更を監視します。
-    *   変更されたファイルを自動的に検証し、アップロードします。
-    *   依存ファイルが変更された場合、共有テンプレートをリロードします。
-    *   **コマンド:** `node sync.ts watch`
+    *   Watches for changes to files in `templateDirPath`.
+    *   Automatically validates and uploads changed files.
+    *   Reloads shared templates when a dependency file changes.
+    *   **Command:** `node sync.ts watch`
 
 3.  **`unlock`**
-    *   特定のファイルのロックを解除し（ロックフレーズを削除）、アップロードします。
-    *   `useLockMode`が有効な場合に使用します。
-    *   **コマンド:** `node sync.ts unlock <path/to/file1> <path/to/file2> ...`
+    *   Removes the lock phrase from and uploads the specified files.
+    *   Use when `useLockMode` is enabled.
+    *   **Command:** `node sync.ts unlock <path/to/file1> <path/to/file2> ...`
 
 4.  **`upload`**
-    *   特定のファイルのロックをアップロードします。
-    *   アップロード前にテンプレートを検証します。
-    *   **コマンド:** `node sync.ts upload <path/to/file1> <path/to/file2> ...`
+    *   Uploads the specified files with their locks.
+    *   Validates templates before uploading.
+    *   **Command:** `node sync.ts upload <path/to/file1> <path/to/file2> ...`
 
 5.  **`rest`**
-    *   `.env` の認証設定を使って、任意のCommerble Web APIパスへRESTリクエストを送信します。
-    *   同期処理を走らせず、HTTPステータス・`Content-Type`・レスポンス本文を標準出力に表示します。
-    *   第3引数にJSON文字列を渡すと、`Content-Type: json` ヘッダー付きでリクエストボディとして送信します。
-    *   AIエージェントが出力をパースする用途では `npm run rest ...` より `node sync.ts rest ...` を推奨します（npm の起動メッセージ混入を避けるため）。
-    *   **コマンド:** `node sync.ts rest <method> <path> [bodyJson]`
+    *   Sends a REST request to any Commerble Web API path using the authentication settings in `.env`.
+    *   Displays the HTTP status, `Content-Type`, and response body on standard output without running synchronization.
+    *   When a JSON string is passed as the third argument, it is sent as the request body with a `Content-Type: json` header.
+    *   For AI agents parsing the output, `node sync.ts rest ...` is recommended over `npm run rest ...` to avoid npm startup messages.
+    *   **Command:** `node sync.ts rest <method> <path> [bodyJson]`
 
-    例:
+    Example:
 
     ```pwsh
     node .\sync.ts rest get /meta/Templates?`$top=1
     ```
 
 
-### ロックモード (`useLockMode: true`)
+### Lock Mode (`useLockMode: true`)
 
-`config`で有効にすると、スクリプトは安全機構を追加します。
-*   現在のGitブランチがデフォルトブランチ（例: `main`）であるかを確認します。
-*   ローカルの`main`ブランチが古い場合やマージされていない変更がある場合にアップロードを防ぎます。
-*   アップロード時にテンプレートコンテンツの先頭にロックフレーズ（コメント）を追加し、どのブランチがロックしたかを示します。
+When enabled in `config`, the script adds safety checks.
+*   Verifies whether the current Git branch is the default branch (for example, `main`).
+*   Prevents uploads when the local `main` branch is outdated or has unmerged changes.
+*   Adds a lock phrase (comment) to the beginning of template content during upload to indicate which branch holds the lock.
