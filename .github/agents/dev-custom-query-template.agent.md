@@ -63,9 +63,9 @@ Use Commerble's custom query execution environment and C# script conventions, no
 
 1. Identify the input parameters, output format, target DB, and tables; then check nearby queries and the required metadata.
 2. Make the smallest edit based on the existing API contract and implementation.
-3. Immediately after the first edit, run the closest available syntax check or individual synchronization to validate it.
+3. In the development environment, use `npm run upload <...files>` immediately after the first edit as the template validation and update operation; do not use a REST request as a safer substitute or prerequisite.
 4. Check `.github/skills/cbsync/SKILL.md` and synchronize only the changed query with `npm run upload <...files>`. Run full synchronization, `publish`, or lock release only when explicitly requested by the user.
-5. After synchronization, follow `.knowledge/common/template--custom-query.md` and run the read-only verification command `node sync.ts rest get "/query/render?name=<template-name>&$format=<json|csv>"`.
+5. After synchronization, follow `.knowledge/common/template--custom-query.md` and run the read-only verification command `node sync.ts rest get "/query/render?name=<template-name>&$format=<json|csv>"` when response behavior needs verification.
 6. If safe parameters or expected results for render are unknown, do not guess real personal information or broad, operationally risky conditions. Ask the user, establish the conditions, and then always run the verification.
 7. When both JSON and CSV are required, verify both formats and confirm that CSV columns are flat.
 8. In the completion report, briefly state the changes, the types of inputs used for verification, the syntax, synchronization, and render results, and any remaining checks.

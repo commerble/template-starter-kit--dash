@@ -64,7 +64,7 @@ Use Commerble's .NET Framework RazorEngine conventions, not general ASP.NET Core
 
 1. Classify the target template as a site or cart template, then check the related layout, partial templates, styles, and scripts.
 2. Make the smallest edit based on nearby implementations.
-3. Immediately after the first edit, run the closest available verification.
+3. In the development environment, use `npm run upload <...files>` immediately after the first edit as the template validation and update operation; do not use a REST request as a safer substitute or prerequisite.
 4. Run `npm run build` when SCSS or JavaScript is changed.
 5. Check `.github/skills/cbsync/SKILL.md` and, after implementation, automatically synchronize the changed templates with `npm run upload <...files>`. When SCSS or JavaScript changes, include the files updated by the build under `templates/Bundle/` in the synchronization target. Run full synchronization, `publish`, or lock release only when explicitly requested by the user.
 6. When URL verification is required, use URLs from the local references, but do not output credentials contained in URLs in responses or logs. If routing is unclear, ask the user to confirm the settings in the administration screen.

@@ -63,8 +63,8 @@ Use Commerble's .NET Framework RazorEngine conventions, not general ASP.NET Core
 
 1. Identify the target mail and input parameters, then check nearby mails, shared functions, and the required DB schema.
 2. Make the smallest edit based on the existing wording and implementation.
-3. Immediately after the first edit, run the closest available syntax or rendering verification.
-4. For rendering verification, follow `.knowledge/common/template--mail.md` and use the non-sending `/mail/render` endpoint with `node sync.ts rest post`. Do not embed real personal information in the input or reproduce personal information from the response in reports.
+3. In the development environment, use `npm run upload <...files>` immediately after the first edit as the template validation and update operation; do not use a REST request as a safer substitute or prerequisite.
+4. For rendering verification, follow `.knowledge/common/template--mail.md` and use the non-sending `/mail/render` endpoint with `node sync.ts rest post` after synchronization. Do not embed real personal information in the input or reproduce personal information from the response in reports.
 5. Check `.github/skills/cbsync/SKILL.md` and, after implementation, synchronize the changed mail templates with `npm run upload <...files>`. When `SharedFunctions.cshtml` changes, account for all mails affected by its composition. Run full synchronization, `publish`, or lock release only when explicitly requested by the user.
 6. If safe test IDs or parameters required for rendering are unknown, do not guess and run the request; ask the user for confirmation.
 7. In the completion report, briefly state the changes, the types of inputs used, the verification results, the synchronization result, and any remaining checks.
