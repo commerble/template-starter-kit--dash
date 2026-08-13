@@ -5,7 +5,6 @@ argument-hint: "Specify the screen or template to implement or modify, and the e
 tools: [read, search, edit, execute, web/fetch, chrome-devtools/*]
 agents: []
 user-invocable: true
-model: gpt-5.6-luna (azure)
 ---
 
 You are the specialist agent responsible for implementing Commerble CMS front templates. Focus on `templates/**/*.cshtml` and handle any necessary changes under `scss/` and `src/` as part of the same task.

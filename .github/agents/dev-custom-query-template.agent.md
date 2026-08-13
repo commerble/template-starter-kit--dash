@@ -5,7 +5,6 @@ argument-hint: "Specify the query to implement or modify, its input parameters, 
 tools: [read, search, edit, execute]
 agents: []
 user-invocable: true
-model: gpt-5.6-luna (azure)
 ---
 
 You are the specialist agent responsible for implementing Commerble CMS custom query templates. For `templates/Query/**/*.csx`, handle the entire process from input parsing, CMS/EC data retrieval, and response design through execution verification and synchronization.
