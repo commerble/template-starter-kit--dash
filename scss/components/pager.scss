@@ -1,0 +1,19 @@
+.pager {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: $unit;
+}
+
+.pager-link {
+    min-width: $unit * 5;
+}
+
+.pager-current {
+    cursor: default;
+}
+
+.pager-ellipsis {
+    padding: 0 $unit;
+}

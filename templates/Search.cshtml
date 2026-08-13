@@ -7,7 +7,7 @@
         public string Condition => string.Join("&", new[]{ $"filter={Filter}", $"sort={Sort}"});
         public List<TagViewModel> Tags { get; set; }
         public string ListName { get; set; }
-        public bool HasNextPage { get; set; }
+        public int PageCount { get; set; }
         public bool IsEmpty { get; set; }
         public List<ProductPageViewModel> ProductPages { get; set; }
     }
@@ -184,10 +184,9 @@
         }
 
         var pageCount = total / eachPage + ((total % eachPage == 0) ? 0 : 1);
-        var pageLast = pageCount == 0 ? true : ( ((page+1) == pageCount) ? true : false);
 
         vm.ListName = $"Item:{filter}:{sort}:{eachPage}:{page}";
-        vm.HasNextPage = total > 0 && !pageLast;
+        vm.PageCount = pageCount;
         vm.IsEmpty = total == 0;
         vm.ProductPages = items;
         
@@ -248,6 +247,40 @@
         <option value="@item.Code" @when(item.Code == filter, "selected")>@item.Name</option>
     }
 } 
+@helper RenderPager(ViewModel vm) {
+    var pagerPages = new List<int?>();
+    var lastPage = -1;
+    for (var page = 0; page < vm.PageCount; page++) {
+        if (page == 0 || page == vm.PageCount - 1 || Math.Abs(page - vm.Page) <= 1) {
+            if (lastPage >= 0 && page - lastPage > 1) {
+                pagerPages.Add(null);
+            }
+            pagerPages.Add(page);
+            lastPage = page;
+        }
+    }
+    <nav class="pager" aria-label="検索結果のページ">
+        @if (vm.Page > 0) {
+            <a href="@(Page.Request.Url.AbsolutePath)?@(vm.Condition)&page=@(vm.Page-1)" class="btn btn-default btn-prev pager-link">前のページ</a>
+        }
+        @foreach (var page in pagerPages) {
+            if (page.HasValue) {
+                if (page.Value == vm.Page) {
+                    <span class="btn btn-primary pager-link pager-current" aria-current="page">@(page.Value + 1)</span>
+                }
+                else {
+                    <a href="@(Page.Request.Url.AbsolutePath)?@(vm.Condition)&page=@(page.Value)" class="btn btn-default pager-link">@(page.Value + 1)</a>
+                }
+            }
+            else {
+                <span class="pager-ellipsis" aria-hidden="true">...</span>
+            }
+        }
+        @if (vm.Page + 1 < vm.PageCount) {
+            <a href="@(Page.Request.Url.AbsolutePath)?@(vm.Condition)&page=@(vm.Page+1)" class="btn btn-default btn-next pager-link">次のページ</a>
+        }
+    </nav>
+}
 <main class="section content">
     <h1 class="h-border text-center">商品検索</h1>
     <form class="block block-horizontal">
@@ -304,9 +337,9 @@
             <p class="message text-center lead">ご希望の条件に合致する商品が見つかりませんでした。条件を変更し再度お試しください。</p>
         </div>
     }
-    @if (vm.HasNextPage) {
+    @if (vm.PageCount > 1) {
         <div class="block block-vertical">
-            <a href="@(Page.Request.Url.AbsolutePath)?@(vm.Condition)&page=@(vm.Page+1)" class="btn btn-default btn-next">次のページ</a>
+            @RenderPager(vm)
         </div>
     }
 </main>
