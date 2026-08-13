@@ -13,4 +13,5 @@ RUN apt-get update \
         fonts-ipafont-mincho \
         fonts-noto-color-emoji \
         fonts-noto-cjk \
+        ripgrep \
     && rm -rf /var/lib/apt/lists/*

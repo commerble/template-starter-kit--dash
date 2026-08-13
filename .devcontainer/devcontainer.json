@@ -8,7 +8,9 @@
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	"features": {
+		"ghcr.io/devcontainers/features/powershell:1": {}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [9222],
@@ -22,7 +24,13 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
-				"chat.mcp.access": "all"
+				"chat.mcp.access": "all",
+				"terminal.integrated.defaultProfile.linux": "PowerShell",
+				"terminal.integrated.profiles.linux": {
+					"PowerShell": {
+						"path": "pwsh"
+					}
+				}
 			}
 		}
 	},
