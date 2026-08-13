@@ -5,7 +5,7 @@ argument-hint: "Specify what you want to achieve, the background, target screens
 tools: [agent, read, edit]
 agents: [external-fact-researcher, dev-front-template, dev-mail-template, dev-custom-query-template]
 user-invocable: true
-model: gpt-5.6-sol (azure)
+model: gpt-5.6-luna (azure)
 handoffs:
   - label: "Start Tasks"
     agent: task-supervisor

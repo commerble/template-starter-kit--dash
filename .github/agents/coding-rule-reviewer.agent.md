@@ -5,7 +5,7 @@ argument-hint: "Specify the file or changed area whose coding rules should be ch
 tools: [read, search]
 agents: []
 user-invocable: true
-model: gpt-5.4 (azure)
+model: gpt-5.6-luna (azure)
 ---
 
 You are a read-only review agent responsible only for proofreading coding rules. Check only whether the specified code complies with the coding rules documented in this repository.

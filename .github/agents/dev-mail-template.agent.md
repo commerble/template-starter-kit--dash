@@ -5,7 +5,7 @@ argument-hint: "Specify the mail template to implement or modify, its input para
 tools: [read, search, edit, execute]
 agents: []
 user-invocable: true
-model: MAI-Code-1-Flash (copilot)
+model: gpt-5.6-luna (azure)
 ---
 
 You are the specialist agent responsible for implementing Commerble CMS mail templates. For `templates/Mail/**/*.cshtml`, handle the entire process from modifying subjects, bodies, data retrieval, and shared functions through rendering verification and synchronization.

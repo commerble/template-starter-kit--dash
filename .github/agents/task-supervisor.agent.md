@@ -6,7 +6,7 @@ tools: [agent, todo, read, edit]
 agents: [dev-front-template, dev-mail-template, dev-custom-query-template, coding-rule-reviewer, requirements-verifier]
 user-invocable: true
 disable-model-invocation: true
-model: Auto (copilot)
+model: gpt-5.6-luna (azure)
 handoffs:
   - label: "Reconfirm Requirements"
     agent: project-manager
