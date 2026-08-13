@@ -87,6 +87,16 @@ node .\sync.ts rest get "/cms/SitePages?`$select=Code,Kind,Name&`$orderby=Kind,C
 node .\sync.ts rest get "/cms/ProductRelations?`$select=PageCode,ExternalId1,DisplayOrder&`$orderby=PageCode,ExternalId1"
 ```
 
+### Counting Product Pages
+
+When counting product pages, filter `SitePages` through the `SitePageKind` navigation property in one request. Do not fetch `SitePageKinds` first just to obtain the kind codes. If only the count is needed, use the `/$count` endpoint so the API returns a plain number without a page collection.
+
+```powershell
+node .\sync.ts rest get "/cms/SitePages/`$count?`$filter=SitePageKind/GroupCode%20eq%20%27product%27"
+```
+
+`SitePageKind/GroupCode eq 'product'` includes all page kinds in the product group, such as `product` and `productc`. The `/$count` response is `text/plain` and contains only the product page count. Use `$count=true&$top=0` instead when an OData JSON response with `@odata.count` is required.
+
 Filter as needed, for example with `$filter=startswith(PageCode,'/item/')` or `$filter=PageCode eq '/item/xxx'`.
 
 ## Investigation Workflow
