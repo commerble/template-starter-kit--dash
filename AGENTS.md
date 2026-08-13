@@ -2,29 +2,20 @@
 
 このファイルは、このリポジトリで常に適用する共通ルールだけを定めます。領域固有の仕様と作業手順は、`.knowledge/`、カスタムエージェント、スキルを参照してください。
 
+ユーザとのやり取りは*日本語*で行う。
+
 ## 情報源
 
 1. `.knowledge/` をプロジェクト仕様の正とし、競合する記述より優先する。
 2. 最初に `.knowledge/README.md` を確認し、依頼に必要な `repo/`、`common/`、`tenant/` の資料だけを読む。
 3. Razor は ASP.NET Core や Blazor ではなく、Commerble の .NET Framework 版 RazorEngine の仕様として扱う。
 
-## 担当エージェント
-
-- フロントテンプレート、SCSS、JavaScript: `dev-front-template`
-- メールテンプレート: `dev-mail-template`
-- カスタムクエリ: `dev-custom-query-template`
-- コーディング規約レビュー: `coding-rule-reviewer`
-- 要件と実動作の検証: `requirements-verifier`
-- 要求定義から複数工程を進める開発: `project-manager`
-
-各エージェントの責務、対象外、検証手順を優先し、このファイルへ領域固有ルールを重複させない。
-
 ## 共通制約
 
 - `templates/Bundle/` などのビルド成果物を直接編集しない。
 - 同期では `.github/skills/cbsync/SKILL.md` に従う。ユーザーの明示的な依頼なしに全件同期、`publish`、ロック解除を行わない。
 - 認証情報、個人情報、`Page.Template.GetModdUser()` が含む機微情報を出力または不用意にシリアライズしない。
-- `.vscode/mcp.json` の `envFile` を使う環境では、環境変数を MCP サーバー経由で参照する。MCP が利用できない場合は別手段へフォールバックせず、ユーザーへ確認する。
 - `.env` を直接読むのはユーザーが明示的に許可した場合だけとする。
 - 既存の未コミット変更を取り消さず、依頼に関係のない変更を加えない。
 - Windows と DevContainer の双方で作業できるよう、検索と編集には可能な限り VS Code のツールを使う。
+
