@@ -454,6 +454,10 @@ async function unlock(paths: string[], nameMaxSize: number = 28): Promise<void> 
 }
 
 async function rest(method: string, path: string, json?: string): Promise<void> {
+    method = method.toUpperCase()
+    if (method === "PATCH") {
+        method = "Patch"
+    }
     const headers:HeadersInit = json ? { 'Content-Type': 'application/json' } : {}
     const response = await http(path, { method, headers, body: json})
     console.log(response.status);
