@@ -10,7 +10,7 @@ REST API URL prefix: /ec
 
 Example
 ```
-node sync.ts rest "/ec/Products"
+node sync.ts rest get "/ec/Products"
 ```
 
 ## CMS Data
@@ -20,7 +20,7 @@ REST API URL prefix: /cms
 
 Example
 ```
-node sync.ts rest "/cms/SiteConfigs"
+node sync.ts rest get "/cms/SiteConfigs"
 ```
 
 ## Metadata
@@ -30,5 +30,5 @@ REST API URL prefix: /meta
 
 Example
 ```
-node sync.ts rest "/meta/Templates"
+node sync.ts rest get "/meta/Templates"
 ```
