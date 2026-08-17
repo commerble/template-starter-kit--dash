@@ -86,15 +86,6 @@ You can execute a template by calling its API endpoint. Select JSON or CSV for t
 
 
 ```pwsh
-# Load the .env file
-gci . | ?{ $_.Name -eq '.env' } | get-content | ?{ $_ -notlike '#*'} | %{ $key, $value = $_.split('=', 2); set-content env:\$key $value; }
-
-# API endpoint
-$ep = $env:CBAPI_ENDPOINT
-
-# API credentials
-$c = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:CBAPI_USERNAME, (ConvertTo-SecureString $env:CBAPI_PASSWORD -AsPlainText -Force)
-
 # Template to execute
 $templateName = "QueryOrders"
 
@@ -102,5 +93,46 @@ $templateName = "QueryOrders"
 $format = "json" ## or "csv"
 
 # API call
-irm "$ep/query/render?name=$templateName&`$format=$format" -Credential $c
+## AI agents should use node sync.ts rest to avoid npm-related output
+## node sync.ts rest post "/query/render?`$name=$templateName&`$format=$format" 
+npm run rest get "/query/render?`$name=$templateName&`$format=$format" 
+```
+
+## Temporay Execution
+
+When you temporarily need aggregate values or similar data, you can execute the query by using POST. Since the template is compiled each time it runs, anything that needs to be executed regularly must be saved as a template and retrieved using the GET method described above.
+
+```pwsh
+# Template to execute
+$json = @{
+    Script = 
+@"
+using System;
+using System.Linq;
+var lastweek = DateTime.Now.AddDays(-7);
+Database.EC.Query(db => (
+    from po in db.PurchaseOrders
+    join ol in db.OrderLines on po.Id equals ol.OrderId
+    join p in db.Products on ol.ProductId equals p.Id
+    where po.OrderDate > lastweek
+    group new { ol, p } by p into g
+    orderby g.Count() descending
+    select new {
+        g.Key.Id,
+        g.Key.Name,
+        g.Key.ExternalId1,
+        g.Key.ExternalId2,
+        Count = g.Count()
+    }
+).Take(3)).ToArray()
+"@
+} | ConvertTo-Json
+
+# Response format
+$format = "json" ## or "csv"
+
+# API call
+## AI agents should use node sync.ts rest to avoid npm-related output
+## node sync.ts rest post "/query/render" "$json"
+npm run rest post "/query/render" "$json" 
 ```
