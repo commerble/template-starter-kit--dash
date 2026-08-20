@@ -3,8 +3,6 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    container-type: inline-size;
-    container-name: menu;
     @include cq($cq-sp) {
         width: 100%;
         flex-direction: row;
@@ -17,6 +15,7 @@
     font-size: $font-size-default * 1.2;
     line-height: $line-height-default * 1.2;
     padding: $unit;
+    white-space: nowrap;
     a {
         text-decoration: none;
     }
