@@ -6,6 +6,10 @@ Front templates are broadly divided into site templates and cart templates.
 * Site templates: Can be created freely and assigned routes through Commerble CMS.
 * Cart templates: Have fixed names and view models and are used by the built-in controllers of Commerble EC PaaS.
 
+Some cart templates have a ViewModel. The ViewModels passed to cart templates are documented in `./viewmodels/{template-name}.html`, where `{template-name}` is the template name.
+
+The ViewModel documentation describes type information, but does not guarantee that values are loaded for every property. For example, `ModdOrderHistoryList`, the order history list template, does not load order line details, so `Items` is empty.
+
 ## Template Names
 Template files are organized in folders in this repository, but are registered in Commerble with a flat name formed by joining the folder names below the `templates` folder when synchronized.
 
