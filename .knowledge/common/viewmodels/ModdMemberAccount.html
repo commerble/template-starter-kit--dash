@@ -1,0 +1,18 @@
+<h2>ModdMemberAccount</h2>
+
+<h4>Crosswarp.Modd.Controllers.ViewModels.Account</h4>
+<table class=''><tbody><tr><td>Address</td><td><a href='javascript:void(0);' class='toggle'>Crosswarp.Modd.Controllers.ViewModels.AccountAddress</a>
+<table class='close'><tbody><tr><td>AddressId</td><td>Int64</td><td></td></tr><tr><td>Building</td><td>String</td><td><a href='../validations.html/#addresstextpart'>AddressTextPart</a>, 0 &lt;= length &lt;= 128</td></tr><tr><td>City</td><td>String</td><td>Required, <a href='../validations.html/#addresspart'>AddressPart</a>, 0 &lt;= length &lt;= 128</td></tr><tr><td>CountryCode</td><td>String</td><td></td></tr><tr><td>Pref</td><td>String</td><td>Required, <a href='../validations.html/#addresspart'>AddressPart</a>, 0 &lt;= length &lt;= 10</td></tr><tr><td>Street</td><td>String</td><td>Required, <a href='../validations.html/#addresstextpart'>AddressTextPart</a>, 0 &lt;= length &lt;= 128</td></tr><tr><td>Tel</td><td>String</td><td>Required, <a href='../validations.html/#phonenumber'>PhoneNumber</a>, 0 &lt;= length &lt;= 32</td></tr><tr><td>ZipCode</td><td>String</td><td>Required, <a href='../validations.html/#zipcode'>ZipCode</a></td></tr></tbody></table>
+
+</td><td></td></tr><tr><td>Birthday</td><td>Nullable&lt;DateTime&gt;</td><td></td></tr><tr><td>BirthdayD</td><td>Nullable&lt;Int32&gt;</td><td>Required</td></tr><tr><td>BirthdayM</td><td>Nullable&lt;Int32&gt;</td><td>Required</td></tr><tr><td>BirthdayY</td><td>Nullable&lt;Int32&gt;</td><td>Required</td></tr><tr><td>ConfirmPassword</td><td>String</td><td>System.Web.Mvc.AllowHtmlAttribute, Required</td></tr><tr><td>FirstName</td><td>String</td><td>Required, <a href='../validations.html/#personname'>PersonName</a></td></tr><tr><td>FirstNameKana</td><td>String</td><td>Required, <a href='../validations.html/#personnamekana'>PersonNameKana</a></td></tr><tr><td>LastName</td><td>String</td><td>Required, <a href='../validations.html/#personname'>PersonName</a></td></tr><tr><td>LastNameKana</td><td>String</td><td>Required, <a href='../validations.html/#personnamekana'>PersonNameKana</a></td></tr><tr><td>Password</td><td>String</td><td>System.Web.Mvc.AllowHtmlAttribute, Required</td></tr><tr><td>Sex</td><td>HumanSexes</td><td>Required</td></tr><tr><td>Subscribe</td><td>Boolean</td><td></td></tr><tr><td>UserName</td><td>String</td><td></td></tr></tbody></table>
+
+<style type="text/css">.wy-nav-content { max-width: none !important; } .close { display:none !important; }</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Array.from(document.querySelectorAll('.toggle')).forEach(function (el) {
+            el.addEventListener('click', function(e) {
+                Array.from(e.target.parentElement.children).filter(x => x !== e.target).forEach(x => x.classList.toggle('close'));
+            })
+        })
+    })
+</script>

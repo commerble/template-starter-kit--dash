@@ -1,0 +1,21 @@
+<h2>ModdMemberAddressList</h2>
+
+<h4>IEnumerable&lt;Crosswarp.Modd.Models.UserAddress&gt;</h4>
+<table class=''><tbody><tr><td>[]</td><td><a href='javascript:void(0);' class='toggle'>Crosswarp.Modd.Models.UserAddress</a>
+<table class='close'><tbody><tr><td>Address</td><td><a href='javascript:void(0);' class='toggle'>Crosswarp.Modd.Models.Address</a>
+<table class='close'><tbody><tr><td>AddressId</td><td>Int64</td><td></td></tr><tr><td>AddressName</td><td>String</td><td></td></tr><tr><td>Building</td><td>String</td><td><a href='../validations.html/#addresstextpart'>AddressTextPart</a>, 0 &lt;= length &lt;= 128</td></tr><tr><td>City</td><td>String</td><td>Required, <a href='../validations.html/#addresspart'>AddressPart</a>, 0 &lt;= length &lt;= 128</td></tr><tr><td>CountryCode</td><td>String</td><td></td></tr><tr><td>Pref</td><td>String</td><td>Required, <a href='../validations.html/#addresspart'>AddressPart</a>, 0 &lt;= length &lt;= 10</td></tr><tr><td>Recipientfirstname</td><td>String</td><td>Required, <a href='../validations.html/#personname'>PersonName</a>, 0 &lt;= length &lt;= 64</td></tr><tr><td>Recipientfirstnamekana</td><td>String</td><td>Required, <a href='../validations.html/#personnamekana'>PersonNameKana</a>, 0 &lt;= length &lt;= 64</td></tr><tr><td>Recipientlastname</td><td>String</td><td>Required, <a href='../validations.html/#personname'>PersonName</a>, 0 &lt;= length &lt;= 64</td></tr><tr><td>Recipientlastnamekana</td><td>String</td><td>Required, <a href='../validations.html/#personnamekana'>PersonNameKana</a>, 0 &lt;= length &lt;= 64</td></tr><tr><td>Street</td><td>String</td><td>Required, <a href='../validations.html/#addresstextpart'>AddressTextPart</a>, 0 &lt;= length &lt;= 128</td></tr><tr><td>Tel</td><td>String</td><td>Required, <a href='../validations.html/#phonenumber'>PhoneNumber</a>, 0 &lt;= length &lt;= 32</td></tr><tr><td>ZipCode</td><td>String</td><td>Required, <a href='../validations.html/#zipcode'>ZipCode</a></td></tr></tbody></table>
+
+</td><td></td></tr><tr><td>AddressId</td><td>Int64</td><td></td></tr><tr><td>AddressName</td><td>String</td><td>Required, <a href='../validations.html/#addressname'>AddressName</a>, 0 &lt;= length &lt;= 128</td></tr><tr><td>UserNo</td><td>Int64</td><td></td></tr></tbody></table>
+
+</td><td></td></tr></tbody></table>
+
+<style type="text/css">.wy-nav-content { max-width: none !important; } .close { display:none !important; }</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Array.from(document.querySelectorAll('.toggle')).forEach(function (el) {
+            el.addEventListener('click', function(e) {
+                Array.from(e.target.parentElement.children).filter(x => x !== e.target).forEach(x => x.classList.toggle('close'));
+            })
+        })
+    })
+</script>

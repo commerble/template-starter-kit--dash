@@ -1,0 +1,27 @@
+<h2>ModdSiteAccountComplete</h2>
+
+<h4>Crosswarp.Modd.Account.Account</h4>
+<table class=''><tbody><tr><td>ActivateDate</td><td>Nullable&lt;DateTime&gt;</td><td></td></tr><tr><td>Credential</td><td><a href='javascript:void(0);' class='toggle'>Crosswarp.Modd.Account.AccountCredential</a>
+<table class='close'><tbody><tr><td>PasswardHashType</td><td>HashType</td><td></td></tr><tr><td>Password</td><td>String</td><td></td></tr></tbody></table>
+
+</td><td></td></tr><tr><td>ExtendProperties</td><td><a href='javascript:void(0);' class='toggle'>Crosswarp.Modd.Account.AccountExtendProperties</a>
+<table class='close'><tbody><tr><td>AddressId</td><td>Int64</td><td></td></tr><tr><td>Birthday</td><td>Nullable&lt;DateTime&gt;</td><td></td></tr><tr><td>Email</td><td>String</td><td></td></tr><tr><td>FirstName</td><td>String</td><td></td></tr><tr><td>FirstNameKana</td><td>String</td><td></td></tr><tr><td>LastName</td><td>String</td><td></td></tr><tr><td>LastNameKana</td><td>String</td><td></td></tr><tr><td>MemberStatus</td><td>MemberStatus</td><td></td></tr><tr><td>Sex</td><td>HumanSexes</td><td></td></tr><tr><td>Subscribe</td><td>Boolean</td><td></td></tr><tr><td>Token</td><td>String</td><td></td></tr></tbody></table>
+
+</td><td></td></tr><tr><td>ExternalKeys</td><td><a href='javascript:void(0);' class='toggle'>IList&lt;Crosswarp.Modd.Account.AccountExternalKey&gt;</a>
+<table class='close'><tbody><tr><td>[]</td><td><a href='javascript:void(0);' class='toggle'>Crosswarp.Modd.Account.AccountExternalKey</a>
+<table class='close'><tbody><tr><td>AuthenticateType</td><td>ExternalAuthType</td><td></td></tr><tr><td>ExternalKey</td><td>String</td><td></td></tr><tr><td>LastLoginDate</td><td>Nullable&lt;DateTime&gt;</td><td></td></tr><tr><td>RelateDate</td><td>DateTime</td><td></td></tr><tr><td>UserNo</td><td>Int64</td><td></td></tr></tbody></table>
+
+</td><td></td></tr></tbody></table>
+
+</td><td></td></tr><tr><td>GetCustomApiExternalKey</td><td>String</td><td></td></tr><tr><td>IsActive</td><td>Boolean</td><td></td></tr><tr><td>IsAnonymous</td><td>Boolean</td><td></td></tr><tr><td>QuitDate</td><td>Nullable&lt;DateTime&gt;</td><td></td></tr><tr><td>UserName</td><td>String</td><td></td></tr><tr><td>UserNo</td><td>Int64</td><td></td></tr></tbody></table>
+
+<style type="text/css">.wy-nav-content { max-width: none !important; } .close { display:none !important; }</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Array.from(document.querySelectorAll('.toggle')).forEach(function (el) {
+            el.addEventListener('click', function(e) {
+                Array.from(e.target.parentElement.children).filter(x => x !== e.target).forEach(x => x.classList.toggle('close'));
+            })
+        })
+    })
+</script>
