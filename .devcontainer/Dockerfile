@@ -14,4 +14,6 @@ RUN apt-get update \
         fonts-noto-color-emoji \
         fonts-noto-cjk \
         ripgrep \
-    && rm -rf /var/lib/apt/lists/*
+        fd-find \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s $(which fdfind) /usr/bin/fd
