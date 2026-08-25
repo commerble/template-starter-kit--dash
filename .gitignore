@@ -5,3 +5,4 @@ dist/*
 data
 .knowledge/_local.md
 .github/agent-workflow/current-task.md
+.local
