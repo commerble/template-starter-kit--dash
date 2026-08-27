@@ -116,7 +116,7 @@
     ViewBag.MetaImage = vm.MetaImage;
 
     var urlPrefix = TopUrl(true);
-    ViewBag.Canonical = urlPrefix + vm.Code;
+    ViewBag.Canonical = urlPrefix.TrimEnd('/') + vm.Code;
     ViewBag.CanonicalQueryStringKeys = new string[]{};
 
     var breadcrumbJsonLd = new Dictionary<string, object> {
